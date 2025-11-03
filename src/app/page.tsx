@@ -1,5 +1,5 @@
-import HeroBanner from '@/app/components/Hero-banner';
-import { FeaturedProducts } from '@/app/components/Featured-products';
+import HeroBanner from '@/components/landing/Hero-banner';
+import { FeaturedProducts } from '@/components/landing/Featured-products';
 export default async function Home() {
 
   return (
