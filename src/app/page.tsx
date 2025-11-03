@@ -1,13 +1,12 @@
-import prisma from '@/lib/prisma';
-
+import HeroBanner from '@/app/components/Hero-banner';
+import { FeaturedProducts } from '@/app/components/Featured-products';
 export default async function Home() {
-  const users = await prisma.users.findMany();
-  console.log("user", users)
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-blue font-san">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <h1 className="bg-blue">Helloooooooooooo</h1>
+    <div className="flex min-h-screen items-center justify-center font-san">
+      <main className="min-h-screen w-full">
+        <HeroBanner />
+        <FeaturedProducts />
       </main>
     </div>
   );
