@@ -103,7 +103,7 @@ function ProductCard({ product }: { product: Product }) {
 
       {/* Product Info */}
       <Link href={`/products/${product.id}`} className="block group">
-        <h3 className="font-semibold text-foreground group-hover:text-primary transition-smooth mb-2 line-clamp-2">
+        <h3 className="font-semibold text-textPrimary group-hover:text-primary transition-smooth mb-2 line-clamp-2">
           {product.name}
         </h3>
       </Link>
@@ -123,7 +123,7 @@ function ProductCard({ product }: { product: Product }) {
 
       {/* Price */}
       <div className="flex items-center gap-2">
-        <span className="text-lg font-bold text-foreground">NT${product.price.toLocaleString()}</span>
+        <span className="text-lg font-bold">NT${product.price.toLocaleString()}</span>
         {product.originalPrice && (
           <span className="text-sm text-muted-foreground line-through">
             NT${product.originalPrice.toLocaleString()}
@@ -136,10 +136,10 @@ function ProductCard({ product }: { product: Product }) {
 
 export function FeaturedProducts() {
   return (
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+    <section className="px-4 sm:px-6 lg:px-8 py-20">
       <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">精選產品</h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">精心挑選的熱銷商品，品質保證，價格優惠</p>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-textPrimary">精選產品</h2>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-textSecondary">精心挑選的熱銷商品，品質保證，價格優惠</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
