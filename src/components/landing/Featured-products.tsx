@@ -123,10 +123,10 @@ function ProductCard({ product }: { product: Product }) {
 
       {/* Price */}
       <div className="flex items-center gap-2">
-        <span className="text-lg font-bold">NT${product.price.toLocaleString()}</span>
+        <span className="text-lg font-bold">HKD${product.price.toLocaleString()}</span>
         {product.originalPrice && (
           <span className="text-sm text-muted-foreground line-through">
-            NT${product.originalPrice.toLocaleString()}
+            HKD${product.originalPrice.toLocaleString()}
           </span>
         )}
       </div>
