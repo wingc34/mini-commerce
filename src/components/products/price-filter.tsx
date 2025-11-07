@@ -28,7 +28,7 @@ export function PriceFilter() {
       {/* 價格輸入框 */}
       <div className="flex items-center space-x-2">
         <div className="relative flex-1">
-          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-textSecondary">
             HKD
           </span>
           <Input
@@ -42,10 +42,10 @@ export function PriceFilter() {
           />
         </div>
 
-        <span className="text-muted-foreground">~</span>
+        <span className="text-textSecondary">~</span>
 
         <div className="relative flex-1">
-          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">
+          <span className="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-textSecondary">
             HKD
           </span>
           <Input

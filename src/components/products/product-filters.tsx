@@ -104,10 +104,10 @@ export function ProductFilters() {
                     type="checkbox"
                     className="w-4 h-4 rounded border-border cursor-pointer"
                   />
-                  <span className="text-sm text-muted-foreground group-hover:text-foreground transition-smooth">
+                  <span className="text-sm text-textSecondary group-hover:text-foreground transition-smooth">
                     {option.label}
                   </span>
-                  <span className="text-xs text-muted-foreground ml-auto">
+                  <span className="text-xs text-textSecondary ml-auto">
                     ({option.count})
                   </span>
                 </label>
