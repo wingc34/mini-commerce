@@ -6,10 +6,8 @@ import Link from 'next/link';
 export default function ProductsPage() {
   return (
     <>
-      {/* Breadcrumb */}
-
       {/* Page Header */}
-      <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
         <h1 className="text-4xl font-bold text-textPrimary mb-2">產品目錄</h1>
         <p className="text-textSecondary">瀏覽我們的完整產品系列</p>
       </div>
@@ -36,7 +34,7 @@ export default function ProductsPage() {
           </div>
           <div className="flex gap-8">
             {/* Fixed Sidebar - Desktop Only */}
-            <aside className="hidden lg:block w-72 flex-shrink-0">
+            <aside className="hidden lg:block w-72 shrink-0">
               <div className="sticky top-24 bg-muted rounded-lg p-6 border border-border">
                 <ProductFilters />
               </div>

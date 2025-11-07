@@ -172,7 +172,7 @@
 }
 
 .bg-muted {
-  @apply bg-gray-50;
+  background-color: var(--muted);
 }
 
 .text-muted-foreground {

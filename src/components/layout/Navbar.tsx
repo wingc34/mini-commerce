@@ -18,10 +18,12 @@ const pageDetails = [
   { name: '關於', href: '/about' },
   { name: '聯絡', href: '/contact' },
 ];
+import { useState } from 'react';
 
 export default function Navbar() {
   const { isDark, toggleTheme, mounted } = useTheme();
   const pathname = usePathname();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <nav className="border-b bg-background shadow-sm sticky top-0 z-50 flex justify-between items-center px-6 py-4 transition-all duration-300 grid-cols-3">
       <Link
@@ -98,7 +100,10 @@ export default function Navbar() {
         <Button asChild className="mx-2">
           <Link href="/login">Login</Link>
         </Button>
-        <Sheet>
+        <Sheet
+          open={isMenuOpen}
+          onOpenChange={() => setIsMenuOpen(!isMenuOpen)}
+        >
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
               <Menu className="w-5 h-5" />
@@ -114,6 +119,7 @@ export default function Navbar() {
                   key={page.name}
                   href={page.href}
                   className="hover:text-blue-600 transition px-4"
+                  onClick={() => setIsMenuOpen(false)}
                 >
                   {page.name}
                 </Link>
