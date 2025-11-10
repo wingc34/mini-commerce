@@ -3,6 +3,7 @@
 import { Star, ShoppingCart, Heart, Share2, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState, use } from 'react';
+import Carousel from '@/components/products/detail/Carousel';
 
 export default function ProductDetailPage({
   params,
@@ -42,8 +43,6 @@ export default function ProductDetailPage({
     ],
   };
 
-  const [mainImage, setMainImage] = useState(product.images[0]);
-
   return (
     <>
       {/* Product Detail */}
@@ -51,32 +50,7 @@ export default function ProductDetailPage({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Images */}
           <div className="space-y-4">
-            <div className="bg-muted rounded-lg overflow-hidden aspect-square">
-              <img
-                src={mainImage || '/placeholder.svg'}
-                alt={product.name}
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="grid grid-cols-4 gap-4">
-              {product.images.map((image, index) => (
-                <button
-                  key={index}
-                  onClick={() => setMainImage(image)}
-                  className={`bg-muted rounded-lg overflow-hidden aspect-square border-2 transition-smooth ${
-                    mainImage === image
-                      ? 'border-primary'
-                      : 'border-transparent'
-                  }`}
-                >
-                  <img
-                    src={image || '/placeholder.svg'}
-                    alt={`Product ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
-                </button>
-              ))}
-            </div>
+            <Carousel slides={product.images} />
           </div>
 
           {/* Details */}
