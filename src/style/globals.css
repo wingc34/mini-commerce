@@ -38,8 +38,16 @@
     --sidebar-accent-foreground: oklch(0.205 0 0);
     --sidebar-border: oklch(0.922 0 0);
     --sidebar-ring: oklch(0.708 0 0);
+    --slide-height: 19rem;
+    --slide-spacing: 1rem;
+    --slide-size: 100%;
+    --thumbs-slide-spacing: 0.8rem;
+    --thumbs-slide-height: 6rem;
     --textPrimary: oklch(0.145 0 0);
     --textSecondary: oklch(0.551 0.0234 264.36);
+    --detail-medium-contrast: rgb(234, 234, 234);
+    --detail-high-contrast: rgb(192, 192, 192);
+    --text-high-contrast-rgb-value: 49, 49, 49;
   }
 
   .dark {

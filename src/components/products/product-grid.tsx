@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Star, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 interface Product {
   id: string;
@@ -145,10 +146,10 @@ function ProductCard({ product }: { product: Product }) {
         {/* Overlay */}
         {isHovered && product.inStock && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <button className="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 transition-smooth">
+            <Button className="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 transition-smooth">
               <ShoppingCart className="w-5 h-5" />
               加入購物車
-            </button>
+            </Button>
           </div>
         )}
       </div>
