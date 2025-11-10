@@ -50,9 +50,11 @@ export default function Navbar() {
       <div className="hidden md:flex text-gray-700 font-medium space-x-8">
         {/* Theme Toggle Button */}
         {mounted && (
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={toggleTheme}
-            className="p-2 hover:bg-muted rounded-lg transition-smooth"
+            className="p-2 rounded-lg transition-smooth"
             aria-label="Toggle theme"
           >
             {isDark ? (
@@ -60,19 +62,21 @@ export default function Navbar() {
             ) : (
               <Moon className="w-6 h-6 text-foreground" />
             )}
-          </button>
+          </Button>
         )}
         <Button asChild>
           <Link href="/login">Login</Link>
         </Button>
-        {/* <div className="flex space-x-4 items-center">
+        <div className="flex space-x-4 items-center">
           <Button variant="ghost" size="icon">
-            <ShoppingCart />
+            <Link href="/cart">
+              <ShoppingCart className="w-6 h-6 text-foreground" />
+            </Link>
           </Button>
           <Button variant="ghost" size="icon">
-            <User />
+            <User className="w-6 h-6 text-foreground" />
           </Button>
-        </div> */}
+        </div>
       </div>
 
       {/* Mobile Menu */}
