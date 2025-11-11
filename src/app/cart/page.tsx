@@ -2,6 +2,7 @@
 
 import { CartItem } from '@/components/cart/cart-item';
 import { CartSummary } from '@/components/cart/cart-summary';
+import { useCart } from '@/store/cart-store';
 import { ShoppingCart, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -15,6 +16,7 @@ interface CartItemData {
 }
 
 export default function CartPage() {
+  const { items } = useCart();
   const [cartItems, setCartItems] = useState<CartItemData[]>([
     {
       id: '1',
