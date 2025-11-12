@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Star, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
+import { useCart } from '@/store/cart-store';
 
 interface Product {
   id: string;
@@ -101,6 +102,7 @@ const PRODUCTS: Product[] = [
 ];
 
 function ProductCard({ product }: { product: Product }) {
+  const { items, addItem } = useCart();
   const [isHovered, setIsHovered] = useState(false);
   const discount = product.originalPrice
     ? Math.round(
@@ -146,7 +148,18 @@ function ProductCard({ product }: { product: Product }) {
         {/* Overlay */}
         {isHovered && product.inStock && (
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <Button className="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 transition-smooth">
+            <Button
+              className="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 transition-smooth cursor-pointer"
+              onClick={() =>
+                addItem({
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  quantity: 1,
+                  image: product.image,
+                })
+              }
+            >
               <ShoppingCart className="w-5 h-5" />
               加入購物車
             </Button>

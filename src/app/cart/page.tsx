@@ -16,7 +16,7 @@ interface CartItemData {
 }
 
 export default function CartPage() {
-  const { items } = useCart();
+  const { items, removeItem, updateQuantity } = useCart();
   const [cartItems, setCartItems] = useState<CartItemData[]>([
     {
       id: '1',
@@ -45,9 +45,11 @@ export default function CartPage() {
     setCartItems((prev) =>
       prev.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
+    updateQuantity(id, quantity);
   };
 
   const handleRemove = (id: string) => {
+    removeItem(id);
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
