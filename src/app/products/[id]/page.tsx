@@ -2,14 +2,16 @@
 
 import { Star, ShoppingCart, Heart, Share2, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
-import { useState, use } from 'react';
 import Carousel from '@/components/products/detail/Carousel';
+import { useCart } from '@/store/cart-store';
+import { Button } from '@/components/ui/button';
 
 export default function ProductDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
+  const { items, addItem } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState('black');
   const [selectedSize, setSelectedSize] = useState('M');
@@ -184,11 +186,22 @@ export default function ProductDetailPage({
             </div>
 
             {/* Actions */}
-            <div className="flex gap-4 pt-4">
-              <button className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-smooth">
+            <div className="flex gap-4 pt-4 items-center">
+              <Button
+                className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-smooth"
+                onClick={() =>
+                  addItem({
+                    id: '1',
+                    name: product.name,
+                    price: product.price,
+                    quantity: quantity,
+                    image: product.images[0],
+                  })
+                }
+              >
                 <ShoppingCart className="w-5 h-5" />
                 加入購物車
-              </button>
+              </Button>
               <button
                 onClick={() => setIsWishlisted(!isWishlisted)}
                 className={`w-14 h-14 border-2 rounded-lg flex items-center justify-center transition-smooth ${
