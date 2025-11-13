@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Carousel from '@/components/products/detail/Carousel';
 import { useCart } from '@/store/cart-store';
 import { Button } from '@/components/ui/button';
+import { useState } from 'react';
 
 export default function ProductDetailPage({
   params,

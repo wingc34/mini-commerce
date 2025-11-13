@@ -13,17 +13,21 @@ import {
 } from '@/components/ui/sheet';
 import { useTheme } from '@/lib/theme-provider';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import { useSession } from 'next-auth/react';
+
 const pageDetails = [
   { name: '產品', href: '/products' },
   { name: '關於', href: '/about' },
   { name: '聯絡', href: '/contact' },
 ];
-import { useState } from 'react';
 
 export default function Navbar() {
+  const { data: session } = useSession();
   const { isDark, toggleTheme, mounted } = useTheme();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  console.log('Session in Navbar:', session);
   return (
     <nav className="border-b bg-background shadow-sm sticky top-0 z-50 flex justify-between items-center px-6 py-4 transition-all duration-300 grid-cols-3">
       <Link
@@ -47,7 +51,7 @@ export default function Navbar() {
           </Link>
         ))}
       </div>
-      <div className="hidden md:flex text-gray-700 font-medium space-x-8">
+      <div className="hidden md:flex text-gray-700 font-medium space-x-4">
         {/* Theme Toggle Button */}
         {mounted && (
           <Button
@@ -64,29 +68,40 @@ export default function Navbar() {
             )}
           </Button>
         )}
-        <Button asChild>
-          <Link href="/login">Login</Link>
-        </Button>
-        <div className="flex space-x-4 items-center">
-          <Button variant="ghost" size="icon">
-            <Link href="/cart">
-              <ShoppingCart className="w-6 h-6 text-foreground" />
-            </Link>
+        {session ? (
+          <div className="flex space-x-4 items-center">
+            <Button variant="ghost" size="icon">
+              <Link href="/cart">
+                <ShoppingCart className="w-6 h-6 text-foreground" />
+              </Link>
+            </Button>
+            <Button variant="ghost" size="icon">
+              <User className="w-6 h-6 text-foreground" />
+            </Button>
+          </div>
+        ) : (
+          <Button asChild>
+            <Link href="/login">Login</Link>
           </Button>
-          <Button variant="ghost" size="icon">
-            <User className="w-6 h-6 text-foreground" />
-          </Button>
-        </div>
+        )}
       </div>
 
       {/* Mobile Menu */}
       <div className="md:hidden flex items-center">
-        {/* <Button variant="ghost" size="icon">
-          <ShoppingCart />
-        </Button>
-        <Button variant="ghost" size="icon">
-          <User />
-        </Button> */}
+        {session ? (
+          <>
+            <Button variant="ghost" size="icon">
+              <ShoppingCart />
+            </Button>
+            <Button variant="ghost" size="icon">
+              <User />
+            </Button>
+          </>
+        ) : (
+          <Button asChild className="mx-2">
+            <Link href="/login">Login</Link>
+          </Button>
+        )}
         {/* Theme Toggle Button */}
         {mounted && (
           <button
@@ -101,9 +116,6 @@ export default function Navbar() {
             )}
           </button>
         )}
-        <Button asChild className="mx-2">
-          <Link href="/login">Login</Link>
-        </Button>
         <Sheet
           open={isMenuOpen}
           onOpenChange={() => setIsMenuOpen(!isMenuOpen)}
