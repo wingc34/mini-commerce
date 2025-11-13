@@ -13,17 +13,21 @@ import {
 } from '@/components/ui/sheet';
 import { useTheme } from '@/lib/theme-provider';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+import { useSession } from 'next-auth/react';
+
 const pageDetails = [
   { name: '產品', href: '/products' },
   { name: '關於', href: '/about' },
   { name: '聯絡', href: '/contact' },
 ];
-import { useState } from 'react';
 
 export default function Navbar() {
+  const { data: session } = useSession();
   const { isDark, toggleTheme, mounted } = useTheme();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  console.log('Session in Navbar:', session);
   return (
     <nav className="border-b bg-background shadow-sm sticky top-0 z-50 flex justify-between items-center px-6 py-4 transition-all duration-300 grid-cols-3">
       <Link

@@ -4,6 +4,7 @@ import '@/style/globals.css';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { ThemeProvider } from '@/lib/theme-provider';
+import { SessionProvider } from 'next-auth/react';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -31,11 +32,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ThemeProvider>
-          <Navbar />
-          <div className="flex min-h-screen items-center justify-center font-san">
-            <main className="min-h-screen w-full">{children}</main>
-          </div>
-          <Footer />
+          <SessionProvider>
+            <Navbar />
+            <div className="flex min-h-screen items-center justify-center font-san">
+              <main className="min-h-screen w-full">{children}</main>
+            </div>
+            <Footer />
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>
