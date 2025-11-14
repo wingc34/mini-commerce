@@ -23,7 +23,7 @@ const pageDetails = [
 ];
 
 export default function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { isDark, toggleTheme, mounted } = useTheme();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -58,7 +58,7 @@ export default function Navbar() {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="p-2 rounded-lg transition-smooth"
+            className="p-2 rounded-lg transition-smooth cursor-pointer"
             aria-label="Toggle theme"
           >
             {isDark ? (
@@ -68,7 +68,7 @@ export default function Navbar() {
             )}
           </Button>
         )}
-        {session ? (
+        {session && status === 'authenticated' ? (
           <div className="flex space-x-4 items-center">
             <Button variant="ghost" size="icon">
               <Link href="/cart">
@@ -76,7 +76,9 @@ export default function Navbar() {
               </Link>
             </Button>
             <Button variant="ghost" size="icon">
-              <User className="w-6 h-6 text-foreground" />
+              <Link href="/profile">
+                <User className="w-6 h-6 text-foreground" />
+              </Link>
             </Button>
           </div>
         ) : (
@@ -88,13 +90,15 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       <div className="md:hidden flex items-center">
-        {session ? (
+        {session && status === 'authenticated' ? (
           <>
             <Button variant="ghost" size="icon">
               <ShoppingCart />
             </Button>
             <Button variant="ghost" size="icon">
-              <User />
+              <Link href="/login">
+                <User />
+              </Link>
             </Button>
           </>
         ) : (
