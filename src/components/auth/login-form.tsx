@@ -10,7 +10,7 @@ export function LoginForm() {
       {/* Social Login */}
       <Button
         variant={'ghost'}
-        onClick={() => signIn('google')}
+        onClick={() => signIn('google', { callbackUrl: 'http://localhost:3000/' })}
         className="flex items-center justify-center px-4 py-3 border border-border rounded-lg hover:bg-muted transition-smooth cursor-pointer w-full"
       >
         <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
