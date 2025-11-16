@@ -1,0 +1,13 @@
+import { initTRPC } from '@trpc/server';
+/**
+ * Initialization of tRPC backend
+ * Should be done only once per backend!
+ */
+const t = initTRPC.create();
+/**
+ * Export reusable router and procedure helpers
+ * that can be used throughout the router
+ */
+// Base router and procedure helpers
+export const router = t.router;
+export const procedure = t.procedure;
