@@ -10,7 +10,12 @@ export const getRecommendProducts = procedure.query(async ({}) => {
       skip: randomOffset,
       take: 4,
       include: {
-        skus: true,
+        skus: {
+          select: {
+            price: true,
+            skuCode: true,
+          },
+        },
       },
     });
 
