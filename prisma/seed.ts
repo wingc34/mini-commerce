@@ -22,6 +22,7 @@ async function main() {
     // Random addresses (0–3 per user)
     const addressCount = faker.number.int({ min: 0, max: 2 });
     for (let j = 0; j < addressCount; j++) {
+      const isDefault = j === 0; // first address is default
       await prisma.address.create({
         data: {
           userId: user.id,
@@ -35,6 +36,7 @@ async function main() {
           state: faker.location.state(),
           postal: faker.location.zipCode(),
           country: faker.location.country(),
+          isDefault: isDefault,
         },
       });
     }
@@ -95,6 +97,10 @@ async function main() {
   for (let i = 0; i < ordersToCreate; i++) {
     const user = faker.helpers.arrayElement(users);
 
+    const shippingAddresses = await prisma.address.findMany({
+      where: { userId: user.id, isDefault: true },
+    });
+
     const order = await prisma.order.create({
       data: {
         userId: user.id,
@@ -105,6 +111,7 @@ async function main() {
           'COMPLETED',
         ]),
         total: 0, // update after creating items
+        shippingAddressId: shippingAddresses[0]?.id,
       },
     });
 

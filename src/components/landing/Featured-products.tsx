@@ -1,66 +1,72 @@
-"use client"
+'use client';
 
-import Link from "next/link"
-import { Star, ShoppingCart } from "lucide-react"
-import { useState } from "react"
-
+import Link from 'next/link';
+import { Star, ShoppingCart } from 'lucide-react';
+import { useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { trpc } from '@/app/_trpc/client-api';
 interface Product {
-  id: string
-  name: string
-  price: number
-  originalPrice?: number
-  image: string
-  rating: number
-  reviews: number
-  badge?: string
+  id: string;
+  name: string;
+  price: number;
+  originalPrice?: number;
+  image: string;
+  rating: number;
+  reviews: number;
+  badge?: string;
 }
 
 const FEATURED_PRODUCTS: Product[] = [
   {
-    id: "1",
-    name: "高級無線耳機",
+    id: '1',
+    name: '高級無線耳機',
     price: 2499,
     originalPrice: 3299,
-    image: "/premium-wireless-headphones.png",
+    image: '/premium-wireless-headphones.png',
     rating: 4.8,
     reviews: 128,
-    badge: "熱銷",
+    badge: '熱銷',
   },
   {
-    id: "2",
-    name: "智能手錶",
+    id: '2',
+    name: '智能手錶',
     price: 1999,
     originalPrice: 2499,
-    image: "/smart-watch-modern.jpg",
+    image: '/smart-watch-modern.jpg',
     rating: 4.6,
     reviews: 95,
-    badge: "新品",
+    badge: '新品',
   },
   {
-    id: "3",
-    name: "便攜式充電器",
+    id: '3',
+    name: '便攜式充電器',
     price: 599,
-    image: "/portable-charger-sleek.jpg",
+    image: '/portable-charger-sleek.jpg',
     rating: 4.9,
     reviews: 234,
   },
   {
-    id: "4",
-    name: "無線充電板",
+    id: '4',
+    name: '無線充電板',
     price: 799,
     originalPrice: 999,
-    image: "/wireless-charging-pad.png",
+    image: '/wireless-charging-pad.png',
     rating: 4.7,
     reviews: 156,
-    badge: "優惠",
+    badge: '優惠',
   },
-]
+];
 
 function ProductCard({ product }: { product: Product }) {
-  const [isHovered, setIsHovered] = useState(false)
+  const [isHovered, setIsHovered] = useState(false);
   const discount = product.originalPrice
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : 0
+    ? Math.round(
+        ((product.originalPrice - product.price) / product.originalPrice) * 100
+      )
+    : 0;
+
+  const products = trpc.product.getRecommendProducts.useQuery();
+  console.log('products', products);
 
   return (
     <div className="group">
@@ -85,7 +91,7 @@ function ProductCard({ product }: { product: Product }) {
 
         {/* Image */}
         <img
-          src={product.image || "/placeholder.svg"}
+          src={product.image || '/placeholder.svg'}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-smooth duration-500"
         />
@@ -114,16 +120,20 @@ function ProductCard({ product }: { product: Product }) {
           {[...Array(5)].map((_, i) => (
             <Star
               key={i}
-              className={`w-4 h-4 ${i < Math.floor(product.rating) ? "fill-secondary text-secondary" : "text-muted-foreground"}`}
+              className={`w-4 h-4 ${i < Math.floor(product.rating) ? 'fill-secondary text-secondary' : 'text-muted-foreground'}`}
             />
           ))}
         </div>
-        <span className="text-sm text-muted-foreground">({product.reviews})</span>
+        <span className="text-sm text-muted-foreground">
+          ({product.reviews})
+        </span>
       </div>
 
       {/* Price */}
       <div className="flex items-center gap-2">
-        <span className="text-lg font-bold">HKD${product.price.toLocaleString()}</span>
+        <span className="text-lg font-bold">
+          HKD${product.price.toLocaleString()}
+        </span>
         {product.originalPrice && (
           <span className="text-sm text-muted-foreground line-through">
             HKD${product.originalPrice.toLocaleString()}
@@ -131,15 +141,19 @@ function ProductCard({ product }: { product: Product }) {
         )}
       </div>
     </div>
-  )
+  );
 }
 
 export function FeaturedProducts() {
   return (
     <section className="px-4 sm:px-6 lg:px-8 py-20">
       <div className="text-center mb-12">
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-textPrimary">精選產品</h2>
-        <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-textSecondary">精心挑選的熱銷商品，品質保證，價格優惠</p>
+        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-textPrimary">
+          精選產品
+        </h2>
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-textSecondary">
+          精心挑選的熱銷商品，品質保證，價格優惠
+        </p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -158,13 +172,23 @@ export function FeaturedProducts() {
         </Link>
       </div>
     </section>
-  )
+  );
 }
 
 function ArrowRight({ className }: { className: string }) {
   return (
-    <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+    <svg
+      className={className}
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M13 7l5 5m0 0l-5 5m5-5H6"
+      />
     </svg>
-  )
+  );
 }
