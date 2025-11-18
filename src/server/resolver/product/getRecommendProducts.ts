@@ -14,6 +14,7 @@ export const getRecommendProducts = procedure.query(async ({}) => {
           select: {
             price: true,
             skuCode: true,
+            attributes: true,
           },
         },
       },

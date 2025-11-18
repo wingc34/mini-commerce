@@ -3,8 +3,10 @@ import { ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { useCart } from '@/store/cart-store';
+import { type SKU } from '@prisma/client';
 
-interface Product {
+export interface Product {
   id: string;
   name: string;
   createdAt: string;
@@ -15,12 +17,14 @@ interface Product {
   skus: {
     price: number;
     skuCode: string;
+    attributes: SKU['attributes'];
   }[];
 }
 
 export function ProductCard({ product }: { product: Product }) {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
+  const { addToCart } = useCart();
 
   return (
     <div className="group">
@@ -34,6 +38,7 @@ export function ProductCard({ product }: { product: Product }) {
         <Image
           src={product.images[0] || 'https://placehold.co/600x400'}
           alt={product.name}
+          loading="eager"
           width={500}
           height={500}
           className="w-full h-full object-cover group-hover:scale-110 transition-smooth duration-500"
@@ -46,7 +51,14 @@ export function ProductCard({ product }: { product: Product }) {
               className="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 transition-smooth cursor-pointer"
               onClick={(event) => {
                 event.stopPropagation();
-                console.log('123');
+                console.log('addToCart');
+                addToCart({
+                  id: product.id,
+                  name: product.name,
+                  quantity: 1,
+                  image: product.images[0] || null,
+                  sku: product.skus[0],
+                });
               }}
             >
               <ShoppingCart className="w-5 h-5" />

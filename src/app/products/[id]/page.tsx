@@ -12,7 +12,7 @@ export default function ProductDetailPage({
 }: {
   params: { id: string };
 }) {
-  const { items, addItem } = useCart();
+  const { items, addToCart } = useCart();
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState('black');
   const [selectedSize, setSelectedSize] = useState('M');
@@ -129,10 +129,10 @@ export default function ProductDetailPage({
                         color === 'black'
                           ? '#000'
                           : color === 'silver'
-                          ? '#c0c0c0'
-                          : color === 'blue'
-                          ? '#3b82f6'
-                          : '#fff',
+                            ? '#c0c0c0'
+                            : color === 'blue'
+                              ? '#3b82f6'
+                              : '#fff',
                     }}
                     title={color}
                   />
@@ -190,15 +190,15 @@ export default function ProductDetailPage({
             <div className="flex gap-4 pt-4 items-center">
               <Button
                 className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-smooth"
-                onClick={() =>
-                  addItem({
-                    id: '1',
-                    name: product.name,
-                    price: product.price,
-                    quantity: quantity,
-                    image: product.images[0],
-                  })
-                }
+                // onClick={() =>
+                //   addToCart({
+                //     id: '1',
+                //     name: product.name,
+                //     price: product.price,
+                //     quantity: quantity,
+                //     image: product.images[0],
+                //   })
+                // }
               >
                 <ShoppingCart className="w-5 h-5" />
                 加入購物車
