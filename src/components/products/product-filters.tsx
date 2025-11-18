@@ -25,14 +25,6 @@ const FILTERS: FilterGroup[] = [
       { id: 'sports', label: '運動器材', count: 145 },
     ],
   },
-  {
-    title: '評分',
-    options: [
-      { id: '5-star', label: '5 星', count: 156 },
-      { id: '4-star', label: '4 星以上', count: 234 },
-      { id: '3-star', label: '3 星以上', count: 289 },
-    ],
-  },
 ];
 
 export function ProductFilters() {

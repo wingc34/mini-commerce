@@ -1,9 +1,20 @@
+'use client';
+
 import { ProductGrid } from '@/components/products/product-grid';
 import { ProductFilters } from '@/components/products/product-filters';
-import { ChevronRight, Filter } from 'lucide-react';
-import Link from 'next/link';
+import { Filter } from 'lucide-react';
+import { ProductPagination } from '@/components/products/ProductPagination';
+import { useState } from 'react';
+import { trpc } from '@/app/_trpc/client-api';
+import { pageItemSize } from '@/constant';
 
 export default function ProductsPage() {
+  const [page, setPage] = useState(1);
+  const { data: products, isLoading } = trpc.product.getProducts.useQuery({
+    page: page,
+  });
+  const totalPages = Math.ceil((products?.total || 0) / pageItemSize);
+
   return (
     <>
       {/* Page Header */}
@@ -55,7 +66,18 @@ export default function ProductsPage() {
               </div> */}
 
               {/* Product Grid */}
-              <ProductGrid />
+              {isLoading ? (
+                'loading'
+              ) : (
+                <>
+                  <ProductGrid products={products?.data ?? []} />
+                  <ProductPagination
+                    page={page}
+                    setPage={setPage}
+                    totalPages={totalPages}
+                  />
+                </>
+              )}
             </div>
           </div>
         </div>

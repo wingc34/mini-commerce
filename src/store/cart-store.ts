@@ -1,17 +1,22 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { type SKU } from '@prisma/client';
 
 export interface CartItem {
   id: string;
   name: string;
-  price: number;
   quantity: number;
+  sku: {
+    skuCode: string;
+    price: number;
+    attributes: SKU['attributes'];
+  };
   image: string | null;
 }
 
 interface CartStore {
   items: CartItem[];
-  addItem: (item: CartItem) => void;
+  addToCart: (item: CartItem) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
   updateQuantity: (id: string, quantity: number) => void;
@@ -21,7 +26,7 @@ export const useCart = create<CartStore>()(
   persist(
     (set) => ({
       items: [],
-      addItem: (item) =>
+      addToCart: (item) =>
         set((state) => {
           const existingItem = state.items.find((i) => i.id === item.id);
 
