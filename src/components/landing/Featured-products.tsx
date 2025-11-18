@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { trpc } from '@/app/_trpc/client-api';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { ProductCard } from '@/components/products/ProductCard';
+import { Product, ProductCard } from '@/components/products/ProductCard';
 import { ArrowRight } from 'lucide-react';
 
 export function FeaturedProducts() {
@@ -26,7 +26,7 @@ export function FeaturedProducts() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {isLoading
           ? 'loading'
-          : products?.data.map((product) => (
+          : (products?.data as unknown as Product[])?.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
       </div>

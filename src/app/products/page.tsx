@@ -7,6 +7,7 @@ import { ProductPagination } from '@/components/products/ProductPagination';
 import { useState } from 'react';
 import { trpc } from '@/app/_trpc/client-api';
 import { pageItemSize } from '@/constant';
+import { Product } from '@/components/products/ProductCard';
 
 export default function ProductsPage() {
   const [page, setPage] = useState(1);
@@ -70,7 +71,9 @@ export default function ProductsPage() {
                 'loading'
               ) : (
                 <>
-                  <ProductGrid products={products?.data ?? []} />
+                  <ProductGrid
+                    products={(products?.data as unknown[] as Product[]) ?? []}
+                  />
                   <ProductPagination
                     page={page}
                     setPage={setPage}
