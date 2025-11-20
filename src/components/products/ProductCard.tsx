@@ -32,7 +32,7 @@ export function ProductCard({ product }: { product: Product }) {
         className="relative bg-muted rounded-lg overflow-hidden mb-4 aspect-square cursor-pointer"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onClick={() => router.push('/products/1')}
+        onClick={() => router.push(`/products/${product.id}`)}
       >
         {/* Image */}
         <Image

@@ -27,7 +27,7 @@ export default function Navbar() {
   const { isDark, toggleTheme, mounted } = useTheme();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  console.log('Session in Navbar:', session);
+  // console.log('Session in Navbar:', session);
   return (
     <nav className="border-b bg-background shadow-sm sticky top-0 z-50 flex justify-between items-center px-6 py-4 transition-all duration-300 grid-cols-3">
       <Link
