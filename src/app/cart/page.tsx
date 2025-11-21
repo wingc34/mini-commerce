@@ -3,65 +3,17 @@
 import { CartItem } from '@/components/cart/cart-item';
 import { CartSummary } from '@/components/cart/cart-summary';
 import { useCart } from '@/store/cart-store';
-import { ShoppingCart, ChevronRight } from 'lucide-react';
+import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
-
-interface CartItemData {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity } = useCart();
-  const [cartItems, setCartItems] = useState<CartItemData[]>([
-    {
-      id: '1',
-      name: '高級無線耳機',
-      price: 2499,
-      quantity: 1,
-      image: '/premium-wireless-headphones.png',
-    },
-    {
-      id: '2',
-      name: '智能手錶',
-      price: 1999,
-      quantity: 2,
-      image: '/smart-watch-modern.jpg',
-    },
-    {
-      id: '3',
-      name: '便攜式充電器',
-      price: 599,
-      quantity: 1,
-      image: '/portable-charger-sleek.jpg',
-    },
-  ]);
 
-  const handleQuantityChange = (id: string, quantity: number) => {
-    setCartItems((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
-    updateQuantity(id, quantity);
-  };
-
-  const handleRemove = (id: string) => {
-    removeItem(id);
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
-
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
+  const totalPrice = items.reduce(
+    (acc, item) => acc + item.sku.price * item.quantity,
     0
   );
-  const shipping = subtotal > 1000 ? 0 : 100;
-  const tax = Math.round(subtotal * 0.05);
-  const total = subtotal + shipping + tax;
-
-  const isEmpty = cartItems.length === 0;
+  const isEmpty = items.length === 0;
 
   return (
     <>
@@ -69,7 +21,7 @@ export default function CartPage() {
       <div className="border-b border-border">
         <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <h1 className="text-4xl font-bold text-textPrimary mb-2">購物車</h1>
-          <p className="text-textSecondary">{cartItems.length} 件商品</p>
+          <p className="text-textSecondary">{items.length} 件商品</p>
         </div>
       </div>
 
@@ -99,27 +51,33 @@ export default function CartPage() {
             {/* Cart Items */}
             <div className="lg:col-span-2">
               <div className="rounded-lg">
-                {cartItems.map((item) => (
-                  <CartItem
-                    key={item.id}
-                    {...item}
-                    onQuantityChange={(quantity) =>
-                      handleQuantityChange(item.id, quantity)
-                    }
-                    onRemove={() => handleRemove(item.id)}
-                  />
-                ))}
+                {items?.map((item) => {
+                  const attributes =
+                    (item.sku.attributes as Record<string, string> | null) ??
+                    {};
+                  return (
+                    <CartItem
+                      key={`${item.id} ${item.sku.skuCode}`}
+                      {...item}
+                      image={item.image || 'https://placehold.co/600x400'}
+                      price={item.sku.price}
+                      sku={{
+                        color: attributes['color'] ?? '',
+                        size: attributes['size'] ?? '',
+                      }}
+                      onQuantityChange={(quantity) =>
+                        updateQuantity(item.id, quantity)
+                      }
+                      onRemove={() => removeItem(item.id)}
+                    />
+                  );
+                })}
               </div>
             </div>
 
             {/* Summary */}
             <div className="lg:col-span-1">
-              <CartSummary
-                subtotal={subtotal}
-                shipping={shipping}
-                tax={tax}
-                total={total}
-              />
+              <CartSummary total={totalPrice} />
             </div>
           </div>
         </div>

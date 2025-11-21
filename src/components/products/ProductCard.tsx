@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/store/cart-store';
 import { type SKU } from '@prisma/client';
+import { toast } from 'sonner';
 
 export interface Product {
   id: string;
@@ -51,7 +52,7 @@ export function ProductCard({ product }: { product: Product }) {
               className="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 transition-smooth cursor-pointer"
               onClick={(event) => {
                 event.stopPropagation();
-                console.log('addToCart');
+                toast(`${product.name} 已加入購物車`);
                 addToCart({
                   id: product.id,
                   name: product.name,

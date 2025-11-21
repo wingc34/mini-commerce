@@ -9,6 +9,10 @@ interface CartItemProps {
   price: number;
   quantity: number;
   image: string;
+  sku: {
+    color: string;
+    size: string;
+  };
   onQuantityChange: (quantity: number) => void;
   onRemove: () => void;
 }
@@ -19,6 +23,7 @@ export function CartItem({
   price,
   quantity,
   image,
+  sku,
   onQuantityChange,
   onRemove,
 }: CartItemProps) {
@@ -39,8 +44,11 @@ export function CartItem({
           {name}
         </h3>
         <p className="text-lg font-bold text-textPrimary">
-          NT${price.toLocaleString()}
+          HKD${(price / 100).toLocaleString()}
         </p>
+        {/* SKU */}
+        <p className="text-sm text-textSecondary">color: {sku.color}</p>
+        <p className="text-sm text-textSecondary">size: {sku.size}</p>
       </div>
 
       {/* Quantity Control */}
@@ -63,7 +71,7 @@ export function CartItem({
       {/* Total */}
       <div className="text-right min-w-fit">
         <p className="text-lg font-bold text-textPrimary">
-          NT${(price * quantity).toLocaleString()}
+          HKD${((price / 100) * quantity).toLocaleString()}
         </p>
         <p className="text-sm text-textSecondary">{quantity} 件</p>
       </div>

@@ -28,7 +28,9 @@ export const useCart = create<CartStore>()(
       items: [],
       addToCart: (item) =>
         set((state) => {
-          const existingItem = state.items.find((i) => i.id === item.id);
+          const existingItem = state.items.find(
+            (i) => i.id === item.id && i.sku.skuCode === item.sku.skuCode
+          );
 
           if (existingItem) {
             return {
