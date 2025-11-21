@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { useState, use, useMemo, useCallback } from 'react';
 import { trpc } from '@/app/_trpc/client-api';
 import { type SKU } from '@prisma/client';
+import { toast } from 'sonner';
+
 export interface ProductDetail {
   id: string;
   name: string;
@@ -26,7 +28,7 @@ export default function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { items, addToCart } = useCart();
+  const { addToCart } = useCart();
   const { data, isLoading } = trpc.product.getProductDetail.useQuery({
     id: id,
   });
@@ -77,8 +79,7 @@ export default function ProductDetailPage({
     color: ['start'],
   }));
 
-  const price = useMemo(() => {
-    if (!product) return 0;
+  const sku = useMemo(() => {
     const selectedSku = { size: selectedSize, color: selectedColor };
     const sku = product?.skus.find((sku) => {
       const attrs = sku.attributes as Record<string, string>;
@@ -86,8 +87,13 @@ export default function ProductDetailPage({
         ([key, value]) => attrs[key] === value
       );
     });
+    return sku;
+  }, [selectedSize, selectedColor, product]);
+
+  const price = useMemo(() => {
+    if (!product) return 0;
     return sku ? sku.price : Math.min(...product?.skus.map((sku) => sku.price));
-  }, [selectedSize, selectedColor, product?.skus]);
+  }, [sku, product]);
 
   return product && !isLoading ? (
     <>
@@ -240,16 +246,25 @@ export default function ProductDetailPage({
             {/* Actions */}
             <div className="flex gap-4 pt-4 items-center">
               <Button
-                className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-smooth"
-                // onClick={() =>
-                //   addToCart({
-                //     id: '1',
-                //     name: product.name,
-                //     price: product.price,
-                //     quantity: quantity,
-                //     image: product.images[0],
-                //   })
-                // }
+                className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-smooth cursor-pointer"
+                onClick={() => {
+                  if (!sku) {
+                    toast('請先選擇尺寸與顏色');
+                  } else {
+                    addToCart({
+                      id: product.id,
+                      name: product.name,
+                      sku: {
+                        skuCode: sku?.skuCode,
+                        price: sku?.price,
+                        attributes: sku?.attributes,
+                      },
+                      quantity: quantity,
+                      image: product.images[0],
+                    });
+                    toast(`${product.name} 已加入購物車`);
+                  }
+                }}
               >
                 <ShoppingCart className="w-5 h-5" />
                 加入購物車

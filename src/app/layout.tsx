@@ -6,6 +6,7 @@ import Footer from '@/components/layout/Footer';
 import { ThemeProvider } from '@/lib/theme-provider';
 import { SessionProvider } from 'next-auth/react';
 import Provider from './_trpc/Provider';
+import { Toaster } from '@/components/ui/sonner';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -39,6 +40,7 @@ export default function RootLayout({
               <div className="flex min-h-screen items-center justify-center font-san">
                 <main className="min-h-screen w-full">{children}</main>
               </div>
+              <Toaster />
               <Footer />
             </SessionProvider>
           </ThemeProvider>
