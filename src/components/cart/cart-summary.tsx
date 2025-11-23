@@ -17,13 +17,6 @@ export function CartSummary({ total }: CartSummaryProps) {
       </div>
 
       <Link
-        href="/checkout"
-        className="w-full bg-primary hover:bg-primary-dark text-white font-semibold py-3 rounded-lg transition-smooth block text-center"
-      >
-        前往結帳
-      </Link>
-
-      <Link
         href="/products"
         className="w-full border border-border text-textPrimary hover:bg-muted font-semibold py-3 rounded-lg transition-smooth block text-center"
       >

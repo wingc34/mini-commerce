@@ -5,9 +5,19 @@ import { CartSummary } from '@/components/cart/cart-summary';
 import { useCart } from '@/store/cart-store';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
+import CheckoutPanel from '@/components/checkout/CheckoutPanel';
+import { Elements } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
+import { useTheme } from '@/lib/theme-provider';
+
+if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
+  throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined');
+}
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity } = useCart();
+  const { isDark } = useTheme();
 
   const totalPrice = items.reduce(
     (acc, item) => acc + item.sku.price * item.quantity,
@@ -76,8 +86,23 @@ export default function CartPage() {
             </div>
 
             {/* Summary */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 space-y-4">
               <CartSummary total={totalPrice} />
+              <Elements
+                stripe={stripePromise}
+                options={{
+                  mode: 'payment',
+                  amount: totalPrice,
+                  currency: 'hkd',
+                  appearance: {
+                    variables: {
+                      colorBackground: isDark ? '#262626' : '#f5f5f5',
+                    },
+                  },
+                }}
+              >
+                <CheckoutPanel amount={totalPrice} />
+              </Elements>
             </div>
           </div>
         </div>
