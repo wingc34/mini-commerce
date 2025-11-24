@@ -1,43 +1,25 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   useStripe,
   useElements,
   PaymentElement,
 } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
-import { trpc } from '@/app/_trpc/client-api';
-import { useCart } from '@/store/cart-store';
-import { toast } from 'sonner';
 
-const CheckoutPanel = ({ amount }: { amount: number }) => {
+const CheckoutPanel = ({
+  amount,
+  orderId,
+}: {
+  amount: number;
+  orderId: string;
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<string>();
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(false);
-  const { items } = useCart();
-
-  const { mutateAsync: createOrder, error: createOrderError } =
-    trpc.order.createOrder.useMutation();
-
-  const onCreateOrder = useCallback(async () => {
-    const { success, message } = await createOrder({
-      userId: '',
-      total: amount,
-      shippingAddressId: '', //@TODO get user default shipping address
-      orderItem: items.map((item) => ({
-        skuId: item.sku.id,
-        quantity: item.quantity,
-        price: item.sku.price,
-      })),
-    });
-    if (success === false) {
-      toast('failed to create order');
-    }
-    console.log(success, message);
-  }, [amount, createOrder, items]);
 
   useEffect(() => {
     fetch('/api/create-payment-intent', {
@@ -45,11 +27,11 @@ const CheckoutPanel = ({ amount }: { amount: number }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ amount: amount }),
+      body: JSON.stringify({ amount: amount, orderId: orderId }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
-  }, [amount]);
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -103,14 +85,13 @@ const CheckoutPanel = ({ amount }: { amount: number }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-muted p-2 rounded-md">
+    <form onSubmit={handleSubmit} className=" p-2 rounded-md">
       {clientSecret && <PaymentElement />}
 
       {errorMessage && <div className="p-4">{errorMessage}</div>}
 
       <Button
         disabled={!stripe || loading}
-        onClick={onCreateOrder}
         className="text-white w-full p-5 mt-2 rounded-md font-bold disabled:opacity-50 disabled:animate-pulse cursor-pointer"
       >
         {!loading ? `Pay $${amount}` : 'Processing...'}

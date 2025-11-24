@@ -30,12 +30,14 @@ export const createOrder = procedure
       return {
         success: true,
         message: 'order created successfully',
+        id: order.id,
       };
     } catch (error) {
       console.error('error', error);
       return {
         success: false,
         message: 'order creation failed',
+        id: '',
       };
     }
   });

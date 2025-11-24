@@ -26,11 +26,11 @@ export async function POST(req: NextRequest) {
   }
 
   // Handle event types
-  if (event.type === 'checkout.session.completed') {
-    const session = event.data.object as Stripe.Checkout.Session;
+  if (event.type === 'payment_intent.succeeded') {
+    const session = event.data.object as Stripe.PaymentIntent;
 
     const orderId = session.metadata?.orderId;
-    const paymentIntent = session.payment_intent;
+    const paymentIntent = session.id;
 
     if (!orderId) {
       console.error('⚠️ No orderId metadata found');
@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
     }
 
     // update postgres db
-    await prisma.order.update({
+    const order = await prisma.order.update({
       where: { id: orderId },
       data: {
         status: 'PAID',
