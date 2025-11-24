@@ -1,9 +1,18 @@
+'use client';
+
+import { useCart } from '@/store/cart-store';
 import { CheckCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 export default function CheckoutSuccessPage() {
   const orderId = 'ORD-2025-001234';
   const orderDate = new Date().toLocaleDateString('zh-TW');
+  const { clearCart } = useCart();
+
+  useEffect(() => {
+    clearCart();
+  }, []);
 
   return (
     <>

@@ -255,6 +255,7 @@ export default function ProductDetailPage({
                       id: product.id,
                       name: product.name,
                       sku: {
+                        id: sku?.id,
                         skuCode: sku?.skuCode,
                         price: sku?.price,
                         attributes: sku?.attributes,

@@ -78,7 +78,7 @@ export default function CartPage() {
                       onQuantityChange={(quantity) =>
                         updateQuantity(item.id, quantity)
                       }
-                      onRemove={() => removeItem(item.id)}
+                      onRemove={() => removeItem(item.sku.skuCode)}
                     />
                   );
                 })}

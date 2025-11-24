@@ -5,7 +5,7 @@ import { OrderStatus } from '@prisma/client';
 
 export const createOrder = procedure
   .input(createOrderZObject)
-  .query(async ({ input }) => {
+  .mutation(async ({ input }) => {
     try {
       const order = await prisma.order.create({
         data: {

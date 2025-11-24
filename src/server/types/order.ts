@@ -4,7 +4,6 @@ import { OrderStatus } from '@prisma/client';
 export const createOrderZObject = z.object({
   userId: z.string(),
   total: z.number(),
-  status: z.enum(OrderStatus),
   shippingAddressId: z.string(),
   orderItem: z.array(
     z.object({

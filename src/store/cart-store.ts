@@ -7,6 +7,7 @@ export interface CartItem {
   name: string;
   quantity: number;
   sku: {
+    id: string;
     skuCode: string;
     price: number;
     attributes: SKU['attributes'];
@@ -44,10 +45,10 @@ export const useCart = create<CartStore>()(
 
           return { items: [...state.items, item] };
         }),
-      removeItem: (id) =>
+      removeItem: (skuCode) =>
         set((state) => {
           return {
-            items: state.items.filter((item) => item.id !== id),
+            items: state.items.filter((item) => item.sku.skuCode !== skuCode),
           };
         }),
       updateQuantity: (id, quantity) =>
