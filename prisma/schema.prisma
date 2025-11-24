@@ -94,6 +94,10 @@ model Order {
   shippingAddress   Address @relation(fields: [shippingAddressId], references: [id])
   shippingAddressId String
 
+  // stripe payment
+  paymentIntentId   String?
+  stripeSessionId   String?
+
   createdAt  DateTime    @default(now())
 }
 
