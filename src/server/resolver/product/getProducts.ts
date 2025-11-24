@@ -13,6 +13,7 @@ export const getProducts = procedure
         include: {
           skus: {
             select: {
+              id: true,
               price: true,
               skuCode: true,
               attributes: true,

@@ -16,6 +16,7 @@ export interface Product {
   images: string[];
   category: string | null;
   skus: {
+    id: string;
     price: number;
     skuCode: string;
     attributes: SKU['attributes'];

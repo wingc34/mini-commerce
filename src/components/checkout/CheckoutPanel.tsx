@@ -8,7 +8,13 @@ import {
 } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 
-const CheckoutPanel = ({ amount }: { amount: number }) => {
+const CheckoutPanel = ({
+  amount,
+  orderId,
+}: {
+  amount: number;
+  orderId: string;
+}) => {
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<string>();
@@ -21,11 +27,11 @@ const CheckoutPanel = ({ amount }: { amount: number }) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ amount: amount }),
+      body: JSON.stringify({ amount: amount, orderId: orderId }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
-  }, [amount]);
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -47,7 +53,7 @@ const CheckoutPanel = ({ amount }: { amount: number }) => {
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `http://www.localhost:3000/payment-success?amount=${amount}`,
+        return_url: `http://localhost:3000/payment-success?amount=${amount}`,
       },
     });
 
@@ -79,10 +85,10 @@ const CheckoutPanel = ({ amount }: { amount: number }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-muted p-2 rounded-md">
+    <form onSubmit={handleSubmit} className=" p-2 rounded-md">
       {clientSecret && <PaymentElement />}
 
-      {errorMessage && <div className='p-4'>{errorMessage}</div>}
+      {errorMessage && <div className="p-4">{errorMessage}</div>}
 
       <Button
         disabled={!stripe || loading}

@@ -14,6 +14,7 @@ export const getProductDetail = procedure
         include: {
           skus: {
             select: {
+              id: true,
               price: true,
               skuCode: true,
               stock: true,
