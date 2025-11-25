@@ -3,12 +3,41 @@
 import { useCart } from '@/store/cart-store';
 import { CheckCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, use } from 'react';
+import { trpc } from '@/app/_trpc/client-api';
+import dayjs from 'dayjs';
+import { Button } from '@/components/ui/button';
 
-export default function CheckoutSuccessPage() {
-  const orderId = 'ORD-2025-001234';
-  const orderDate = new Date().toLocaleDateString('zh-TW');
+interface attribute {
+  color: string;
+  size: string;
+}
+
+interface shippingAddress {
+  id: string;
+  fullName: string;
+  phone: string;
+  line1: string;
+  line2: string | null;
+  city: string;
+  state: string | null;
+  postal: string;
+  country: string;
+}
+
+export default function CheckoutSuccessPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ amount?: string; orderId?: string }>;
+}) {
+  const { amount, orderId } = use(searchParams);
   const { clearCart } = useCart();
+
+  const { data: orderData } = trpc.order.getOrder.useQuery({
+    id: orderId || '',
+  });
+
+  const shippingaddress = orderData?.shippingAddress as shippingAddress;
 
   useEffect(() => {
     clearCart();
@@ -46,11 +75,13 @@ export default function CheckoutSuccessPage() {
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-1">訂單日期</p>
-              <p className="text-xl font-bold text-foreground">{orderDate}</p>
+              <p className="text-xl font-bold text-foreground">
+                {dayjs().format('YYYY-MM-DD')}
+              </p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-1">訂單總額</p>
-              <p className="text-xl font-bold text-primary">NT$4,822</p>
+              <p className="text-xl font-bold text-primary">HKD${amount}</p>
             </div>
           </div>
 
@@ -58,20 +89,33 @@ export default function CheckoutSuccessPage() {
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground">訂單商品</h3>
             <div className="space-y-3">
-              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                <div>
-                  <p className="font-medium text-foreground">高級無線耳機</p>
-                  <p className="text-sm text-muted-foreground">數量: 1</p>
-                </div>
-                <p className="font-semibold text-foreground">NT$2,499</p>
-              </div>
-              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-                <div>
-                  <p className="font-medium text-foreground">智能手錶</p>
-                  <p className="text-sm text-muted-foreground">數量: 2</p>
-                </div>
-                <p className="font-semibold text-foreground">NT$3,998</p>
-              </div>
+              {orderData?.orderItem.map((item, idx) => {
+                const attributes = item.sku.attributes as unknown as attribute;
+                return (
+                  <div
+                    className="flex items-center justify-between p-4 bg-muted rounded-lg"
+                    key={`${item.sku.product.name}-${idx}`}
+                  >
+                    <div>
+                      <p className="font-medium text-foreground">
+                        {item.sku.product.name}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        數量: {item.quantity}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        color: {attributes['color']}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        size: {attributes['size']}
+                      </p>
+                    </div>
+                    <p className="font-semibold text-foreground">
+                      HKD${item.sku.price}
+                    </p>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -82,31 +126,38 @@ export default function CheckoutSuccessPage() {
           <div className="bg-card rounded-lg border border-border p-6">
             <h3 className="font-semibold text-foreground mb-4">送貨地址</h3>
             <div className="space-y-2 text-muted-foreground">
-              <p className="font-medium text-foreground">王小明</p>
-              <p>台北市信義區信義路五段 1 號</p>
-              <p>電話: 02-1234-5678</p>
+              <p className="font-medium text-foreground">
+                {shippingaddress?.fullName}
+              </p>
+              <p>{`${shippingaddress?.line2} ${shippingaddress?.line1}`}</p>
+              <p>{`${shippingaddress?.city} ${shippingaddress?.state} ${shippingaddress?.postal}`}</p>
+              <p>{shippingaddress?.country}</p>
+              <p>{shippingaddress.phone}</p>
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link
-            href="/profile?tab=orders"
-            className="flex items-center justify-center gap-2 px-8 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-blue-700 transition-smooth"
-          >
-            <Clock className="w-5 h-5" />
-            查看訂單詳情
-          </Link>
-          <Link
-            href="/products"
-            className="flex items-center justify-center gap-2 px-8 py-3 border border-border text-foreground font-semibold rounded-lg hover:bg-muted transition-smooth"
-          >
-            繼續購物
-          </Link>
+          <Button>
+            <Link
+              href="/profile?tab=orders"
+              className="flex items-center justify-center gap-2"
+            >
+              <Clock className="w-5 h-5" />
+              查看訂單詳情
+            </Link>
+          </Button>
+          <Button variant={'outline'}>
+            <Link
+              href="/products"
+              className="flex items-center justify-center gap-2 px-6 py-2 text-foreground"
+            >
+              繼續購物
+            </Link>
+          </Button>
         </div>
       </div>
-      F
     </>
   );
 }

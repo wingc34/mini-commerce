@@ -53,7 +53,7 @@ const CheckoutPanel = ({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `http://localhost:3000/payment-success?amount=${amount}`,
+        return_url: `http://localhost:3000/payment-success?amount=${amount}&orderId=${orderId}`,
       },
     });
 

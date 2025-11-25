@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { OrderStatus } from '@prisma/client';
 
 export const createOrderZObject = z.object({
   userId: z.string(),
@@ -12,4 +11,8 @@ export const createOrderZObject = z.object({
       price: z.number(),
     })
   ),
+});
+
+export const getOrderZObject = z.object({
+  id: z.string(),
 });

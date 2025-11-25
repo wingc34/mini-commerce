@@ -1,6 +1,5 @@
 import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
-import { pageItemSize } from '@/constant';
 import { getProductDetailZObject } from '@/server/types/product';
 
 export const getProductDetail = procedure
