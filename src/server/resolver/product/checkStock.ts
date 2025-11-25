@@ -17,15 +17,11 @@ export const checkStock = procedure
             gt: 0,
           },
         },
-        select: {
-          stock: true,
-        },
       });
 
       return {
         success: true,
         inStock: sku.length > 0,
-        sku: sku,
       };
     } catch (error) {
       console.error('error', error);
