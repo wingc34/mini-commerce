@@ -13,6 +13,21 @@ interface attribute {
   size: string;
 }
 
+interface OrderItem {
+  id: string;
+  name: string;
+  quantity: number;
+  image: string;
+  sku: {
+    skuId: string;
+    price: number;
+    attributes: attribute;
+    product: {
+      name: string;
+    };
+  };
+}
+
 interface shippingAddress {
   id: string;
   fullName: string;
@@ -38,6 +53,7 @@ export default function CheckoutSuccessPage({
   });
 
   const shippingaddress = orderData?.shippingAddress as shippingAddress;
+  const orderItem = orderData?.orderItem as unknown as OrderItem[];
 
   useEffect(() => {
     clearCart();
@@ -89,8 +105,7 @@ export default function CheckoutSuccessPage({
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground">訂單商品</h3>
             <div className="space-y-3">
-              {orderData?.orderItem.map((item, idx) => {
-                const attributes = item.sku.attributes as unknown as attribute;
+              {orderItem.map((item, idx) => {
                 return (
                   <div
                     className="flex items-center justify-between p-4 bg-muted rounded-lg"
@@ -104,10 +119,10 @@ export default function CheckoutSuccessPage({
                         數量: {item.quantity}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        color: {attributes['color']}
+                        color: {item.sku.attributes.color}
                       </p>
                       <p className="text-sm text-muted-foreground">
-                        size: {attributes['size']}
+                        size: {item.sku.attributes.size}
                       </p>
                     </div>
                     <p className="font-semibold text-foreground">
