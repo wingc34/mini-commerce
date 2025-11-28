@@ -4,7 +4,7 @@ import { useCart } from '@/store/cart-store';
 import { CheckCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, use } from 'react';
-import { trpc } from '@/app/_trpc/client-api';
+import { trpc } from '@/trpc/client-api';
 import dayjs from 'dayjs';
 import { Button } from '@/components/ui/button';
 
