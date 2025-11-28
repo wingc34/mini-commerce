@@ -5,7 +5,7 @@ import Carousel from '@/components/products/detail/Carousel';
 import { useCart } from '@/store/cart-store';
 import { Button } from '@/components/ui/button';
 import { useState, use, useMemo, useCallback } from 'react';
-import { trpc } from '@/app/_trpc/client-api';
+import { trpc } from '@/trpc/client-api';
 import { type SKU } from '@prisma/client';
 import { toast } from 'sonner';
 

@@ -1,7 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { trpc } from '@/app/_trpc/client-api';
+import { trpc } from '@/trpc/client-api';
 import { useCallback } from 'react';
 import { useCart } from '@/store/cart-store';
 import { toast } from 'sonner';

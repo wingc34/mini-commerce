@@ -5,7 +5,7 @@ import { ProductFilters } from '@/components/products/product-filters';
 import { Filter } from 'lucide-react';
 import { ProductPagination } from '@/components/products/ProductPagination';
 import { useState } from 'react';
-import { trpc } from '@/app/_trpc/client-api';
+import { trpc } from '@/trpc/client-api';
 import { pageItemSize } from '@/constant';
 import { Product } from '@/components/products/ProductCard';
 

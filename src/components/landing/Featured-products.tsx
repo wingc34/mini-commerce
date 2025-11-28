@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { trpc } from '@/app/_trpc/client-api';
+import { trpc } from '@/trpc/client-api';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { Product, ProductCard } from '@/components/products/ProductCard';

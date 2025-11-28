@@ -5,7 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { ThemeProvider } from '@/lib/theme-provider';
 import { SessionProvider } from 'next-auth/react';
-import Provider from './_trpc/Provider';
+import Provider from '@/trpc/Provider';
 import { Toaster } from '@/components/ui/sonner';
 
 const geistSans = Geist({
