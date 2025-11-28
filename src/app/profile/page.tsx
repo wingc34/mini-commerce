@@ -24,7 +24,9 @@ export default function ProfilePage() {
 
           {/* Main Content */}
           <div className="lg:col-span-3">
-            {activeTab === 'overview' && <ProfileOverview />}
+            {activeTab === 'overview' && (
+              <ProfileOverview setActiveTab={setActiveTab} />
+            )}
             {activeTab === 'orders' && <OrderHistory />}
             {activeTab === 'addresses' && <Addresses />}
             {activeTab === 'wishlist' && <Wishlist />}

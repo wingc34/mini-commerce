@@ -1,15 +1,11 @@
 import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
-import { Session } from 'next-auth';
-
-interface context {
-  session: Session;
-}
+import { UserContext } from '@/server/types/user';
 
 export const createUser = procedure.mutation(async ({ ctx }) => {
-  const context = ctx as context;
-  const session = context.session as context['session'];
-  const user = session?.user as Session['user'];
+  const context = ctx as UserContext;
+  const session = context.session as UserContext['session'];
+  const user = session?.user as UserContext['session']['user'];
   const email = user?.email as string;
 
   try {
@@ -33,7 +29,8 @@ export const createUser = procedure.mutation(async ({ ctx }) => {
       const user = await prisma.user.create({
         data: {
           email,
-          name: session.user.name ?? undefined,
+          name: session.user.name ?? '',
+          image: session.user.image ?? '',
         },
       });
       return {
