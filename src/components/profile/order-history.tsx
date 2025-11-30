@@ -69,7 +69,7 @@ export function OrderHistory() {
                   <div className="rounded-lg border border-border p-6 hover:border-primary transition-smooth">
                     <div className="flex items-center justify-between mb-4">
                       <div>
-                        <p className="text-sm text-muted-foreground mb-1">
+                        <p className="text-sm text-textSecondary mb-1">
                           訂單編號
                         </p>
                         <p className="font-semibold text-foreground">
@@ -88,7 +88,7 @@ export function OrderHistory() {
 
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                       <div>
-                        <p className="text-xs text-muted-foreground mb-1">
+                        <p className="text-xs text-textSecondary mb-1">
                           訂單日期
                         </p>
                         <p className="text-sm font-medium text-foreground">
@@ -96,7 +96,7 @@ export function OrderHistory() {
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground mb-1">
+                        <p className="text-xs text-textSecondary mb-1">
                           商品數量
                         </p>
                         <p className="text-sm font-medium text-foreground">
@@ -104,7 +104,7 @@ export function OrderHistory() {
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-muted-foreground mb-1">
+                        <p className="text-xs text-textSecondary mb-1">
                           訂單金額
                         </p>
                         <p className="text-sm font-bold text-primary">
