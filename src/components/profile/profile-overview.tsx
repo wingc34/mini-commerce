@@ -1,10 +1,17 @@
+'use client';
+
 import { Mail, Phone, MapPin, Calendar, Edit2 } from 'lucide-react';
 import { trpc } from '@/trpc/client-api';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import dayjs from 'dayjs';
 import { Address } from '@prisma/client';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { Input } from '@/components/ui/input';
+import _ from 'lodash';
+import { z, type ZodError } from 'zod';
+import { Label } from '../ui/label';
+import { LoadingOverlay } from '../ui/LoadingOverlay';
 
 interface UserInfo {
   id: string;
@@ -25,33 +32,106 @@ export function ProfileOverview({
 }) {
   const { data: user } = trpc.user.getUserInfo.useQuery();
   const userInfo = user?.data as UserInfo;
+  const [isEditing, setIsEditing] = useState(false);
+  const [name, setName] = useState(userInfo?.name);
+  const [nameError, setNameError] = useState('');
+  const nameSchema = z.string().max(64, '最多64個字');
+  const [phoneNumber, setPhoneNumber] = useState(userInfo?.phone_number);
+  const [phoneError, setPhoneError] = useState('');
+  const phoneNumberSchema = z.string().regex(/^\d{8}$/, '請輸入正確的手機號碼');
+  const onNameInput = _.debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    const name = e.target.value;
+    const result = nameSchema.safeParse(name);
+    if (result.success) {
+      setName(e.target.value);
+      setNameError('');
+    } else {
+      const json = JSON.parse(result.error.message) as ZodError[];
+      setNameError(json[0].message);
+    }
+  });
+  const onPhoneInput = _.debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+    const phone = e.target.value;
+    const result = phoneNumberSchema.safeParse(phone);
+    if (result.success) {
+      setPhoneNumber(e.target.value);
+      setPhoneError('');
+    } else {
+      const json = JSON.parse(result.error.message) as ZodError[];
+      setPhoneError(json[0].message);
+    }
+  });
+
+  const { mutate: updateUserInfo, isSuccess } =
+    trpc.user.updateUserInfo.useMutation();
+  const [updated, setUpdated] = useState(false);
+
+  useEffect(() => {
+    setName(userInfo?.name ?? '');
+    setPhoneNumber(userInfo?.phone_number ?? '');
+  }, [userInfo]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setUpdated(false);
+    }
+  }, [isSuccess]);
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">個人資訊</h2>
-        <Button className="cursor-pointer" variant={'outline'}>
-          <Edit2 className="w-4 h-4" />
-          編輯
-        </Button>
+        {isEditing ? (
+          <Button
+            className="cursor-pointer"
+            onClick={() => {
+              if (nameError || phoneError) return;
+              setIsEditing(false);
+              setUpdated(true);
+              updateUserInfo({
+                name,
+                phone_number: phoneNumber,
+              });
+            }}
+          >
+            編輯完成
+          </Button>
+        ) : (
+          <Button
+            className="cursor-pointer"
+            variant={'outline'}
+            onClick={() => setIsEditing(true)}
+          >
+            <Edit2 className="w-4 h-4" />
+            編輯
+          </Button>
+        )}
       </div>
 
       {/* Profile Card */}
-      <div className="rounded-lg border border-border p-8">
+      <div className="rounded-lg border border-border p-8 relative">
+        <LoadingOverlay isLoading={updated && !isSuccess} />
         <div className="flex items-center gap-6 mb-8">
           {userInfo?.image && (
             <Avatar>
-              <AvatarImage src={userInfo.image} alt="@shadcn" />
-              <AvatarFallback>{userInfo.name.substring(0, 2)}</AvatarFallback>
+              <AvatarImage src={userInfo.image} alt="avatar" />
+              <AvatarFallback>
+                {name ? name.substring(0, 2) : ''}
+              </AvatarFallback>
             </Avatar>
           )}
-          {userInfo?.name && (
-            <div>
-              <h3 className="text-2xl font-bold text-foreground">
-                {userInfo.name}
-              </h3>
+          {isEditing ? (
+            <div className="flex flex-col w-full">
+              <Input defaultValue={name} onInput={onNameInput} />
+              <Label className="text-red-500 mt-2">{nameError}</Label>
             </div>
+          ) : (
+            name && (
+              <div>
+                <h3 className="text-2xl font-bold text-foreground">{name}</h3>
+              </div>
+            )
           )}
         </div>
 
@@ -71,10 +151,16 @@ export function ProfileOverview({
             <Phone className="w-5 h-5 text-primary mt-1 shrink-0" />
             <div>
               <p className="text-sm text-textSecondary mb-1">電話號碼</p>
-              {userInfo?.phone_number ? (
-                <p className="font-medium text-foreground">
-                  {userInfo.phone_number}
-                </p>
+              {isEditing ? (
+                <div className="flex flex-col">
+                  <Input
+                    defaultValue={phoneNumber ?? ''}
+                    onInput={onPhoneInput}
+                  />
+                  <Label className="text-red-500 mt-2">{phoneError}</Label>
+                </div>
+              ) : phoneNumber ? (
+                <p className="font-medium text-foreground">{phoneNumber}</p>
               ) : (
                 <p className="font-medium text-foreground">未填寫</p>
               )}
@@ -85,7 +171,7 @@ export function ProfileOverview({
             <MapPin className="w-5 h-5 text-primary mt-1 shrink-0" />
             <div>
               <p className="text-sm text-textSecondary mb-1">預設地址</p>
-              {userInfo?.addresses.length > 0 ? (
+              {userInfo && userInfo?.addresses.length > 0 ? (
                 <p className="font-medium text-foreground">
                   {userInfo.addresses[0].city}
                 </p>

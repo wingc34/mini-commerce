@@ -8,3 +8,7 @@ export interface UserContext {
 export const getUserInfoZObject = z.object({
   email: z.string(),
 });
+export const updateUserInfoZObject = z.object({
+  name: z.string(),
+  phone_number: z.string(),
+});
