@@ -3,7 +3,7 @@
 import { ProductGrid } from '@/components/products/product-grid';
 import { ProductFilters } from '@/components/products/product-filters';
 import { Filter } from 'lucide-react';
-import { ProductPagination } from '@/components/products/ProductPagination';
+import { PaginationComponent } from '@/components/ui/PaginationComponent';
 import { useState } from 'react';
 import { trpc } from '@/trpc/client-api';
 import { pageItemSize } from '@/constant';
@@ -74,7 +74,7 @@ export default function ProductsPage() {
                   <ProductGrid
                     products={(products?.data as unknown[] as Product[]) ?? []}
                   />
-                  <ProductPagination
+                  <PaginationComponent
                     page={page}
                     setPage={setPage}
                     totalPages={totalPages}

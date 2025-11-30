@@ -2,14 +2,17 @@ import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
 import { createOrderZObject } from '@/server/types/order';
 import { OrderStatus } from '@prisma/client';
+import { UserContext } from '@/server/types/user';
 
 export const createOrder = procedure
   .input(createOrderZObject)
-  .mutation(async ({ input }) => {
+  .mutation(async ({ input, ctx }) => {
+    const context = ctx as UserContext;
+
     try {
       const order = await prisma.order.create({
         data: {
-          userId: input.userId,
+          userId: context.session.user.id,
           total: input.total,
           status: OrderStatus.PENDING,
           shippingAddressId: input.shippingAddressId,

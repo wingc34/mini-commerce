@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/pagination';
 import { useCallback } from 'react';
 
-export function ProductPagination({
+export function PaginationComponent({
   page,
   setPage,
   totalPages = 4,

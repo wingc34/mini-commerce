@@ -3,7 +3,7 @@ import prisma from '@/lib/prisma';
 import { getOrderZObject } from '@/server/types/order';
 
 export const getOrder = procedure
-  .input(getOrderZObject) //@TODO add auth
+  .input(getOrderZObject)
   .query(async ({ input }) => {
     try {
       const orderItem = await prisma.orderItem.findMany({
