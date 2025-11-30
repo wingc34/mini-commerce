@@ -16,3 +16,6 @@ export const createOrderZObject = z.object({
 export const getOrderZObject = z.object({
   id: z.string(),
 });
+export const getUserOrderZObject = z.object({
+  page: z.number().min(1).default(1),
+});

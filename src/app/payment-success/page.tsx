@@ -105,32 +105,33 @@ export default function CheckoutSuccessPage({
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground">訂單商品</h3>
             <div className="space-y-3">
-              {orderItem.map((item, idx) => {
-                return (
-                  <div
-                    className="flex items-center justify-between p-4 bg-muted rounded-lg"
-                    key={`${item.sku.product.name}-${idx}`}
-                  >
-                    <div>
-                      <p className="font-medium text-foreground">
-                        {item.sku.product.name}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        數量: {item.quantity}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        color: {item.sku.attributes.color}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        size: {item.sku.attributes.size}
+              {orderItem?.length > 0 &&
+                orderItem.map((item, idx) => {
+                  return (
+                    <div
+                      className="flex items-center justify-between p-4 bg-muted rounded-lg"
+                      key={`${item.sku.product.name}-${idx}`}
+                    >
+                      <div>
+                        <p className="font-medium text-foreground">
+                          {item.sku.product.name}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          數量: {item.quantity}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          color: {item.sku.attributes.color}
+                        </p>
+                        <p className="text-sm text-muted-foreground">
+                          size: {item.sku.attributes.size}
+                        </p>
+                      </div>
+                      <p className="font-semibold text-foreground">
+                        HKD${item.sku.price}
                       </p>
                     </div>
-                    <p className="font-semibold text-foreground">
-                      HKD${item.sku.price}
-                    </p>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           </div>
         </div>
@@ -147,7 +148,7 @@ export default function CheckoutSuccessPage({
               <p>{`${shippingaddress?.line2} ${shippingaddress?.line1}`}</p>
               <p>{`${shippingaddress?.city} ${shippingaddress?.state} ${shippingaddress?.postal}`}</p>
               <p>{shippingaddress?.country}</p>
-              <p>{shippingaddress.phone}</p>
+              <p>{shippingaddress?.phone}</p>
             </div>
           </div>
         </div>
