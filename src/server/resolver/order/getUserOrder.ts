@@ -27,6 +27,14 @@ export const getUserOrder = procedure
         take: pageItemSize,
       });
 
+      const orderCount = await prisma.order.count({
+        where: {
+          user: {
+            id: (ctx as UserContext).session.user.id,
+          },
+        },
+      });
+
       return {
         success: true,
         order: order.map((item) => ({
@@ -36,12 +44,14 @@ export const getUserOrder = procedure
           status: item.status,
           itemCount: item._count.items,
         })),
+        orderCount: orderCount,
       };
     } catch (error) {
       console.error('error', error);
       return {
         success: false,
         order: [],
+        orderCount: 0,
       };
     }
   });

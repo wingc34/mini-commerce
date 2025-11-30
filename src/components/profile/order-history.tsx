@@ -4,12 +4,15 @@ import { Item, ItemActions, ItemContent } from '@/components/ui/item';
 import { trpc } from '@/trpc/client-api';
 import dayjs from 'dayjs';
 import { OrderStatus } from '@prisma/client';
+import { PaginationComponent } from '@/components/ui/PaginationComponent';
+import { useState } from 'react';
+import { pageItemSize } from '@/constant';
 
 interface Order {
   id: string;
-  createAt: string;
+  createdAt: string;
   total: number;
-  status: 'pending' | 'shipped' | 'delivered';
+  status: OrderStatus;
   itemCount: number;
 }
 
@@ -43,8 +46,11 @@ function getStatusInfo(status: string) {
 }
 
 export function OrderHistory() {
+  const [page, setPage] = useState(1);
+
   const { data } = trpc.order.getUserOrder.useQuery({ page: 1 });
   const order = data?.order as Order[] | undefined;
+  const totalPages = Math.ceil((data?.orderCount || 0) / pageItemSize);
 
   return (
     <div className="space-y-6">
@@ -86,7 +92,7 @@ export function OrderHistory() {
                           訂單日期
                         </p>
                         <p className="text-sm font-medium text-foreground">
-                          {dayjs(order.createAt).format('YYYY-MM-DD')}
+                          {dayjs(order.createdAt).format('YYYY-MM-DD HH:mm')}
                         </p>
                       </div>
                       <div>
@@ -122,6 +128,11 @@ export function OrderHistory() {
             );
           })}
       </div>
+      <PaginationComponent
+        page={page}
+        setPage={setPage}
+        totalPages={totalPages}
+      />
     </div>
   );
 }
