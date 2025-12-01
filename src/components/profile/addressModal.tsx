@@ -5,7 +5,6 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 
-// 引入 shadcn/ui 元件
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,11 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-// 移除了 Select 相關的導入
 
-// --- 1. 定義 Schema 和 Type ---
-
-// 1.1 Zod 驗證 Schema (錯誤訊息已更新為「輸入」)
 export const AddressSchema = z.object({
   id: z.string().optional(),
   fullName: z.string().min(1, '請輸入姓名'),
@@ -35,10 +30,7 @@ export const AddressSchema = z.object({
   isDefault: z.boolean().default(false),
 });
 
-// 1.2 導出 TypeScript 型別
 export type AddressFormData = z.infer<typeof AddressSchema>;
-
-// --- 2. 元件 Props 定義 ---
 
 interface AddressModalProps {
   isOpen: boolean;
@@ -47,8 +39,6 @@ interface AddressModalProps {
   initialData?: AddressFormData;
   isEditing?: boolean;
 }
-
-// --- 3. AddressModal 元件 ---
 
 export function AddressModal({
   isOpen,
@@ -76,18 +66,16 @@ export function AddressModal({
   const {
     register,
     handleSubmit,
-    setValue, // setValue 仍然保留，因為 Checkbox 會使用到
+    setValue,
     formState: { errors, isSubmitting },
     reset,
     watch,
   } = form;
 
-  // 當 Modal 開啟或 initialData 改變時，重設表單狀態
   React.useEffect(() => {
     reset(defaultValues);
   }, [initialData, reset, isOpen]);
 
-  // 處理表單提交
   const onSubmit: SubmitHandler<AddressFormData> = (data) => {
     onSave(data);
     reset(defaultValues);

@@ -74,58 +74,63 @@ export function Addresses() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {addresses.map((address) => (
-            <div
-              key={address.id}
-              className="rounded-lg border border-border p-6"
-            >
-              <div className="flex justify-between">
-                <div className="space-y-3 mb-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                    <div>
-                      <p className="font-semibold text-foreground">
-                        {address.fullName}
-                      </p>
-                      <p className="text-sm text-textSecondary">
-                        {address.phone}
-                      </p>
+          {addresses
+            .sort((a) => (a.isDefault ? -1 : 1))
+            .map((address) => (
+              <div
+                key={address.id}
+                className="rounded-lg border border-border p-6"
+              >
+                <div className="flex justify-between">
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                      <div>
+                        <p className="font-semibold text-foreground">
+                          {address.fullName}
+                        </p>
+                        <p className="text-sm text-textSecondary">
+                          {address.phone}
+                        </p>
+                      </div>
                     </div>
+                    <p className="text-sm text-textSecondary ml-8">
+                      {`${address.line1}, ${address.postal}`}
+                    </p>
+                    <p className="text-sm text-textSecondary ml-8">
+                      {`${address.city} ${address.country}`}
+                    </p>
                   </div>
-                  <p className="text-sm text-textSecondary ml-8">
-                    {address.city}
-                  </p>
+
+                  {address.isDefault && (
+                    <div className="mb-4">
+                      <span className="inline-block bg-secondary text-gray-900 px-3 py-1 rounded-full text-xs font-semibold">
+                        預設地址
+                      </span>
+                    </div>
+                  )}
                 </div>
 
-                {address.isDefault && (
-                  <div className="mb-4">
-                    <span className="inline-block bg-secondary text-gray-900 px-3 py-1 rounded-full text-xs font-semibold">
-                      預設地址
-                    </span>
-                  </div>
-                )}
+                <div className="flex gap-2 pt-4 border-t border-border">
+                  <Button
+                    variant={'outline'}
+                    onClick={() => handleEditAddress(address.id)}
+                    className="flex-1 border-border transition-smooth font-medium cursor-pointer"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    編輯
+                  </Button>
+                  <Button
+                    variant={'outline'}
+                    onClick={() => handleDeleteddress(address.id)}
+                    className="flex-1 border-border hover:bg-red-50 text-red-600 transition-smooth font-medium cursor-pointer"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    刪除
+                  </Button>
+                </div>
               </div>
-
-              <div className="flex gap-2 pt-4 border-t border-border">
-                <Button
-                  variant={'outline'}
-                  onClick={() => handleEditAddress(address.id)}
-                  className="flex-1 border-border transition-smooth font-medium cursor-pointer"
-                >
-                  <Edit2 className="w-4 h-4" />
-                  編輯
-                </Button>
-                <Button
-                  variant={'outline'}
-                  onClick={() => handleDeleteddress(address.id)}
-                  className="flex-1 border-border hover:bg-red-50 text-red-600 transition-smooth font-medium cursor-pointer"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  刪除
-                </Button>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </div>
       <AddressModal
