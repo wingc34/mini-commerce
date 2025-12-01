@@ -4,7 +4,7 @@ import { ShoppingCart, Heart, Share2 } from 'lucide-react';
 import Carousel from '@/components/products/detail/Carousel';
 import { useCart } from '@/store/cart-store';
 import { Button } from '@/components/ui/button';
-import { useState, use, useMemo, useCallback } from 'react';
+import { useState, use, useMemo } from 'react';
 import { trpc } from '@/trpc/client-api';
 import { type SKU } from '@prisma/client';
 import { toast } from 'sonner';
