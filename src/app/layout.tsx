@@ -40,7 +40,7 @@ export default function RootLayout({
               <div className="flex min-h-screen items-center justify-center font-san">
                 <main className="min-h-screen w-full">{children}</main>
               </div>
-              <Toaster />
+              <Toaster richColors expand={true} />
               <Footer />
             </SessionProvider>
           </ThemeProvider>

@@ -22,6 +22,7 @@ export const getOrderDetail = procedure
               userId: true,
               createdAt: true,
               updatedAt: true,
+              isDefault: true,
             },
           },
           items: {
