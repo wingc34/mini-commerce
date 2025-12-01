@@ -6,15 +6,10 @@ import { UserContext } from '@/server/types/user';
 export const updateUserInfo = procedure
   .input(updateUserInfoZObject)
   .mutation(async ({ input, ctx }) => {
-    const context = ctx as UserContext;
-    const session = context.session as UserContext['session'];
-    const user = session?.user as UserContext['session']['user'];
-    const email = user?.email as string;
-
     try {
       await prisma.user.update({
         where: {
-          email: email,
+          id: (ctx as UserContext).session.user.id,
         },
         data: {
           name: input.name,

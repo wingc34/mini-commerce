@@ -2,16 +2,11 @@ import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
 import { UserContext } from '@/server/types/user';
 
-export const getUserInfo = procedure.query(async ({ input, ctx }) => {
-  const context = ctx as UserContext;
-  const session = context.session as UserContext['session'];
-  const user = session?.user as UserContext['session']['user'];
-  const email = user?.email as string;
-
+export const getUserInfo = procedure.query(async ({ ctx }) => {
   try {
     const user = await prisma.user.findUnique({
       where: {
-        email,
+        id: (ctx as UserContext).session.user.id,
       },
       include: {
         addresses: {
