@@ -263,7 +263,7 @@ export default function ProductDetailPage({
                       quantity: quantity,
                       image: product.images[0],
                     });
-                    toast(`${product.name} 已加入購物車`);
+                    toast.success(`${product.name} 已加入購物車`);
                   }
                 }}
               >

@@ -6,6 +6,7 @@ import {
   type AddressFormData,
 } from '@/components/profile/addressModal';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 export interface Address {
   id: string;
@@ -45,14 +46,21 @@ export function Addresses() {
   const handleDeleteddress = async (id: string) => {
     const { success } = await deleteAddress({ id });
     if (success) {
+      toast.success('Address deleted successfully');
       refetch();
+    } else {
+      toast.error('Failed to delete address');
     }
   };
 
   const handleSaveAddress = async (data: AddressFormData) => {
     const { success } = await updateAddress(data);
     if (success) {
+      toast.success('Address saved successfully');
       refetch();
+    } else {
+      toast.error('Failed to save address');
+      setIsModalOpen(true);
     }
   };
 

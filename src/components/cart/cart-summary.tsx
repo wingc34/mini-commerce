@@ -32,7 +32,7 @@ export function CartSummary({ total }: CartSummaryProps) {
     if (success) {
       push(`/checkout?orderId=${id}`);
     } else {
-      toast('failed to create order');
+      toast.error('failed to create order');
     }
   }, [total, createOrder, items, push]);
   return (
