@@ -24,3 +24,11 @@ export const updateUserInfoZObject = z.object({
 export const deleteUserAddressZObject = z.object({
   id: z.string(),
 });
+
+export const addWishItemZObject = z.object({
+  productId: z.string(),
+});
+
+export const removeWishItemZObject = z.object({
+  productId: z.string(),
+});
