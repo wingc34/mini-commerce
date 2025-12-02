@@ -22,10 +22,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                 },
               },
             },
+            addresses: {
+              where: {
+                isDefault: true,
+              },
+              select: {
+                id: true,
+              },
+            },
           },
         });
         if (dbUser) {
           session.user.id = dbUser.id;
+          session.user.defaultAddressId = dbUser.addresses[0]?.id || '';
           session.user.wishlist = dbUser.wishlist.map((product) => ({
             id: product.id,
             name: product.name,

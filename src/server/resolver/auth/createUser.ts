@@ -16,14 +16,14 @@ export const createUser = procedure.mutation(async ({ ctx }) => {
       };
     }
 
-    const userExists = await prisma.user.findUnique({
+    const userExists = await prisma.user.count({
       where: { email },
     });
 
     if (userExists) {
       return {
         success: true,
-        message: `${userExists.name} signed in successfully`,
+        message: 'signed in successfully',
       };
     } else {
       const user = await prisma.user.create({
@@ -35,7 +35,7 @@ export const createUser = procedure.mutation(async ({ ctx }) => {
       });
       return {
         success: true,
-        message: `${user.name} signed in successfully`,
+        message: 'signed in successfully',
       };
     }
   } catch (error) {

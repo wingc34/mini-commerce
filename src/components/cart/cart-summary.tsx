@@ -20,9 +20,7 @@ export function CartSummary({ total }: CartSummaryProps) {
 
   const onCreateOrder = useCallback(async () => {
     const { success, id } = await createOrder({
-      userId: 'cmi2m5mh30000rvp7v88l9ey5', //@TODO get user id
       total: total,
-      shippingAddressId: 'cmi2m5mhe0002rvp7lvz0huxi', //@TODO get user default shipping address
       orderItem: items.map((item) => ({
         skuId: item.sku.id,
         quantity: item.quantity,
