@@ -21,6 +21,7 @@ model User {
 
   addresses Address[]
   orders    Order[]
+  wishlist Product[]
 }
 
 // ----------------------
@@ -60,6 +61,7 @@ model Product {
   updatedAt   DateTime     @updatedAt
 
   skus        SKU[]
+  usersThatWish User[]
 }
 
 model SKU {

@@ -8,6 +8,10 @@ import { useState, use, useMemo } from 'react';
 import { trpc } from '@/trpc/client-api';
 import { type SKU } from '@prisma/client';
 import { toast } from 'sonner';
+import { useSession } from 'next-auth/react';
+import copy from 'copy-to-clipboard';
+import { usePathname } from 'next/navigation';
+import { env } from '@/lib/env';
 
 export interface ProductDetail {
   id: string;
@@ -29,9 +33,16 @@ export default function ProductDetailPage({
 }) {
   const { id } = use(params);
   const { addToCart } = useCart();
+  const { data: session, update } = useSession();
+  const pathname = usePathname();
+
+  // trpc
   const { data, isLoading } = trpc.product.getProductDetail.useQuery({
     id: id,
   });
+  const { mutateAsync: addWishItem } = trpc.user.addWishItem.useMutation();
+  const { mutateAsync: removeWishItem } =
+    trpc.user.removeWishItem.useMutation();
 
   const product = data?.data as ProductDetail;
 
@@ -61,7 +72,6 @@ export default function ProductDetailPage({
   const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(colors[0] || '');
   const [selectedSize, setSelectedSize] = useState(sizes[0] || '');
-  const [isWishlisted, setIsWishlisted] = useState(false);
 
   const attr = product?.skus.map((item) => item.attributes);
 
@@ -79,6 +89,7 @@ export default function ProductDetailPage({
     color: ['start'],
   }));
 
+  // selected sku
   const sku = useMemo(() => {
     const selectedSku = { size: selectedSize, color: selectedColor };
     const sku = product?.skus.find((sku) => {
@@ -90,10 +101,25 @@ export default function ProductDetailPage({
     return sku;
   }, [selectedSize, selectedColor, product]);
 
+  // showing price that depends on selected sku, not available then show lowest price
   const price = useMemo(() => {
     if (!product) return 0;
     return sku ? sku.price : Math.min(...product?.skus.map((sku) => sku.price));
   }, [sku, product]);
+
+  // wishlist related handlers
+  const handleAddWishItem = async (productId: string) => {
+    await addWishItem({ productId: productId });
+    update();
+  };
+  const handleRemoveWishItem = async (productId: string) => {
+    await removeWishItem({ productId: productId });
+    update();
+  };
+
+  const isWishlisted = session?.user?.wishlist?.some(
+    (product) => product.id === id
+  );
 
   return product && !isLoading ? (
     <>
@@ -166,7 +192,7 @@ export default function ProductDetailPage({
                       stockAvailable.color.includes(color) ||
                       stockAvailable.color.includes('start')
                         ? 'font-extrabold'
-                        : 'text-gray-700'
+                        : 'text-gray-300 dark:text-gray-700'
                     }`}
                     title={color}
                   >
@@ -209,7 +235,7 @@ export default function ProductDetailPage({
                       stockAvailable.size.includes(size) ||
                       stockAvailable.color.includes('start')
                         ? 'font-extrabold'
-                        : 'text-gray-700'
+                        : 'text-gray-300 dark:text-gray-700'
                     }`}
                     title={size}
                   >
@@ -249,7 +275,7 @@ export default function ProductDetailPage({
                 className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-smooth cursor-pointer"
                 onClick={() => {
                   if (!sku) {
-                    toast('請先選擇尺寸與顏色');
+                    toast.info('請先選擇尺寸與顏色');
                   } else {
                     addToCart({
                       id: product.id,
@@ -270,21 +296,39 @@ export default function ProductDetailPage({
                 <ShoppingCart className="w-5 h-5" />
                 加入購物車
               </Button>
-              <button
-                onClick={() => setIsWishlisted(!isWishlisted)}
-                className={`w-14 h-14 border-2 rounded-lg flex items-center justify-center transition-smooth ${
-                  isWishlisted
-                    ? 'bg-red-50 border-red-500 text-red-500'
-                    : 'border-border text-muted-foreground hover:border-primary'
+              <Button
+                variant={'outline'}
+                onClick={() => {
+                  if (isWishlisted) {
+                    handleRemoveWishItem(id);
+                  } else {
+                    handleAddWishItem(id);
+                  }
+                }}
+                className={`w-14 h-14 border-2 flex items-center justify-center transition-smooth cursor-pointer hover:border-primary ${
+                  isWishlisted ? 'bg-red-50 text-red-500' : 'text-textSecondary'
                 }`}
               >
                 <Heart
                   className={`w-6 h-6 ${isWishlisted ? 'fill-current' : ''}`}
                 />
-              </button>
-              <button className="w-14 h-14 border-2 border-border rounded-lg flex items-center justify-center text-muted-foreground hover:border-primary transition-smooth">
+              </Button>
+              <Button
+                variant={'outline'}
+                onClick={() => {
+                  const success = copy(
+                    `${env.NEXT_PUBLIC_BASE_URL}${pathname}`
+                  );
+                  if (success) {
+                    toast.success('已複製連結到剪貼簿');
+                  } else {
+                    toast.error('複製連結失敗，請手動複製');
+                  }
+                }}
+                className="w-14 h-14 border-2 flex items-center justify-center text-textSecondary hover:border-primary transition-smooth cursor-pointer"
+              >
                 <Share2 className="w-6 h-6" />
-              </button>
+              </Button>
             </div>
 
             {/* Shipping Info */}
@@ -293,7 +337,7 @@ export default function ProductDetailPage({
                 <span className="text-2xl">↩️</span>
                 <div>
                   <p className="font-semibold text-foreground">30 天退貨保證</p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-textSecondary">
                     不滿意可在 30 天內退貨
                   </p>
                 </div>
