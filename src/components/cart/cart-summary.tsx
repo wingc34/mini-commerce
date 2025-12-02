@@ -37,10 +37,10 @@ export function CartSummary({ total }: CartSummaryProps) {
   }, [total, createOrder, items, push]);
   return (
     <div className="bg-muted rounded-lg p-6 space-y-4">
-      <h3 className="font-semibold text-textPrimary text-lg">訂單摘要</h3>
+      <h3 className="font-semibold text-textPrimary text-lg">Order Summary</h3>
 
       <div className="flex justify-between items-center">
-        <span className="font-semibold text-textPrimary">總計</span>
+        <span className="font-semibold text-textPrimary">Total</span>
         <span className="text-2xl font-bold text-primary">
           HKD${(total / 100).toLocaleString()}
         </span>
@@ -51,14 +51,14 @@ export function CartSummary({ total }: CartSummaryProps) {
           className="w-full text-center cursor-pointer"
           onClick={onCreateOrder}
         >
-          前往結帳
+          Proceed to Checkout
         </Button>
 
         <Button
           className="w-full text-center bg-transparent"
           variant={'outline'}
         >
-          <Link href="/products">繼續購物</Link>
+          <Link href="/products">Continue Shopping</Link>
         </Button>
       </div>
     </div>

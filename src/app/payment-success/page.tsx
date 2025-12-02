@@ -75,10 +75,10 @@ export default function CheckoutSuccessPage({
             </div>
           </div>
           <h1 className="text-4xl font-bold text-foreground mb-3">
-            訂單確認成功
+            Order Confirmed
           </h1>
           <p className="text-lg text-muted-foreground">
-            感謝您的購買，我們已收到您的訂單
+            Thank you for your purchase, we have received your order
           </p>
         </div>
 
@@ -86,24 +86,24 @@ export default function CheckoutSuccessPage({
         <div className="bg-card rounded-lg border border-border p-8 mb-8">
           <div className="grid grid-cols-2 gap-6 mb-8 pb-8 border-b border-border">
             <div>
-              <p className="text-sm text-muted-foreground mb-1">訂單編號</p>
+              <p className="text-sm text-muted-foreground mb-1">Order Number</p>
               <p className="text-xl font-bold text-foreground">{orderId}</p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground mb-1">訂單日期</p>
+              <p className="text-sm text-muted-foreground mb-1">Order Date</p>
               <p className="text-xl font-bold text-foreground">
                 {dayjs().format('YYYY-MM-DD')}
               </p>
             </div>
             <div>
-              <p className="text-sm text-muted-foreground mb-1">訂單總額</p>
+              <p className="text-sm text-muted-foreground mb-1">Order Total</p>
               <p className="text-xl font-bold text-primary">HKD${amount}</p>
             </div>
           </div>
 
           {/* Order Details */}
           <div className="space-y-4">
-            <h3 className="font-semibold text-foreground">訂單商品</h3>
+            <h3 className="font-semibold text-foreground">Order Items</h3>
             <div className="space-y-3">
               {orderItem?.length > 0 &&
                 orderItem.map((item, idx) => {
@@ -117,7 +117,7 @@ export default function CheckoutSuccessPage({
                           {item.sku.product.name}
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          數量: {item.quantity}
+                          quantity: {item.quantity}
                         </p>
                         <p className="text-sm text-muted-foreground">
                           color: {item.sku.attributes.color}
@@ -140,7 +140,9 @@ export default function CheckoutSuccessPage({
         <div className="mb-8">
           {/* Shipping Address */}
           <div className="bg-card rounded-lg border border-border p-6">
-            <h3 className="font-semibold text-foreground mb-4">送貨地址</h3>
+            <h3 className="font-semibold text-foreground mb-4">
+              Shipping Address
+            </h3>
             <div className="space-y-2 text-muted-foreground">
               <p className="font-medium text-foreground">
                 {shippingaddress?.fullName}
@@ -161,7 +163,7 @@ export default function CheckoutSuccessPage({
               className="flex items-center justify-center gap-2"
             >
               <Clock className="w-5 h-5" />
-              查看訂單詳情
+              View Order Details
             </Link>
           </Button>
           <Button variant={'outline'}>
@@ -169,7 +171,7 @@ export default function CheckoutSuccessPage({
               href="/products"
               className="flex items-center justify-center gap-2 px-6 py-2 text-foreground"
             >
-              繼續購物
+              Continue Shopping
             </Link>
           </Button>
         </div>

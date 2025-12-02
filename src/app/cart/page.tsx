@@ -26,8 +26,9 @@ export default function CartPage() {
       {/* Page Header */}
       <div className="border-b border-border">
         <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-4xl font-bold text-textPrimary mb-2">購物車</h1>
-          <p className="text-textSecondary">{items.length} 件商品</p>
+          <h1 className="text-4xl font-bold text-textPrimary mb-2">
+            Shopping Cart
+          </h1>
         </div>
       </div>
 
@@ -38,16 +39,16 @@ export default function CartPage() {
               <ShoppingCart className="w-16 h-16 text-textSecondary" />
             </div>
             <h2 className="text-2xl font-bold text-textPrimary">
-              您的購物車是空的
+              Your Cart is Empty
             </h2>
             <p className="text-textSecondary max-w-md mx-auto">
-              開始探索我們的產品，找到您喜歡的商品吧！
+              Start exploring our products and find items you love!
             </p>
             <Link
               href="/products"
               className="inline-block bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-3 rounded-lg transition-smooth"
             >
-              繼續購物
+              Continue Shopping
             </Link>
           </div>
         </div>

@@ -35,10 +35,15 @@ export function ProfileOverview({
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(userInfo?.name);
   const [nameError, setNameError] = useState('');
-  const nameSchema = z.string().max(64, '最多64個字');
+  const nameSchema = z
+    .string()
+    .max(64, 'please do not exceed 64 characters')
+    .min(1, 'cannot be empty');
   const [phoneNumber, setPhoneNumber] = useState(userInfo?.phone_number);
   const [phoneError, setPhoneError] = useState('');
-  const phoneNumberSchema = z.string().regex(/^\d{8}$/, '請輸入正確的手機號碼');
+  const phoneNumberSchema = z
+    .string()
+    .regex(/^\d{8}$/, 'please enter a valid 8-digit phone number');
   const onNameInput = _.debounce((e: React.ChangeEvent<HTMLInputElement>) => {
     const name = e.target.value;
     const result = nameSchema.safeParse(name);
@@ -81,7 +86,9 @@ export function ProfileOverview({
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-foreground">個人資訊</h2>
+        <h2 className="text-2xl font-bold text-foreground">
+          Personal Information
+        </h2>
         {isEditing ? (
           <Button
             className="cursor-pointer"
@@ -95,7 +102,7 @@ export function ProfileOverview({
               });
             }}
           >
-            編輯完成
+            Save
           </Button>
         ) : (
           <Button
@@ -104,7 +111,7 @@ export function ProfileOverview({
             onClick={() => setIsEditing(true)}
           >
             <Edit2 className="w-4 h-4" />
-            編輯
+            Edit
           </Button>
         )}
       </div>
@@ -141,7 +148,7 @@ export function ProfileOverview({
             <div className="flex items-start gap-4">
               <Mail className="w-5 h-5 text-primary mt-1 shrink-0" />
               <div>
-                <p className="text-sm text-textSecondary mb-1">電子郵件</p>
+                <p className="text-sm text-textSecondary mb-1">Email</p>
                 <p className="font-medium text-foreground">{userInfo.email}</p>
               </div>
             </div>
@@ -150,7 +157,7 @@ export function ProfileOverview({
           <div className="flex items-start gap-4">
             <Phone className="w-5 h-5 text-primary mt-1 shrink-0" />
             <div>
-              <p className="text-sm text-textSecondary mb-1">電話號碼</p>
+              <p className="text-sm text-textSecondary mb-1">Phone Number</p>
               {isEditing ? (
                 <div className="flex flex-col">
                   <Input
@@ -162,7 +169,7 @@ export function ProfileOverview({
               ) : phoneNumber ? (
                 <p className="font-medium text-foreground">{phoneNumber}</p>
               ) : (
-                <p className="font-medium text-foreground">未填寫</p>
+                <p className="font-medium text-foreground">Unfilled</p>
               )}
             </div>
           </div>
@@ -170,7 +177,7 @@ export function ProfileOverview({
           <div className="flex items-start gap-4">
             <MapPin className="w-5 h-5 text-primary mt-1 shrink-0" />
             <div>
-              <p className="text-sm text-textSecondary mb-1">預設地址</p>
+              <p className="text-sm text-textSecondary mb-1">Default Address</p>
               {userInfo && userInfo?.addresses.length > 0 ? (
                 <p className="font-medium text-foreground">
                   {userInfo.addresses[0].city}
@@ -180,7 +187,7 @@ export function ProfileOverview({
                   className="cursor-pointer"
                   onClick={() => setActiveTab('addresses')}
                 >
-                  新增地址
+                  Add Address
                 </Button>
               )}
             </div>
@@ -190,7 +197,7 @@ export function ProfileOverview({
             <div className="flex items-start gap-4">
               <Calendar className="w-5 h-5 text-primary mt-1 shrink-0" />
               <div>
-                <p className="text-sm text-textSecondary mb-1">加入日期</p>
+                <p className="text-sm text-textSecondary mb-1">Join Date</p>
                 <p className="font-medium text-foreground">
                   {dayjs(userInfo.createdAt).format('YYYY-MM-DD')}
                 </p>
@@ -203,13 +210,13 @@ export function ProfileOverview({
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-blue-200 rounded-lg p-6 border border-blue-200 dark:bg-blue-500">
-          <p className="text-sm text-textPrimary mb-2">總訂單數</p>
+          <p className="text-sm text-textPrimary mb-2">Total Orders</p>
           <p className="text-3xl font-bold text-textPrimary">
             {userInfo?.orderCount}
           </p>
         </div>
         <div className="bg-green-200 rounded-lg p-6 border border-green-200 dark:bg-green-500">
-          <p className="text-sm text-textPrimary mb-2">總消費金額</p>
+          <p className="text-sm text-textPrimary mb-2">Total Spent</p>
           <p className="text-3xl font-bold text-textPrimary">
             HKD${userInfo?.orderAmount}
           </p>

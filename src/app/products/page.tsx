@@ -20,20 +20,24 @@ export default function ProductsPage() {
     <>
       {/* Page Header */}
       <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
-        <h1 className="text-4xl font-bold text-textPrimary mb-2">產品目錄</h1>
-        <p className="text-textSecondary">瀏覽我們的完整產品系列</p>
+        <h1 className="text-4xl font-bold text-textPrimary mb-2">
+          Product Catalog
+        </h1>
+        <p className="text-textSecondary">
+          Browse our complete product collection
+        </p>
       </div>
 
       {/* Content */}
       <div className="bg-white dark:bg-background">
         <div className="mx-auto px-4 sm:px-6 lg:px-8 pt-4 pb-12">
           {/* Mobile Filter Toggle */}
-          <div className="lg:hidden">
+          {/* <div className="lg:hidden">
             <details className="group">
               <summary className="flex items-center justify-between cursor-pointer py-4 font-semibold text-foreground hover:text-primary transition-smooth">
                 <span className="flex items-center gap-2">
                   <Filter className="w-5 h-5" />
-                  篩選選項
+                  Filter Options
                 </span>
                 <span className="transition-transform group-open:rotate-180">
                   ▼
@@ -43,14 +47,14 @@ export default function ProductsPage() {
                 <ProductFilters />
               </div>
             </details>
-          </div>
+          </div> */}
           <div className="flex gap-8">
             {/* Fixed Sidebar - Desktop Only */}
-            <aside className="hidden lg:block w-72 shrink-0">
+            {/* <aside className="hidden lg:block w-72 shrink-0">
               <div className="sticky top-24 bg-muted rounded-lg p-6 border border-border">
                 <ProductFilters />
               </div>
-            </aside>
+            </aside> */}
 
             {/* Main Content */}
             <div className="flex-1 min-w-0">

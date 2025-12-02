@@ -16,10 +16,11 @@ export function FeaturedProducts() {
     <section className="px-4 sm:px-6 lg:px-8 py-20">
       <div className="text-center mb-12">
         <h2 className="text-3xl md:text-4xl font-bold mb-4 text-textPrimary">
-          精選產品
+          Featured Products
         </h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto text-textSecondary">
-          精心挑選的熱銷商品，品質保證，價格優惠
+          Carefully selected bestsellers with guaranteed quality and great
+          prices
         </p>
       </div>
 
@@ -34,7 +35,7 @@ export function FeaturedProducts() {
       <div className="text-center mt-12">
         <Button asChild onClick={() => router.push('/products')}>
           <Link href="/products">
-            查看全部產品
+            View All Products
             <ArrowRight className="w-5 h-5" />
           </Link>
         </Button>

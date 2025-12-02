@@ -53,7 +53,7 @@ export function ProductCard({ product }: { product: Product }) {
               className="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 transition-smooth cursor-pointer"
               onClick={(event) => {
                 event.stopPropagation();
-                toast.success(`${product.name} 已加入購物車`);
+                toast.success(`${product.name} added to cart`);
                 addToCart({
                   id: product.id,
                   name: product.name,

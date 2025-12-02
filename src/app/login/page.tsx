@@ -7,9 +7,9 @@ export default function LoginPage() {
         <div className="rounded-lg border border-border p-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-textPrimary mb-2">
-              歡迎回來
+              Welcome back!
             </h1>
-            <p className="text-textSecondary">登入您的帳戶以繼續購物</p>
+            <p className="text-textSecondary">Sign in to your account</p>
           </div>
           <LoginForm />
         </div>

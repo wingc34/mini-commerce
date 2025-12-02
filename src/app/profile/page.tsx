@@ -5,12 +5,21 @@ import { ProfileOverview } from '@/components/profile/profile-overview';
 import { OrderHistory } from '@/components/profile/order-history';
 import { Addresses } from '@/components/profile/addresses';
 import { Wishlist } from '@/components/profile/wishlist';
-import { ChevronRight } from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
+import { use, useState } from 'react';
+import { useRouter } from 'next/navigation';
 
-export default function ProfilePage() {
-  const [activeTab, setActiveTab] = useState('overview');
+export default function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string }>;
+}) {
+  const tab = use(searchParams).tab || 'overview';
+  const [activeTab, setActiveTab] = useState(tab);
+  const router = useRouter();
+  const handleTabChange = (tab: string) => {
+    router.push(`/profile?tab=${tab}`);
+    setActiveTab(tab);
+  };
 
   return (
     <>
@@ -19,13 +28,16 @@ export default function ProfilePage() {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <ProfileSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+            <ProfileSidebar
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+            />
           </div>
 
           {/* Main Content */}
           <div className="lg:col-span-3">
             {activeTab === 'overview' && (
-              <ProfileOverview setActiveTab={setActiveTab} />
+              <ProfileOverview setActiveTab={handleTabChange} />
             )}
             {activeTab === 'orders' && <OrderHistory />}
             {activeTab === 'addresses' && <Addresses />}
