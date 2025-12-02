@@ -126,11 +126,13 @@ export function OrderHistory() {
             );
           })}
       </div>
-      <PaginationComponent
-        page={page}
-        setPage={setPage}
-        totalPages={totalPages}
-      />
+      {order && order.length > 0 && (
+        <PaginationComponent
+          page={page}
+          setPage={setPage}
+          totalPages={totalPages}
+        />
+      )}
     </div>
   );
 }

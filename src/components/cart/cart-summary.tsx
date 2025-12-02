@@ -6,6 +6,7 @@ import { useCallback } from 'react';
 import { useCart } from '@/store/cart-store';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 interface CartSummaryProps {
   total: number;
@@ -14,15 +15,20 @@ interface CartSummaryProps {
 export function CartSummary({ total }: CartSummaryProps) {
   const { items } = useCart();
   const { push } = useRouter();
+  const { data } = useSession();
 
   const { mutateAsync: createOrder, error: createOrderError } =
     trpc.order.createOrder.useMutation();
 
   const onCreateOrder = useCallback(async () => {
+    if (!data?.user?.defaultAddressId) {
+      toast.error(
+        'Please set a default address in your profile before proceeding to checkout.'
+      );
+      return;
+    }
     const { success, id } = await createOrder({
-      userId: 'cmi2m5mh30000rvp7v88l9ey5', //@TODO get user id
       total: total,
-      shippingAddressId: 'cmi2m5mhe0002rvp7lvz0huxi', //@TODO get user default shipping address
       orderItem: items.map((item) => ({
         skuId: item.sku.id,
         quantity: item.quantity,
@@ -34,7 +40,7 @@ export function CartSummary({ total }: CartSummaryProps) {
     } else {
       toast.error('failed to create order');
     }
-  }, [total, createOrder, items, push]);
+  }, [total, createOrder, items, push, data]);
   return (
     <div className="bg-muted rounded-lg p-6 space-y-4">
       <h3 className="font-semibold text-textPrimary text-lg">Order Summary</h3>

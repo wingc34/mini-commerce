@@ -64,7 +64,7 @@ export function ProductCard({ product }: { product: Product }) {
               }}
             >
               <ShoppingCart className="w-5 h-5" />
-              加入購物車
+              Add to Cart
             </Button>
           </div>
         )}

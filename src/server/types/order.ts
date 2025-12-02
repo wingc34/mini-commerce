@@ -1,9 +1,7 @@
 import { z } from 'zod';
 
 export const createOrderZObject = z.object({
-  userId: z.string(),
   total: z.number(),
-  shippingAddressId: z.string(),
   orderItem: z.array(
     z.object({
       skuId: z.string(),

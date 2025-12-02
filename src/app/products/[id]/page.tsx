@@ -8,10 +8,10 @@ import { useState, use, useMemo } from 'react';
 import { trpc } from '@/trpc/client-api';
 import { type SKU } from '@prisma/client';
 import { toast } from 'sonner';
-import { useSession } from 'next-auth/react';
 import copy from 'copy-to-clipboard';
 import { usePathname } from 'next/navigation';
 import { env } from '@/lib/env';
+import { useSession } from 'next-auth/react';
 
 export interface ProductDetail {
   id: string;
@@ -147,7 +147,7 @@ export default function ProductDetailPage({
                   HKD${(price / 100).toLocaleString()}
                 </span>
               </div>
-              {selectedColor !== '' && selectedSize !== '' ? (
+              {selectedColor !== '' || selectedSize !== '' ? (
                 stockData?.inStock ? (
                   <p className="text-green-600 font-semibold">In stock</p>
                 ) : (
@@ -276,7 +276,9 @@ export default function ProductDetailPage({
               <Button
                 className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-smooth cursor-pointer"
                 onClick={() => {
-                  if (!sku) {
+                  if (!session?.user) {
+                    toast.info('Please login first');
+                  } else if (!sku) {
                     toast.info('Please select the size and color first');
                   } else {
                     addToCart({

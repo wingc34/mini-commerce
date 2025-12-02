@@ -11,6 +11,7 @@ declare module 'next-auth' {
         images: string[];
         price: number;
       }[];
+      defaultAddressId: string;
     } & DefaultSession['user'];
   }
 }
