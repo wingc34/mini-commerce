@@ -147,11 +147,13 @@ export default function ProductDetailPage({
                   HKD${(price / 100).toLocaleString()}
                 </span>
               </div>
-              {stockData?.inStock ? (
-                <p className="text-green-600 font-semibold">有現貨</p>
-              ) : (
-                <p className="font-semibold">沒有現貨</p>
-              )}
+              {selectedColor !== '' && selectedSize !== '' ? (
+                stockData?.inStock ? (
+                  <p className="text-green-600 font-semibold">有現貨</p>
+                ) : (
+                  <p className="font-semibold">沒有現貨</p>
+                )
+              ) : null}
             </div>
 
             {/* Description */}
