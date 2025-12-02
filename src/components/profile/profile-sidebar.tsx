@@ -18,11 +18,10 @@ interface ProfileSidebarProps {
 }
 
 const MENU_ITEMS = [
-  { id: 'overview', label: '個人資訊', icon: User },
-  { id: 'orders', label: '購物紀錄', icon: Package },
-  { id: 'addresses', label: '收貨地址', icon: MapPin },
-  { id: 'wishlist', label: '願望清單', icon: Heart },
-  // { id: "settings", label: "帳戶設定", icon: Settings },
+  { id: 'overview', label: 'Profile Info', icon: User },
+  { id: 'orders', label: 'Order History', icon: Package },
+  { id: 'addresses', label: 'Addresses', icon: MapPin },
+  { id: 'wishlist', label: 'Wishlist', icon: Heart },
 ];
 
 export function ProfileSidebar({
@@ -37,9 +36,9 @@ export function ProfileSidebar({
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="hover:bg-muted rounded-lg transition-smooth flex items-center gap-2 w-full justify-between"
-          aria-label="切換菜單"
+          aria-label="Toggle menu"
         >
-          <h3 className="font-semibold text-textPrimary">菜單</h3>
+          <h3 className="font-semibold text-textPrimary">Menu</h3>
           <ChevronDown
             className={`w-5 h-5 transition-transform ${
               isExpanded ? 'rotate-180' : ''
@@ -80,7 +79,7 @@ export function ProfileSidebar({
             className="w-full flex justify-start gap-3 px-6 rounded-lg text-red-600 hover:text-red-600 transition-smooth cursor-pointer"
           >
             <LogOut className="w-5 h-5" />
-            <span className="font-medium">登出</span>
+            <span className="font-medium">Sign Out</span>
           </Button>
         </div>
       </div>

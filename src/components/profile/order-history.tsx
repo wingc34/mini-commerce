@@ -1,4 +1,4 @@
-import { ChevronRight, Package, Truck, CheckCircle } from 'lucide-react';
+import { ChevronRight, Package, DollarSign, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Item, ItemActions, ItemContent } from '@/components/ui/item';
 import { trpc } from '@/trpc/client-api';
@@ -20,25 +20,25 @@ function getStatusInfo(status: string) {
   switch (status) {
     case OrderStatus.PENDING:
       return {
-        label: '處理中',
+        label: 'Processing',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
         icon: Package,
       };
     case OrderStatus.PAID:
       return {
-        label: '已付款',
+        label: 'Paid',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-        icon: Package,
+        icon: DollarSign,
       };
     case OrderStatus.SHIPPED:
       return {
-        label: '已送達',
+        label: 'Shipped',
         color: 'bg-green-50 text-green-700 border-green-200',
         icon: CheckCircle,
       };
     default:
       return {
-        label: '未知',
+        label: 'Unknown',
         color: 'bg-gray-50 text-gray-700 border-gray-200',
         icon: Package,
       };
@@ -54,7 +54,7 @@ export function OrderHistory() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-foreground">購物紀錄</h2>
+      <h2 className="text-2xl font-bold text-foreground">Order History</h2>
 
       <div className="space-y-4">
         {order &&
@@ -70,7 +70,7 @@ export function OrderHistory() {
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <p className="text-sm text-textSecondary mb-1">
-                          訂單編號
+                          Order Number
                         </p>
                         <p className="font-semibold text-foreground">
                           {order.id}
@@ -89,23 +89,21 @@ export function OrderHistory() {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
                       <div>
                         <p className="text-xs text-textSecondary mb-1">
-                          訂單日期
+                          Order Date
                         </p>
                         <p className="text-sm font-medium text-foreground">
                           {dayjs(order.createdAt).format('YYYY-MM-DD HH:mm')}
                         </p>
                       </div>
                       <div>
-                        <p className="text-xs text-textSecondary mb-1">
-                          商品數量
-                        </p>
+                        <p className="text-xs text-textSecondary mb-1">Items</p>
                         <p className="text-sm font-medium text-foreground">
-                          {order.itemCount} 件
+                          {order.itemCount} item{order.itemCount > 1 ? 's' : ''}
                         </p>
                       </div>
                       <div>
                         <p className="text-xs text-textSecondary mb-1">
-                          訂單金額
+                          Order Total
                         </p>
                         <p className="text-sm font-bold text-primary">
                           HKD${order.total.toLocaleString()}
@@ -117,7 +115,7 @@ export function OrderHistory() {
                           key={order.id}
                           href={`/profile/orders/${order.id}`}
                         >
-                          查看詳情
+                          View Details
                           <ChevronRight className="w-4 h-4" />
                         </Link>
                       </ItemActions>

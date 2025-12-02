@@ -16,13 +16,13 @@ export function Wishlist() {
 
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-textPrimary">願望清單</h2>
+      <h2 className="text-2xl font-bold text-textPrimary">Wishlist</h2>
 
       {data?.user &&
         (data?.user?.wishlist.length === 0 ? (
           <div className="text-center py-12">
             <Heart className="w-16 h-16 text-textSecondary mx-auto mb-4" />
-            <p className="text-textSecondary">您的願望清單是空的</p>
+            <p className="text-textSecondary">Your wishlist is empty</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

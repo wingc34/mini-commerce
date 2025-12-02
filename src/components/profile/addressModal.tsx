@@ -21,12 +21,16 @@ import { Checkbox } from '@/components/ui/checkbox';
 
 export const AddressSchema = z.object({
   id: z.string().optional(),
-  fullName: z.string().min(1, '請輸入姓名'),
-  phone: z.string().regex(/^\d{8}$/, '請輸入正確的8位手機號碼'),
-  city: z.string().min(1, '請輸入縣市'),
-  country: z.string().min(1, '請輸入國家'),
-  line1: z.string().min(1, '請輸入完整地址'),
-  postal: z.string().regex(/^\d{6}$/, '請輸入6位郵遞區號'),
+  fullName: z.string().min(1, 'please enter your full name'),
+  phone: z
+    .string()
+    .regex(/^\d{8}$/, 'please enter a valid 8-digit phone number'),
+  city: z.string().min(1, 'please enter your city'),
+  country: z.string().min(1, 'please enter your country'),
+  line1: z.string().min(1, 'please enter your address'),
+  postal: z
+    .string()
+    .regex(/^\d{6}$/, 'please enter a valid 6-digit postal code'),
   isDefault: z.boolean().default(false),
 });
 
@@ -86,18 +90,20 @@ export function AddressModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{isEditing ? '編輯地址' : '新增地址'}</DialogTitle>
+          <DialogTitle>
+            {isEditing ? 'Edit Address' : 'Add Address'}
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Name */}
           <div className="grid gap-2">
             <Label htmlFor="name">
-              姓名 <span className="text-red-500">*</span>
+              Full Name <span className="text-red-500">*</span>
             </Label>
             <Input
               id="name"
-              placeholder="請輸入姓名"
+              placeholder="Enter full name"
               {...register('fullName')}
             />
             {errors.fullName && (
@@ -108,11 +114,11 @@ export function AddressModal({
           {/* Phone */}
           <div className="grid gap-2">
             <Label htmlFor="phone">
-              電話 <span className="text-red-500">*</span>
+              Phone <span className="text-red-500">*</span>
             </Label>
             <Input
               id="phone"
-              placeholder="例：+886 9 1234 5678"
+              placeholder="e.g. 12348765"
               {...register('phone')}
             />
             {errors.phone && (
@@ -120,15 +126,15 @@ export function AddressModal({
             )}
           </div>
 
-          {/* City (已更改為 Input) */}
+          {/* City */}
           <div className="grid gap-2">
             <Label htmlFor="city">
-              縣市 <span className="text-red-500">*</span>
+              City <span className="text-red-500">*</span>
             </Label>
             <Input
               id="city"
-              placeholder="請輸入縣市名稱 (例: 台北市)"
-              {...register('city')} // <--- 使用 register 綁定
+              placeholder="Enter city name"
+              {...register('city')}
             />
             {errors.city && (
               <p className="text-red-500 text-sm">{errors.city.message}</p>
@@ -136,12 +142,12 @@ export function AddressModal({
           </div>
           <div className="grid gap-2">
             <Label htmlFor="country">
-              國家 <span className="text-red-500">*</span>
+              Country <span className="text-red-500">*</span>
             </Label>
             <Input
               id="country"
-              placeholder="請輸入縣市名稱 (例: 台北市)"
-              {...register('country')} // <--- 使用 register 綁定
+              placeholder="Enter country name"
+              {...register('country')}
             />
             {errors.country && (
               <p className="text-red-500 text-sm">{errors.country.message}</p>
@@ -151,11 +157,11 @@ export function AddressModal({
           {/* Address */}
           <div className="grid gap-2">
             <Label htmlFor="address">
-              地址 <span className="text-red-500">*</span>
+              Address <span className="text-red-500">*</span>
             </Label>
             <Textarea
               id="address"
-              placeholder="請輸入完整地址"
+              placeholder="Enter your address"
               rows={3}
               {...register('line1')}
             />
@@ -167,11 +173,11 @@ export function AddressModal({
           {/* Postal Code */}
           <div className="grid gap-2">
             <Label htmlFor="postalCode">
-              郵遞區號 <span className="text-red-500">*</span>
+              Postal Code <span className="text-red-500">*</span>
             </Label>
             <Input
               id="postalCode"
-              placeholder="例：10001"
+              placeholder="e.g. 123456"
               {...register('postal')}
             />
             {errors.postal && (
@@ -179,7 +185,7 @@ export function AddressModal({
             )}
           </div>
 
-          {/* Default Address (Checkbox 仍使用 setValue) */}
+          {/* Default Address */}
           <div className="flex items-center space-x-2 pt-2">
             <Checkbox
               id="isDefault"
@@ -192,14 +198,14 @@ export function AddressModal({
               htmlFor="isDefault"
               className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
             >
-              設為預設收貨地址
+              Set as default shipping address
             </Label>
           </div>
 
           <DialogFooter className="pt-6 sm:justify-between">
             <DialogClose asChild>
               <Button type="button" variant="outline" onClick={onClose}>
-                取消
+                Cancel
               </Button>
             </DialogClose>
 
@@ -208,7 +214,7 @@ export function AddressModal({
               disabled={isSubmitting}
               className="cursor-pointer"
             >
-              {isSubmitting ? '儲存中...' : isEditing ? '更新地址' : '新增地址'}
+              {isSubmitting ? 'Loading...' : isEditing ? 'Update' : 'Add'}
             </Button>
           </DialogFooter>
         </form>

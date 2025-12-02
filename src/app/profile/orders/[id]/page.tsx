@@ -10,6 +10,7 @@ import {
   CheckCircle,
   MapPin,
   Phone,
+  DollarSign,
 } from 'lucide-react';
 import Link from 'next/link';
 import { use } from 'react';
@@ -44,35 +45,37 @@ function getStatusInfo(status: string) {
   switch (status) {
     case OrderStatus.PENDING:
       return {
-        label: '處理中',
+        label: 'Processing',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
         icon: Package,
-        description: '您的訂單正在準備中，我們即將為您安排出貨',
+        description: "Your order is being prepared. We'll ship it soon.",
       };
     case OrderStatus.PAID:
       return {
-        label: '已付款',
+        label: 'paid',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
-        icon: Package,
-        description: '您的訂單正在準備中，我們即將為您安排出貨',
+        icon: DollarSign,
+        description:
+          "Your payment has been received. We're processing your order.",
       };
     case OrderStatus.SHIPPED:
       return {
-        label: '運送中',
+        label: 'shipped',
         color: 'bg-blue-50 text-blue-700 border-blue-200',
         icon: Truck,
-        description: '您的訂單已出貨，正在運送途中',
+        description: 'Your order has been shipped and is on its way.',
       };
     case OrderStatus.COMPLETED:
       return {
-        label: '已送達',
+        label: 'Delivered',
         color: 'bg-green-50 text-green-700 border-green-200',
         icon: CheckCircle,
-        description: '訂單已送達，感謝您的購買',
+        description:
+          'Your order has been delivered. Thank you for your purchase!',
       };
     default:
       return {
-        label: '未知',
+        label: 'Unknown',
         color: 'bg-gray-50 text-gray-700 border-gray-200',
         icon: Package,
         description: '',
@@ -94,17 +97,17 @@ export default function OrderDetailPage({
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-foreground mb-2">
-            訂單未找到
+            Order Not Found
           </h2>
           <p className="text-textSecondary mb-4">
-            抱歉，無法找到您要查看的訂單
+            Sorry, we couldn&apos;t find the order you&apos;re looking for
           </p>
           <Link
-            href="/profile"
+            href="/profile?tab=overview"
             className="inline-flex items-center gap-2 text-primary hover:text-primary-dark transition-smooth font-medium"
           >
             <ChevronLeft className="w-4 h-4" />
-            返回個人資料
+            Back to Account
           </Link>
         </div>
       </div>
@@ -120,14 +123,16 @@ export default function OrderDetailPage({
       <div className="border-b border-border bg-card">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <Link
-            href="/profile"
+            href="/profile?tab=overview"
             className="inline-flex items-center gap-2 text-primary hover:text-primary-dark transition-smooth mb-4 font-medium"
           >
             <ChevronLeft className="w-4 h-4" />
-            返回個人資料
+            Back to Account
           </Link>
-          <h1 className="text-3xl font-bold text-foreground mb-2">訂單詳情</h1>
-          <p className="text-textSecondary">訂單編號：{orderDetail?.id}</p>
+          <h1 className="text-3xl font-bold text-foreground mb-2">
+            Order Details
+          </h1>
+          <p className="text-textSecondary">Order Number: {orderDetail?.id}</p>
         </div>
       </div>
 
@@ -152,7 +157,7 @@ export default function OrderDetailPage({
             <div className="bg-card rounded-lg border border-border overflow-hidden">
               <div className="p-6 border-b border-border">
                 <h3 className="text-lg font-semibold text-foreground">
-                  訂單商品
+                  Order Items
                 </h3>
               </div>
 
@@ -175,7 +180,7 @@ export default function OrderDetailPage({
                             {item.sku.name}
                           </h4>
                           <p className="text-sm text-textSecondary">
-                            數量: {item.quantity} 件
+                            Quantity: {item.quantity}
                           </p>
                           <p className="font-medium text-primary">
                             HKD${item.sku.price.toLocaleString()}
@@ -201,12 +206,12 @@ export default function OrderDetailPage({
             {/* Order Summary */}
             <div className="bg-card rounded-lg border border-border p-6">
               <h3 className="font-semibold text-foreground mb-4 text-lg">
-                訂單摘要
+                Order Summary
               </h3>
 
               <div className="pt-4 mb-4">
                 <div className="flex justify-between">
-                  <span className="font-semibold text-foreground">總計</span>
+                  <span className="font-semibold text-foreground">Total</span>
                   <span className="text-2xl font-bold text-primary">
                     HKD${orderDetail?.total.toLocaleString()}
                   </span>
@@ -215,7 +220,7 @@ export default function OrderDetailPage({
 
               <div className="text-xs text-textSecondary">
                 <p className="mb-1">
-                  訂單日期：
+                  Order Date:
                   {dayjs(orderDetail?.createdAt).format('YYYY-MM-DD HH:mm:ss')}
                 </p>
               </div>
@@ -225,7 +230,9 @@ export default function OrderDetailPage({
             <div className="bg-card rounded-lg border border-border p-6">
               <div className="flex items-center gap-2 mb-4">
                 <MapPin className="w-5 h-5 text-primary" />
-                <h3 className="font-semibold text-foreground">收貨地址</h3>
+                <h3 className="font-semibold text-foreground">
+                  Shipping Address
+                </h3>
               </div>
 
               <div className="space-y-2 text-sm">
@@ -253,7 +260,7 @@ export default function OrderDetailPage({
             <div className="space-y-2">
               <button className="w-full bg-primary text-white py-3 px-4 rounded-lg hover:bg-primary-dark transition-smooth font-medium flex items-center justify-center gap-2">
                 <Phone className="w-4 h-4" />
-                聯絡客服
+                Contact Support
               </button>
             </div>
           </div>

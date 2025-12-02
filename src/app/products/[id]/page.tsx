@@ -149,9 +149,9 @@ export default function ProductDetailPage({
               </div>
               {selectedColor !== '' && selectedSize !== '' ? (
                 stockData?.inStock ? (
-                  <p className="text-green-600 font-semibold">有現貨</p>
+                  <p className="text-green-600 font-semibold">In stock</p>
                 ) : (
-                  <p className="font-semibold">沒有現貨</p>
+                  <p className="font-semibold">Out of stock</p>
                 )
               ) : null}
             </div>
@@ -164,7 +164,7 @@ export default function ProductDetailPage({
             {/* Color Selection */}
             <div>
               <label className="block text-sm font-semibold text-foreground mb-3">
-                顏色
+                Color
               </label>
               <div className="flex gap-3">
                 {colors.map((color) => (
@@ -207,7 +207,7 @@ export default function ProductDetailPage({
             {/* Size Selection */}
             <div>
               <label className="block text-sm font-semibold text-foreground mb-3">
-                尺寸
+                Size
               </label>
               <div className="flex gap-3">
                 {sizes.map((size) => (
@@ -250,7 +250,7 @@ export default function ProductDetailPage({
             {/* Quantity */}
             <div>
               <label className="block text-sm font-semibold text-foreground mb-3">
-                數量
+                Quantity
               </label>
               <div className="flex items-center gap-4">
                 <button
@@ -277,7 +277,7 @@ export default function ProductDetailPage({
                 className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-smooth cursor-pointer"
                 onClick={() => {
                   if (!sku) {
-                    toast.info('請先選擇尺寸與顏色');
+                    toast.info('Please select the size and color first');
                   } else {
                     addToCart({
                       id: product.id,
@@ -291,12 +291,12 @@ export default function ProductDetailPage({
                       quantity: quantity,
                       image: product.images[0],
                     });
-                    toast.success(`${product.name} 已加入購物車`);
+                    toast.success(`${product.name} added to cart`);
                   }
                 }}
               >
                 <ShoppingCart className="w-5 h-5" />
-                加入購物車
+                Add to cart
               </Button>
               <Button
                 variant={'outline'}
@@ -322,9 +322,11 @@ export default function ProductDetailPage({
                     `${env.NEXT_PUBLIC_BASE_URL}${pathname}`
                   );
                   if (success) {
-                    toast.success('已複製連結到剪貼簿');
+                    toast.success(
+                      'Share link has been copied to the clipboard'
+                    );
                   } else {
-                    toast.error('複製連結失敗，請手動複製');
+                    toast.error('Copy share link failed, please copy manually');
                   }
                 }}
                 className="w-14 h-14 border-2 flex items-center justify-center text-textSecondary hover:border-primary transition-smooth cursor-pointer"
@@ -338,9 +340,12 @@ export default function ProductDetailPage({
               <div className="flex items-start gap-3">
                 <span className="text-2xl">↩️</span>
                 <div>
-                  <p className="font-semibold text-foreground">30 天退貨保證</p>
+                  <p className="font-semibold text-foreground">
+                    30-day return guarantee
+                  </p>
                   <p className="text-sm text-textSecondary">
-                    不滿意可在 30 天內退貨
+                    You can return the product within 30 days if you are not
+                    satisfied
                   </p>
                 </div>
               </div>
@@ -350,6 +355,6 @@ export default function ProductDetailPage({
       </div>
     </>
   ) : (
-    <div>Loading</div>
+    <div>Loading...</div>
   );
 }

@@ -73,7 +73,9 @@ export function CartItem({
         <p className="text-lg font-bold text-textPrimary">
           HKD${((price / 100) * quantity).toLocaleString()}
         </p>
-        <p className="text-sm text-textSecondary">{quantity} 件</p>
+        <p className="text-sm text-textSecondary">
+          {quantity} item{quantity !== 1 ? 's' : ''}
+        </p>
       </div>
 
       {/* Remove */}

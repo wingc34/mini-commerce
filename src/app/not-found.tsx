@@ -29,34 +29,41 @@ export default function NotFound() {
       {/* Content */}
       <div className="mb-12">
         <h1 className="text-5xl md:text-6xl font-bold text-textSecondary mb-4">
-          頁面未找到
+          Page Not Found
         </h1>
         <p className="text-xl md:text-2xl text-textSecondary mb-6">
-          抱歉，您正在尋找的頁面不存在或已被移除。
+          Sorry, the page you are looking for does not exist or has been
+          removed.
         </p>
         <p className="text-base text-textSecondary mb-8">
-          可能是以下原因造成的：
+          This could be caused by:
         </p>
 
         {/* Reasons List */}
         <div className="grid md:grid-cols-3 gap-4 mb-12 text-sm text-textSecondary">
           <div className="p-4 rounded-lg bg-card border border-border">
             <div className="font-semibold text-foreground mb-2">
-              ✕ 連結已過期
+              ✕ Expired Link
             </div>
             <p className="text-textSecondary">
-              該頁面可能已被刪除或暫時不可用。
+              The page may have been deleted or is temporarily unavailable.
             </p>
           </div>
           <div className="p-4 rounded-lg bg-card border border-border">
             <div className="font-semibold text-foreground mb-2">
-              ✕ 錯誤的URL
+              ✕ Incorrect URL
             </div>
-            <p className="text-textSecondary">請檢查您輸入的網址是否正確。</p>
+            <p className="text-textSecondary">
+              Please check if the address you entered is correct.
+            </p>
           </div>
           <div className="p-4 rounded-lg bg-card border border-border">
-            <div className="font-semibold text-foreground mb-2">✕ 權限不足</div>
-            <p className="text-textSecondary">您可能沒有權限訪問此頁面。</p>
+            <div className="font-semibold text-foreground mb-2">
+              ✕ Permission Denied
+            </div>
+            <p className="text-textSecondary">
+              You may not have permission to access this page.
+            </p>
           </div>
         </div>
 
@@ -67,37 +74,37 @@ export default function NotFound() {
             onClick={() => router.push('/')}
           >
             <Home className="w-5 h-5" />
-            返回首頁
+            Back to Home
           </Button>
           <Button
             className="inline-flex items-center justify-center gap-2 px-8! py-3! bg-secondary rounded-lg font-semibold transition-colors hover:cursor-pointer"
             onClick={() => router.push('/products')}
           >
             <Search className="w-5 h-5" />
-            瀏覽產品
+            Browse Products
           </Button>
         </div>
       </div>
 
       {/* Suggestions */}
       <div className="p-6 rounded-lg bg-muted border border-border">
-        <h3 className="font-semibold text-foreground mb-4">您可以試試：</h3>
+        <h3 className="font-semibold text-foreground mb-4">You can try:</h3>
         <ul className="space-y-2 text-sm text-textSecondary">
-          <li>• 使用頂部導航菜單查看所有可用頁面</li>
-          <li>• 返回首頁並重新開始瀏覽</li>
-          <li>• 使用搜索功能尋找特定產品</li>
-          <li>• 聯絡客服支持團隊獲得幫助</li>
+          <li>• Use the top navigation menu to see all available pages</li>
+          <li>• Return to the homepage and start browsing</li>
+          <li>• Use the search function to find specific products</li>
+          <li>• Contact our support team for assistance</li>
         </ul>
       </div>
 
       {/* Contact Link */}
       <div className="mt-8">
-        <p className="text-sm text-textSecondary mb-3">仍然需要幫助？</p>
+        <p className="text-sm text-textSecondary mb-3">Still need help?</p>
         <Link
           href="/contact"
           className="inline-text text-primary font-semibold hover:underline"
         >
-          聯絡我們 →
+          Contact Us →
         </Link>
       </div>
     </div>

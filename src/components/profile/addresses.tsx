@@ -71,13 +71,15 @@ export function Addresses() {
     <>
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-foreground">收貨地址</h2>
+          <h2 className="text-2xl font-bold text-foreground">
+            Shipping Addresses
+          </h2>
           <Button
             onClick={() => handleAddAddress()}
             className="flex items-center gap-2 px-4 py-2  text-white rounded-lg transition-smooth font-medium cursor-pointer"
           >
             <Plus className="w-4 h-4" />
-            新增地址
+            Add Address
           </Button>
         </div>
 
@@ -113,7 +115,7 @@ export function Addresses() {
                   {address.isDefault && (
                     <div className="mb-4">
                       <span className="inline-block bg-secondary text-gray-900 px-3 py-1 rounded-full text-xs font-semibold">
-                        預設地址
+                        Default Address
                       </span>
                     </div>
                   )}
@@ -126,7 +128,7 @@ export function Addresses() {
                     className="flex-1 border-border transition-smooth font-medium cursor-pointer"
                   >
                     <Edit2 className="w-4 h-4" />
-                    編輯
+                    Edit
                   </Button>
                   <Button
                     variant={'outline'}
@@ -134,7 +136,7 @@ export function Addresses() {
                     className="flex-1 border-border hover:bg-red-50 text-red-600 transition-smooth font-medium cursor-pointer"
                   >
                     <Trash2 className="w-4 h-4" />
-                    刪除
+                    Delete
                   </Button>
                 </div>
               </div>

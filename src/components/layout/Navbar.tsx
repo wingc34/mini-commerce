@@ -17,9 +17,9 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 
 const pageDetails = [
-  { name: '產品', href: '/products' },
-  { name: '關於', href: '/about' },
-  { name: '聯絡', href: '/contact' },
+  { name: 'Products', href: '/products' },
+  { name: 'About', href: '/about' },
+  { name: 'Contact', href: '/contact' },
 ];
 
 export default function Navbar() {
@@ -76,7 +76,7 @@ export default function Navbar() {
               </Link>
             </Button>
             <Button variant="ghost" size="icon">
-              <Link href="/profile">
+              <Link href="/profile?tab=overview">
                 <User className="w-6 h-6 text-foreground" />
               </Link>
             </Button>
