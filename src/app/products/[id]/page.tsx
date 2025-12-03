@@ -306,10 +306,14 @@ export default function ProductDetailPage({
               <Button
                 variant={'outline'}
                 onClick={() => {
-                  if (isWishlisted) {
-                    handleRemoveWishItem(id);
+                  if (!session?.user) {
+                    toast.info('Please login first');
                   } else {
-                    handleAddWishItem(id);
+                    if (isWishlisted) {
+                      handleRemoveWishItem(id);
+                    } else {
+                      handleAddWishItem(id);
+                    }
                   }
                 }}
                 className={`w-14 h-14 border-2 flex items-center justify-center transition-smooth cursor-pointer hover:border-primary ${

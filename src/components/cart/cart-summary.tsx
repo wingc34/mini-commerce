@@ -22,7 +22,7 @@ export function CartSummary({ total, setIsPending }: CartSummaryProps) {
     trpc.order.createOrder.useMutation();
 
   const onCreateOrder = useCallback(async () => {
-    if (!data?.user?.defaultAddressId) {
+    if (!data?.user?.defaultAddress.id) {
       toast.error(
         'Please set a default address in your profile before proceeding to checkout.'
       );
