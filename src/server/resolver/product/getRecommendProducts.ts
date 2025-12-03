@@ -29,7 +29,6 @@ export const getRecommendProducts = procedure.query(async ({}) => {
     return {
       success: false,
       data: [],
-      error: error,
     };
   }
 });
