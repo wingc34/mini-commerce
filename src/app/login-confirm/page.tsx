@@ -17,7 +17,7 @@ export default function LoginConfirmPage() {
       toast.error(message);
       return;
     }
-    redirect('http://localhost:3000/');
+    redirect('/');
   }, [mutateAsync, toast]);
 
   useEffect(() => {
