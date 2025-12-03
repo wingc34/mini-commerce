@@ -30,7 +30,8 @@ export function ProfileOverview({
 }: {
   setActiveTab: (tab: string) => void;
 }) {
-  const { data: user } = trpc.user.getUserInfo.useQuery();
+  const { data: user, isFetching: userInfoFetching } =
+    trpc.user.getUserInfo.useQuery();
   const userInfo = user?.data as UserInfo;
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(userInfo?.name);
@@ -67,8 +68,11 @@ export function ProfileOverview({
     }
   });
 
-  const { mutate: updateUserInfo, isSuccess } =
-    trpc.user.updateUserInfo.useMutation();
+  const {
+    mutate: updateUserInfo,
+    isSuccess,
+    isPending: updateUserInfoPending,
+  } = trpc.user.updateUserInfo.useMutation();
   const [updated, setUpdated] = useState(false);
 
   useEffect(() => {
@@ -83,7 +87,11 @@ export function ProfileOverview({
   }, [isSuccess]);
 
   return (
-    <div className="space-y-6">
+    <>
+      <LoadingOverlay
+        isLoading={userInfoFetching || updateUserInfoPending}
+        className="w-full h-full"
+      />
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-foreground">
@@ -222,6 +230,6 @@ export function ProfileOverview({
           </p>
         </div>
       </div>
-    </div>
+    </>
   );
 }

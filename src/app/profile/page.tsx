@@ -35,7 +35,7 @@ export default function ProfilePage({
           </div>
 
           {/* Main Content */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 space-y-6 relative min-h-[600px] p-4">
             {activeTab === 'overview' && (
               <ProfileOverview setActiveTab={handleTabChange} />
             )}

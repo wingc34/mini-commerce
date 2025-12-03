@@ -7,6 +7,7 @@ import { OrderStatus } from '@prisma/client';
 import { PaginationComponent } from '@/components/ui/PaginationComponent';
 import { useState } from 'react';
 import { pageItemSize } from '@/constant';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 interface Order {
   id: string;
@@ -20,7 +21,7 @@ function getStatusInfo(status: string) {
   switch (status) {
     case OrderStatus.PENDING:
       return {
-        label: 'Processing',
+        label: 'Pending',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
         icon: Package,
       };
@@ -48,12 +49,13 @@ function getStatusInfo(status: string) {
 export function OrderHistory() {
   const [page, setPage] = useState(1);
 
-  const { data } = trpc.order.getUserOrder.useQuery({ page: 1 });
+  const { data, isFetching } = trpc.order.getUserOrder.useQuery({ page: 1 });
   const order = data?.order as Order[] | undefined;
   const totalPages = Math.ceil((data?.orderCount || 0) / pageItemSize);
 
   return (
-    <div className="space-y-6">
+    <>
+      <LoadingOverlay isLoading={isFetching} className="w-full h-full" />
       <h2 className="text-2xl font-bold text-foreground">Order History</h2>
 
       <div className="space-y-4">
@@ -126,13 +128,13 @@ export function OrderHistory() {
             );
           })}
       </div>
-      {order && order.length > 0 && (
+      {order && order.length > 1 && (
         <PaginationComponent
           page={page}
           setPage={setPage}
           totalPages={totalPages}
         />
       )}
-    </div>
+    </>
   );
 }

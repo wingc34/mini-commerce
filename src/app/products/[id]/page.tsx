@@ -12,6 +12,7 @@ import copy from 'copy-to-clipboard';
 import { usePathname } from 'next/navigation';
 import { env } from '@/lib/env';
 import { useSession } from 'next-auth/react';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 export interface ProductDetail {
   id: string;
@@ -33,15 +34,16 @@ export default function ProductDetailPage({
 }) {
   const { id } = use(params);
   const { addToCart } = useCart();
-  const { data: session, update } = useSession();
+  const { data: session, update, status } = useSession();
   const pathname = usePathname();
 
   // trpc
-  const { data, isLoading } = trpc.product.getProductDetail.useQuery({
+  const { data, isFetching } = trpc.product.getProductDetail.useQuery({
     id: id,
   });
-  const { mutateAsync: addWishItem } = trpc.user.addWishItem.useMutation();
-  const { mutateAsync: removeWishItem } =
+  const { mutateAsync: addWishItem, isPending: addWishItemPending } =
+    trpc.user.addWishItem.useMutation();
+  const { mutateAsync: removeWishItem, isPending: removeWishItemPending } =
     trpc.user.removeWishItem.useMutation();
 
   const product = data?.data as ProductDetail;
@@ -75,11 +77,12 @@ export default function ProductDetailPage({
 
   const attr = product?.skus.map((item) => item.attributes);
 
-  const { data: stockData } = trpc.product.checkStock.useQuery({
-    productId: id,
-    size: selectedSize,
-    color: selectedColor,
-  });
+  const { data: stockData, isFetching: isFetchingStock } =
+    trpc.product.checkStock.useQuery({
+      productId: id,
+      size: selectedSize,
+      color: selectedColor,
+    });
 
   const [stockAvailable, setStockAvailable] = useState<{
     size: string[];
@@ -121,14 +124,14 @@ export default function ProductDetailPage({
     (product) => product.id === id
   );
 
-  return product && !isLoading ? (
+  return (
     <>
       {/* Product Detail */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {/* Images */}
           <div className="space-y-4">
-            <Carousel slides={product.images || []} />
+            <Carousel slides={product?.images || []} />
           </div>
 
           {/* Details */}
@@ -136,7 +139,7 @@ export default function ProductDetailPage({
             {/* Title & Rating */}
             <div>
               <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-                {product.name}
+                {product?.name}
               </h1>
             </div>
 
@@ -158,7 +161,7 @@ export default function ProductDetailPage({
 
             {/* Description */}
             <p className="text-muted-foreground text-lg">
-              {product.description}
+              {product?.description}
             </p>
 
             {/* Color Selection */}
@@ -354,9 +357,17 @@ export default function ProductDetailPage({
             </div>
           </div>
         </div>
+        <LoadingOverlay
+          isLoading={
+            isFetching ||
+            isFetchingStock ||
+            addWishItemPending ||
+            removeWishItemPending ||
+            status === 'loading'
+          }
+          className="w-full h-full"
+        />
       </div>
     </>
-  ) : (
-    <div>Loading...</div>
   );
 }
