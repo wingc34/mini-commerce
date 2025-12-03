@@ -7,6 +7,7 @@ import {
   PaymentElement,
 } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
+import { env } from '@/lib/env';
 
 const CheckoutPanel = ({
   amount,
@@ -53,7 +54,7 @@ const CheckoutPanel = ({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `http://localhost:3000/payment-success?amount=${amount}&orderId=${orderId}`,
+        return_url: `${env.NEXT_PUBLIC_BASE_URL}/payment-success?amount=${amount}&orderId=${orderId}`,
       },
     });
 
