@@ -6,6 +6,8 @@ import { useCart } from '@/store/cart-store';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { loadStripe } from '@stripe/stripe-js';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+import { useState } from 'react';
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined');
@@ -14,6 +16,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 export default function CartPage() {
   const { items, removeItem, updateQuantity } = useCart();
+  const [isPending, setIsPending] = useState(false);
 
   const totalPrice = items.reduce(
     (acc, item) => acc + item.sku.price * item.quantity,
@@ -53,7 +56,8 @@ export default function CartPage() {
           </div>
         </div>
       ) : (
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
+          <LoadingOverlay isLoading={isPending} className="w-full h-full" />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2">
@@ -84,7 +88,7 @@ export default function CartPage() {
 
             {/* Summary */}
             <div className="lg:col-span-1 space-y-4">
-              <CartSummary total={totalPrice} />
+              <CartSummary total={totalPrice} setIsPending={setIsPending} />
             </div>
           </div>
         </div>

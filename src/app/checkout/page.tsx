@@ -18,8 +18,8 @@ export default function CheckoutPage({
 }: {
   searchParams: Promise<{ orderId?: string }>;
 }) {
-  const { items } = useCart();
   const orderId = use(searchParams).orderId;
+  const { items } = useCart();
 
   if (items.length <= 0) {
     redirect('/');
