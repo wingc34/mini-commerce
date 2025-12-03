@@ -18,8 +18,8 @@ export default function CheckoutPage({
 }: {
   searchParams: Promise<{ orderId?: string }>;
 }) {
-  const { items } = useCart();
   const orderId = use(searchParams).orderId;
+  const { items } = useCart();
 
   if (items.length <= 0) {
     redirect('/');
@@ -37,7 +37,7 @@ export default function CheckoutPage({
       {/* Page Header */}
       <div className="border-b border-border">
         <div className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <h1 className="text-4xl font-bold text-textPrimary mb-2">結帳</h1>
+          <h1 className="text-4xl font-bold text-textPrimary mb-2">Checkout</h1>
         </div>
       </div>
 

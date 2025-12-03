@@ -58,44 +58,42 @@ export default function Navbar() {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="p-2 rounded-lg transition-smooth cursor-pointer"
+            className="rounded-lg transition-smooth cursor-pointer text-textPrimary"
             aria-label="Toggle theme"
           >
-            {isDark ? (
-              <Sun className="w-6 h-6 text-foreground" />
-            ) : (
-              <Moon className="w-6 h-6 text-foreground" />
-            )}
+            {isDark ? <Sun /> : <Moon />}
           </Button>
         )}
-        {session && status === 'authenticated' ? (
-          <div className="flex space-x-4 items-center">
-            <Button variant="ghost" size="icon">
-              <Link href="/cart">
-                <ShoppingCart className="w-6 h-6 text-foreground" />
-              </Link>
+        {status !== 'loading' ? (
+          session ? (
+            <div className="flex space-x-4 items-center">
+              <Button variant="ghost" size="icon" className="text-textPrimary">
+                <Link href="/cart">
+                  <ShoppingCart className="w-6 h-6" />
+                </Link>
+              </Button>
+              <Button variant="ghost" size="icon" className="text-textPrimary">
+                <Link href="/profile?tab=overview">
+                  <User />
+                </Link>
+              </Button>
+            </div>
+          ) : (
+            <Button asChild>
+              <Link href="/login">Login</Link>
             </Button>
-            <Button variant="ghost" size="icon">
-              <Link href="/profile?tab=overview">
-                <User className="w-6 h-6 text-foreground" />
-              </Link>
-            </Button>
-          </div>
-        ) : (
-          <Button asChild>
-            <Link href="/login">Login</Link>
-          </Button>
-        )}
+          )
+        ) : null}
       </div>
 
       {/* Mobile Menu */}
       <div className="md:hidden flex items-center">
         {session && status === 'authenticated' ? (
           <>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="text-textPrimary">
               <ShoppingCart />
             </Button>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="text-textPrimary">
               <Link href="/login">
                 <User />
               </Link>
@@ -108,17 +106,14 @@ export default function Navbar() {
         )}
         {/* Theme Toggle Button */}
         {mounted && (
-          <button
+          <Button
+            variant={'ghost'}
             onClick={toggleTheme}
             className="p-2 hover:bg-muted rounded-lg transition-smooth"
             aria-label="Toggle theme"
           >
-            {isDark ? (
-              <Sun className="w-6 h-6 text-foreground" />
-            ) : (
-              <Moon className="w-6 h-6 text-foreground" />
-            )}
-          </button>
+            {isDark ? <Sun /> : <Moon />}
+          </Button>
         )}
         <Sheet
           open={isMenuOpen}

@@ -7,6 +7,7 @@ import { useEffect, use } from 'react';
 import { trpc } from '@/trpc/client-api';
 import dayjs from 'dayjs';
 import { Button } from '@/components/ui/button';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 interface attribute {
   color: string;
@@ -48,7 +49,7 @@ export default function CheckoutSuccessPage({
   const { amount, orderId } = use(searchParams);
   const { clearCart } = useCart();
 
-  const { data: orderData } = trpc.order.getOrder.useQuery({
+  const { data: orderData, isFetching } = trpc.order.getOrder.useQuery({
     id: orderId || '',
   });
 
@@ -61,6 +62,7 @@ export default function CheckoutSuccessPage({
 
   return (
     <>
+      <LoadingOverlay isLoading={isFetching} className="w-full h-full" />
       {/* Success Content */}
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Success Header */}
@@ -159,7 +161,7 @@ export default function CheckoutSuccessPage({
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button>
             <Link
-              href="/profile?tab=orders"
+              href={`/profile/orders${orderId ? `/${orderId}` : ''}`}
               className="flex items-center justify-center gap-2"
             >
               <Clock className="w-5 h-5" />

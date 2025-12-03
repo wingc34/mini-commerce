@@ -6,15 +6,16 @@ import { Filter } from 'lucide-react';
 import { PaginationComponent } from '@/components/ui/PaginationComponent';
 import { useState } from 'react';
 import { trpc } from '@/trpc/client-api';
-import { pageItemSize } from '@/constant';
+import { productPageItemSize } from '@/constant';
 import { Product } from '@/components/products/ProductCard';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 export default function ProductsPage() {
   const [page, setPage] = useState(1);
-  const { data: products, isLoading } = trpc.product.getProducts.useQuery({
+  const { data: products, isFetching } = trpc.product.getProducts.useQuery({
     page: page,
   });
-  const totalPages = Math.ceil((products?.total || 0) / pageItemSize);
+  const totalPages = Math.ceil((products?.total || 0) / productPageItemSize);
 
   return (
     <>
@@ -57,7 +58,7 @@ export default function ProductsPage() {
             </aside> */}
 
             {/* Main Content */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 relative">
               {/* @TODO: Sort Options */}
               {/* <div className="flex items-center justify-between mb-8">
                 <p className="text-muted-foreground">顯示 8 件產品</p>
@@ -71,8 +72,8 @@ export default function ProductsPage() {
               </div> */}
 
               {/* Product Grid */}
-              {isLoading ? (
-                'loading'
+              {isFetching ? (
+                <LoadingOverlay isLoading className="w-full h-96" />
               ) : (
                 <>
                   <ProductGrid

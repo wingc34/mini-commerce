@@ -7,6 +7,7 @@ import {
 } from '@/components/profile/addressModal';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 export interface Address {
   id: string;
@@ -20,10 +21,14 @@ export interface Address {
 }
 
 export function Addresses() {
-  const { data, refetch } = trpc.user.getUserAddresses.useQuery();
-  const { mutateAsync: updateAddress } =
+  const {
+    data,
+    refetch,
+    isFetching: isAddressesFetching,
+  } = trpc.user.getUserAddresses.useQuery();
+  const { mutateAsync: updateAddress, isPending: updateAddressPending } =
     trpc.user.updateUserAddress.useMutation();
-  const { mutateAsync: deleteAddress } =
+  const { mutateAsync: deleteAddress, isPending: deleteAddressPending } =
     trpc.user.deleteUserAddress.useMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const addresses = data?.data as Address[];
@@ -64,27 +69,30 @@ export function Addresses() {
     }
   };
 
-  if (!data) {
-    return null;
-  }
   return (
     <>
-      <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-2xl font-bold text-foreground">
-            Shipping Addresses
-          </h2>
-          <Button
-            onClick={() => handleAddAddress()}
-            className="flex items-center gap-2 px-4 py-2  text-white rounded-lg transition-smooth font-medium cursor-pointer"
-          >
-            <Plus className="w-4 h-4" />
-            Add Address
-          </Button>
-        </div>
+      <LoadingOverlay
+        isLoading={
+          isAddressesFetching || updateAddressPending || deleteAddressPending
+        }
+        className="w-full h-full"
+      />
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-foreground">
+          Shipping Addresses
+        </h2>
+        <Button
+          onClick={() => handleAddAddress()}
+          className="flex items-center gap-2 px-4 py-2  text-white rounded-lg transition-smooth font-medium cursor-pointer"
+        >
+          <Plus className="w-4 h-4" />
+          Add Address
+        </Button>
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {addresses
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {addresses &&
+          addresses
             .sort((a) => (a.isDefault ? -1 : 1))
             .map((address) => (
               <div
@@ -141,7 +149,6 @@ export function Addresses() {
                 </div>
               </div>
             ))}
-        </div>
       </div>
       <AddressModal
         isOpen={isModalOpen}

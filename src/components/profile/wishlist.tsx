@@ -7,15 +7,20 @@ import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { trpc } from '@/trpc/client-api';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 export function Wishlist() {
-  const { data, update } = useSession();
+  const { data, update, status } = useSession();
   const router = useRouter();
-  const { mutateAsync: removeWishItem } =
+  const { mutateAsync: removeWishItem, isPending } =
     trpc.user.removeWishItem.useMutation();
 
   return (
-    <div className="space-y-6">
+    <>
+      <LoadingOverlay
+        isLoading={isPending || status === 'loading'}
+        className="w-full h-full"
+      />
       <h2 className="text-2xl font-bold text-textPrimary">Wishlist</h2>
 
       {data?.user &&
@@ -67,6 +72,6 @@ export function Wishlist() {
               ))}
           </div>
         ))}
-    </div>
+    </>
   );
 }

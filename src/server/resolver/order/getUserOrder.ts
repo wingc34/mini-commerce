@@ -2,7 +2,7 @@ import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
 import { getUserOrderZObject } from '@/server/types/order';
 import { UserContext } from '@/server/types/user';
-import { pageItemSize } from '@/constant';
+import { userOrderPageItemSize } from '@/constant';
 
 export const getUserOrder = procedure
   .input(getUserOrderZObject)
@@ -23,8 +23,8 @@ export const getUserOrder = procedure
             select: { items: true },
           },
         },
-        skip: 0 + (input.page - 1) * pageItemSize,
-        take: pageItemSize,
+        skip: 0 + (input.page - 1) * userOrderPageItemSize,
+        take: userOrderPageItemSize,
       });
 
       const orderCount = await prisma.order.count({

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useCart } from '@/store/cart-store';
 import { type SKU } from '@prisma/client';
 import { toast } from 'sonner';
+import { useSession } from 'next-auth/react';
 
 export interface Product {
   id: string;
@@ -27,6 +28,7 @@ export function ProductCard({ product }: { product: Product }) {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
   const { addToCart } = useCart();
+  const { data: session } = useSession();
 
   return (
     <div className="group">
@@ -53,14 +55,18 @@ export function ProductCard({ product }: { product: Product }) {
               className="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 transition-smooth cursor-pointer"
               onClick={(event) => {
                 event.stopPropagation();
-                toast.success(`${product.name} added to cart`);
-                addToCart({
-                  id: product.id,
-                  name: product.name,
-                  quantity: 1,
-                  image: product.images[0] || null,
-                  sku: product.skus[0],
-                });
+                if (!session?.user) {
+                  toast.info('Please login first');
+                } else {
+                  addToCart({
+                    id: product.id,
+                    name: product.name,
+                    quantity: 1,
+                    image: product.images[0] || null,
+                    sku: product.skus[0],
+                  });
+                  toast.success(`${product.name} added to cart`);
+                }
               }}
             >
               <ShoppingCart className="w-5 h-5" />

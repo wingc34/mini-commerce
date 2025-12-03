@@ -1,6 +1,6 @@
 import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
-import { pageItemSize } from '@/constant';
+import { productPageItemSize } from '@/constant';
 import { getProductsZObject } from '@/server/types/product';
 
 export const getProducts = procedure
@@ -8,8 +8,8 @@ export const getProducts = procedure
   .query(async ({ input }) => {
     try {
       const products = await prisma.product.findMany({
-        skip: 0 + (input.page - 1) * pageItemSize,
-        take: pageItemSize,
+        skip: 0 + (input.page - 1) * productPageItemSize,
+        take: productPageItemSize,
         include: {
           skus: {
             select: {

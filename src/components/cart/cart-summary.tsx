@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { trpc } from '@/trpc/client-api';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useCart } from '@/store/cart-store';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
@@ -10,14 +10,15 @@ import { useSession } from 'next-auth/react';
 
 interface CartSummaryProps {
   total: number;
+  setIsPending: (isPending: boolean) => void;
 }
 
-export function CartSummary({ total }: CartSummaryProps) {
+export function CartSummary({ total, setIsPending }: CartSummaryProps) {
   const { items } = useCart();
   const { push } = useRouter();
   const { data } = useSession();
 
-  const { mutateAsync: createOrder, error: createOrderError } =
+  const { mutateAsync: createOrder, isPending } =
     trpc.order.createOrder.useMutation();
 
   const onCreateOrder = useCallback(async () => {
@@ -41,8 +42,13 @@ export function CartSummary({ total }: CartSummaryProps) {
       toast.error('failed to create order');
     }
   }, [total, createOrder, items, push, data]);
+
+  useEffect(() => {
+    setIsPending(isPending);
+  }, [isPending, setIsPending]);
+
   return (
-    <div className="bg-muted rounded-lg p-6 space-y-4">
+    <div className="bg-muted rounded-lg p-6 space-y-4 relative">
       <h3 className="font-semibold text-textPrimary text-lg">Order Summary</h3>
 
       <div className="flex justify-between items-center">

@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { use } from 'react';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 interface OrderItem {
   id: string;
@@ -45,10 +46,10 @@ function getStatusInfo(status: string) {
   switch (status) {
     case OrderStatus.PENDING:
       return {
-        label: 'Processing',
+        label: 'Pending',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
         icon: Package,
-        description: "Your order is being prepared. We'll ship it soon.",
+        description: "Your order is being processed. We'll update you soon.",
       };
     case OrderStatus.PAID:
       return {
@@ -89,10 +90,10 @@ export default function OrderDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { data } = trpc.order.getOrderDetail.useQuery({ id });
+  const { data, isFetching } = trpc.order.getOrderDetail.useQuery({ id });
   const orderDetail = data?.data as OrderDetail | undefined;
 
-  if (!orderDetail) {
+  if (!orderDetail && !isFetching) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
@@ -114,7 +115,7 @@ export default function OrderDetailPage({
     );
   }
 
-  const statusInfo = getStatusInfo(orderDetail.status);
+  const statusInfo = getStatusInfo(orderDetail?.status || '');
   const StatusIcon = statusInfo.icon;
 
   return (
@@ -137,11 +138,12 @@ export default function OrderDetailPage({
       </div>
 
       {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 relative">
+        <LoadingOverlay isLoading={isFetching} className="w-full h-full" />
         {/* Status Section */}
         <div className={`rounded-lg border p-6 mb-8 ${statusInfo.color}`}>
           <div className="flex items-start gap-4">
-            <StatusIcon className="w-6 h-6 flex-shrink-0 mt-0.5" />
+            <StatusIcon className="w-6 h-6 shrink-0 mt-0.5" />
             <div>
               <h2 className="text-xl font-semibold mb-1">{statusInfo.label}</h2>
               <p className="text-sm">{statusInfo.description}</p>

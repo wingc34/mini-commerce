@@ -6,10 +6,11 @@ import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { Product, ProductCard } from '@/components/products/ProductCard';
 import { ArrowRight } from 'lucide-react';
+import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 export function FeaturedProducts() {
   const router = useRouter();
-  const { data: products, isLoading } =
+  const { data: products, isFetching } =
     trpc.product.getRecommendProducts.useQuery();
 
   return (
@@ -23,13 +24,14 @@ export function FeaturedProducts() {
           prices
         </p>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {isLoading
-          ? 'loading'
-          : (products?.data as unknown as Product[])?.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative min-h-64">
+        {isFetching ? (
+          <LoadingOverlay isLoading className="w-full h-full" />
+        ) : (
+          (products?.data as unknown as Product[])?.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))
+        )}
       </div>
 
       <div className="text-center mt-12">
