@@ -9,7 +9,7 @@ export const deleteUserAddress = procedure
   .input(deleteUserAddressZObject)
   .mutation(async ({ input, ctx }) => {
     try {
-      await prisma.address.update({
+      const deletedAddress = await prisma.address.update({
         where: {
           userId: (ctx as UserContext).session.user.id,
           id: input.id,
@@ -18,6 +18,26 @@ export const deleteUserAddress = procedure
           deletedAt: new Date(),
         },
       });
+
+      if (deletedAddress.isDefault) {
+        const address = await prisma.address.findFirst({
+          where: {
+            userId: (ctx as UserContext).session.user.id,
+            isDefault: false,
+          },
+        });
+        if (address) {
+          await prisma.address.update({
+            where: {
+              userId: (ctx as UserContext).session.user.id,
+              id: address.id,
+            },
+            data: {
+              isDefault: true,
+            },
+          });
+        }
+      }
 
       return {
         success: true,
