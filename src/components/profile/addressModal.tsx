@@ -193,6 +193,7 @@ export function AddressModal({
               onCheckedChange={(checked) =>
                 setValue('isDefault', !!checked, { shouldValidate: true })
               }
+              disabled={initialData?.isDefault ? true : false}
             />
             <Label
               htmlFor="isDefault"
