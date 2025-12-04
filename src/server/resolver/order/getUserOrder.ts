@@ -25,6 +25,9 @@ export const getUserOrder = procedure
         },
         skip: 0 + (input.page - 1) * userOrderPageItemSize,
         take: userOrderPageItemSize,
+        orderBy: {
+          createdAt: 'desc',
+        },
       });
 
       const orderCount = await prisma.order.count({

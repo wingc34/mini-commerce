@@ -59,77 +59,73 @@ export function OrderHistory() {
       <div className="space-y-4">
         {order &&
           order?.length > 0 &&
-          order
-            ?.sort((a, b) => b.createdAt.localeCompare(a.createdAt))
-            .map((order) => {
-              const statusInfo = getStatusInfo(order.status);
-              const StatusIcon = statusInfo.icon;
+          order.map((order) => {
+            const statusInfo = getStatusInfo(order.status);
+            const StatusIcon = statusInfo.icon;
 
-              return (
-                <Item key={order.id}>
-                  <ItemContent>
-                    <div className="rounded-lg border border-border p-6 hover:border-primary transition-smooth">
-                      <div className="flex items-center justify-between mb-4">
-                        <div>
-                          <p className="text-sm text-textSecondary mb-1">
-                            Order Number
-                          </p>
-                          <p className="font-semibold text-foreground">
-                            {order.id}
-                          </p>
-                        </div>
-                        <div
-                          className={`flex items-center gap-2 px-3 py-1 rounded-full border ${statusInfo.color}`}
-                        >
-                          <StatusIcon className="w-4 h-4" />
-                          <span className="text-sm font-medium">
-                            {statusInfo.label}
-                          </span>
-                        </div>
+            return (
+              <Item key={order.id}>
+                <ItemContent>
+                  <div className="rounded-lg border border-border p-6 hover:border-primary transition-smooth">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <p className="text-sm text-textSecondary mb-1">
+                          Order Number
+                        </p>
+                        <p className="font-semibold text-foreground">
+                          {order.id}
+                        </p>
                       </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
-                        <div>
-                          <p className="text-xs text-textSecondary mb-1">
-                            Order Date
-                          </p>
-                          <p className="text-sm font-medium text-foreground">
-                            {dayjs(order.createdAt).format('YYYY-MM-DD HH:mm')}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-textSecondary mb-1">
-                            Items
-                          </p>
-                          <p className="text-sm font-medium text-foreground">
-                            {order.itemCount} item
-                            {order.itemCount > 1 ? 's' : ''}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs text-textSecondary mb-1">
-                            Order Total
-                          </p>
-                          <p className="text-sm font-bold text-primary">
-                            HKD${order.total.toLocaleString()}
-                          </p>
-                        </div>
-                        <ItemActions className="flex items-end">
-                          <Link
-                            className="flex items-center gap-1 text-primary hover:text-primary-dark transition-smooth font-medium"
-                            key={order.id}
-                            href={`/profile/orders/${order.id}`}
-                          >
-                            View Details
-                            <ChevronRight className="w-4 h-4" />
-                          </Link>
-                        </ItemActions>
+                      <div
+                        className={`flex items-center gap-2 px-3 py-1 rounded-full border ${statusInfo.color}`}
+                      >
+                        <StatusIcon className="w-4 h-4" />
+                        <span className="text-sm font-medium">
+                          {statusInfo.label}
+                        </span>
                       </div>
                     </div>
-                  </ItemContent>
-                </Item>
-              );
-            })}
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                      <div>
+                        <p className="text-xs text-textSecondary mb-1">
+                          Order Date
+                        </p>
+                        <p className="text-sm font-medium text-foreground">
+                          {dayjs(order.createdAt).format('YYYY-MM-DD HH:mm')}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-textSecondary mb-1">Items</p>
+                        <p className="text-sm font-medium text-foreground">
+                          {order.itemCount} item
+                          {order.itemCount > 1 ? 's' : ''}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-textSecondary mb-1">
+                          Order Total
+                        </p>
+                        <p className="text-sm font-bold text-primary">
+                          HKD${order.total.toLocaleString()}
+                        </p>
+                      </div>
+                      <ItemActions className="flex items-end">
+                        <Link
+                          className="flex items-center gap-1 text-primary hover:text-primary-dark transition-smooth font-medium"
+                          key={order.id}
+                          href={`/profile/orders/${order.id}`}
+                        >
+                          View Details
+                          <ChevronRight className="w-4 h-4" />
+                        </Link>
+                      </ItemActions>
+                    </div>
+                  </div>
+                </ItemContent>
+              </Item>
+            );
+          })}
       </div>
       {order && order.length > 1 && (
         <PaginationComponent

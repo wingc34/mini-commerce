@@ -15,7 +15,7 @@ export const createOrder = procedure
           userId: context.session.user.id,
           total: input.total,
           status: OrderStatus.PENDING,
-          shippingAddressId: context.session.user.defaultAddress.id,
+          shippingAddressId: input.shippingAddressId,
         },
       });
 

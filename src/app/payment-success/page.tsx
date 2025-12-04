@@ -8,37 +8,39 @@ import { trpc } from '@/trpc/client-api';
 import dayjs from 'dayjs';
 import { Button } from '@/components/ui/button';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+import { OrderStatus } from '@prisma/client';
 
 interface attribute {
   color: string;
   size: string;
 }
 
-interface OrderItem {
-  id: string;
-  name: string;
-  quantity: number;
-  image: string;
-  sku: {
-    skuId: string;
-    price: number;
-    attributes: attribute;
-    product: {
+interface OrderDetail {
+  items: {
+    sku: {
+      image: string;
       name: string;
+      skuCode: string;
+      price: number;
+      attributes: attribute;
     };
+    id: string;
+    price: number;
+    quantity: number;
+  }[];
+  shippingAddress?: {
+    id: string;
+    fullName: string;
+    phone: string;
+    line1: string;
+    city: string;
+    postal: string;
+    country: string;
   };
-}
-
-interface shippingAddress {
-  id: string;
-  fullName: string;
-  phone: string;
-  line1: string;
-  line2: string | null;
-  city: string;
-  state: string | null;
-  postal: string;
-  country: string;
+  id?: string;
+  createdAt?: Date;
+  total?: number;
+  status?: OrderStatus;
 }
 
 export default function CheckoutSuccessPage({
@@ -49,12 +51,15 @@ export default function CheckoutSuccessPage({
   const { amount, orderId } = use(searchParams);
   const { clearCart } = useCart();
 
-  const { data: orderData, isFetching } = trpc.order.getOrder.useQuery({
+  const { data: orderData, isFetching } = trpc.order.getOrderDetail.useQuery({
     id: orderId || '',
   });
 
-  const shippingaddress = orderData?.shippingAddress as shippingAddress;
-  const orderItem = orderData?.orderItem as unknown as OrderItem[];
+  const orderDetail = orderData?.data as OrderDetail;
+
+  const shippingaddress =
+    orderDetail?.shippingAddress as OrderDetail['shippingAddress'];
+  const orderItem = orderDetail?.items as OrderDetail['items'];
 
   useEffect(() => {
     clearCart();
@@ -107,31 +112,34 @@ export default function CheckoutSuccessPage({
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground">Order Items</h3>
             <div className="space-y-3">
-              {orderItem?.length > 0 &&
+              {orderItem &&
+                orderItem?.length > 0 &&
                 orderItem.map((item, idx) => {
                   return (
-                    <div
-                      className="flex items-center justify-between p-4 bg-muted rounded-lg"
-                      key={`${item.sku.product.name}-${idx}`}
-                    >
-                      <div>
-                        <p className="font-medium text-foreground">
-                          {item.sku.product.name}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          quantity: {item.quantity}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          color: {item.sku.attributes.color}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          size: {item.sku.attributes.size}
+                    item.sku && (
+                      <div
+                        className="flex items-center justify-between p-4 bg-muted rounded-lg"
+                        key={`${item.sku.name}-${idx}`}
+                      >
+                        <div>
+                          <p className="font-medium text-foreground">
+                            {item.sku.name}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            quantity: {item.quantity}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            color: {item.sku.attributes.color}
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            size: {item.sku.attributes.size}
+                          </p>
+                        </div>
+                        <p className="font-semibold text-foreground">
+                          HKD${item.sku.price}
                         </p>
                       </div>
-                      <p className="font-semibold text-foreground">
-                        HKD${item.sku.price}
-                      </p>
-                    </div>
+                    )
                   );
                 })}
             </div>
@@ -149,8 +157,8 @@ export default function CheckoutSuccessPage({
               <p className="font-medium text-foreground">
                 {shippingaddress?.fullName}
               </p>
-              <p>{`${shippingaddress?.line2} ${shippingaddress?.line1}`}</p>
-              <p>{`${shippingaddress?.city} ${shippingaddress?.state} ${shippingaddress?.postal}`}</p>
+              <p>{shippingaddress?.line1}</p>
+              <p>{`${shippingaddress?.city} ${shippingaddress?.postal}`}</p>
               <p>{shippingaddress?.country}</p>
               <p>{shippingaddress?.phone}</p>
             </div>
