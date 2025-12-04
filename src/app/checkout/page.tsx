@@ -5,22 +5,17 @@ import CheckoutPanel from '@/components/checkout/CheckoutPanel';
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 import { useTheme } from '@/lib/theme-provider';
-import { redirect } from 'next/navigation';
-import { use } from 'react';
+import { redirect, useSearchParams } from 'next/navigation';
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined');
 }
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
-export default function CheckoutPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ orderId?: string }>;
-}) {
-  const orderId = use(searchParams).orderId;
+export default function CheckoutPage() {
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('orderId');
   const { items } = useCart();
-  console.log('orderId', orderId);
 
   if (items.length <= 0) {
     redirect('/');

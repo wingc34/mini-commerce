@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { Button } from '@/components/ui/button';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { OrderStatus } from '@prisma/client';
+import { useSearchParams } from 'next/navigation';
 
 interface attribute {
   color: string;
@@ -43,12 +44,10 @@ interface OrderDetail {
   status?: OrderStatus;
 }
 
-export default function CheckoutSuccessPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ amount?: string; orderId?: string }>;
-}) {
-  const { amount, orderId } = use(searchParams);
+export default function CheckoutSuccessPage() {
+  const searchParams = useSearchParams();
+  const amount = searchParams.get('amount');
+  const orderId = searchParams.get('orderId');
   const { clearCart } = useCart();
 
   const { data: orderData, isFetching } = trpc.order.getOrderDetail.useQuery({

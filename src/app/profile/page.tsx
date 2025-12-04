@@ -6,14 +6,11 @@ import { OrderHistory } from '@/components/profile/order-history';
 import { Addresses } from '@/components/profile/addresses';
 import { Wishlist } from '@/components/profile/wishlist';
 import { use, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function ProfilePage({
-  searchParams,
-}: {
-  searchParams: Promise<{ tab?: string }>;
-}) {
-  const tab = use(searchParams).tab || 'overview';
+export default function ProfilePage() {
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab') || 'overview';
   const [activeTab, setActiveTab] = useState(tab);
   const router = useRouter();
   const handleTabChange = (tab: string) => {
