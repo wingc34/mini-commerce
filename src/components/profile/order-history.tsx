@@ -127,7 +127,7 @@ export function OrderHistory() {
             );
           })}
       </div>
-      {order && order.length > 1 && (
+      {order && order.length > 0 && (
         <PaginationComponent
           page={page}
           setPage={setPage}

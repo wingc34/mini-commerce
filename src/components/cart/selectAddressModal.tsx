@@ -74,7 +74,7 @@ export function SelectAddressModal({
 
                         {address.isDefault && (
                           <div className="mb-4">
-                            <span className="inline-block bg-secondary text-gray-900 px-3 py-1 rounded-full text-xs font-semibold">
+                            <span className="inline-block bg-secondary text-gray-900 px-3 py-1 rounded-full text-xs font-semibold text-center">
                               Default Address
                             </span>
                           </div>

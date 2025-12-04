@@ -11,6 +11,7 @@ import {
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { signOut } from 'next-auth/react';
+import { useCart } from '@/store/cart-store';
 
 interface ProfileSidebarProps {
   activeTab: string;
@@ -29,6 +30,7 @@ export function ProfileSidebar({
   onTabChange,
 }: ProfileSidebarProps) {
   const [isExpanded, setIsExpanded] = useState(false);
+  const { clearCart } = useCart();
 
   return (
     <div className="rounded-lg border border-border h-fit sticky top-20">
@@ -74,7 +76,10 @@ export function ProfileSidebar({
 
         <div className="border-t border-border mt-6 pt-6">
           <Button
-            onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}
+            onClick={() => {
+              clearCart();
+              signOut({ callbackUrl: '/' });
+            }}
             variant={'ghost'}
             className="w-full flex justify-start gap-3 px-6 rounded-lg text-red-600 hover:text-red-600 transition-smooth cursor-pointer"
           >

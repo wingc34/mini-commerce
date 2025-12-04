@@ -5,7 +5,7 @@ import { ProfileOverview } from '@/components/profile/profile-overview';
 import { OrderHistory } from '@/components/profile/order-history';
 import { Addresses } from '@/components/profile/addresses';
 import { Wishlist } from '@/components/profile/wishlist';
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function ProfilePage() {
