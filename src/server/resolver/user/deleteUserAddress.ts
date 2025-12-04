@@ -20,10 +20,12 @@ export const deleteUserAddress = procedure
       });
 
       if (deletedAddress.isDefault) {
+        // If the deleted address was default, set another address as default
         const address = await prisma.address.findFirst({
           where: {
             userId: (ctx as UserContext).session.user.id,
             isDefault: false,
+            deletedAt: null,
           },
         });
         if (address) {
