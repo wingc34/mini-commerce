@@ -21,6 +21,7 @@ model User {
 
   addresses Address[]
   orders    Order[]
+  draftOrders    DraftOrder[]
   wishlist Product[]
 }
 
@@ -47,6 +48,7 @@ model Address {
   deletedAt DateTime?
 
   orders    Order[]
+  draftOrders DraftOrder[]
 }
 
 // ----------------------
@@ -80,6 +82,7 @@ model SKU {
   updatedAt   DateTime   @updatedAt
 
   orderItems  OrderItem[]
+  draftOrderItems DraftOrderItem[]
 }
 
 // ----------------------
@@ -123,4 +126,42 @@ enum OrderStatus {
   SHIPPED
   COMPLETED
   CANCELED
+}
+
+model DraftOrder {
+  id                String       @id @default(cuid())
+  user              User         @relation(fields: [userId], references: [id])
+  userId            String
+
+  items             DraftOrderItem[] 
+  total             Int          
+  status            DraftStatus  @default(PENDING_PAYMENT) 
+
+  shippingAddress   Address      @relation(fields: [shippingAddressId], references: [id])
+  shippingAddressId String
+  
+  paymentIntentId   String?
+  stripeSessionId   String?
+
+  createdAt         DateTime     @default(now())
+  expiresAt         DateTime?     
+}
+
+model DraftOrderItem {
+  id             String  @id @default(cuid())
+  draftOrder     DraftOrder @relation(fields: [draftOrderId], references: [id])
+  draftOrderId   String
+
+  sku            SKU     @relation(fields: [skuId], references: [id])
+  skuId          String
+
+  quantity       Int
+  price          Int     // price at the moment of purchase (for history)
+}
+
+enum DraftStatus {
+  PENDING_PAYMENT 
+  PAYMENT_FAILED  
+  COMPLETED       
+  EXPIRED         
 }
