@@ -45,16 +45,10 @@ async function main() {
           line2: faker.datatype.boolean()
             ? faker.location.secondaryAddress()
             : null,
-          city: faker.helpers.arrayElement([
-            '台北市',
-            '新北市',
-            '桃園市',
-            '台中市',
-            '高雄市',
-          ]),
+          city: faker.location.city(),
           state: null,
-          postal: faker.location.zipCode('#####'),
-          country: 'Taiwan',
+          postal: faker.location.zipCode('######'),
+          country: faker.location.country(),
           isDefault: isDefault,
         },
       });
@@ -93,7 +87,7 @@ async function main() {
         data: {
           productId: product.id,
           skuCode: faker.string.alphanumeric(10).toUpperCase(),
-          price: faker.number.int({ min: 10, max: 100 }),
+          price: faker.number.int({ min: 10, max: 1000 }),
           stock: faker.number.int({ min: 0, max: 200 }),
           attributes: {
             size: faker.helpers.arrayElement(['S', 'M', 'L', 'XL']),

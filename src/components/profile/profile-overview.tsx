@@ -187,9 +187,20 @@ export function ProfileOverview({
             <div>
               <p className="text-sm text-textSecondary mb-1">Default Address</p>
               {userInfo && userInfo?.addresses.length > 0 ? (
-                <p className="font-medium text-foreground">
-                  {userInfo.addresses[0].city}
-                </p>
+                <>
+                  <p className="font-semibold text-textPrimary">
+                    {userInfo.addresses[0].fullName}
+                  </p>
+                  <p className="text-sm text-textPrimary">
+                    {userInfo.addresses[0].phone}
+                  </p>
+                  <p className="text-sm text-textPrimary">
+                    {`${userInfo.addresses[0].line1}, ${userInfo.addresses[0].postal}`}
+                  </p>
+                  <p className="text-sm text-textPrimary">
+                    {`${userInfo.addresses[0].city} ${userInfo.addresses[0].country}`}
+                  </p>
+                </>
               ) : (
                 <Button
                   className="cursor-pointer"

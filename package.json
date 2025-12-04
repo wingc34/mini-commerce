@@ -4,13 +4,13 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "yarn prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
     "lint:prettier": "find ./src -type f \\( -iname '*.ts' -o -iname '*.tsx' \\) -exec prettier --write '{}' +",
     "typecheck": "tsc --noEmit",
-    "postinstall": "husky"
+    "postinstall": "husky && yarn prisma generate"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": [

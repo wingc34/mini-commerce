@@ -93,7 +93,9 @@ export default function CheckoutSuccessPage() {
           <div className="grid grid-cols-2 gap-6 mb-8 pb-8 border-b border-border">
             <div>
               <p className="text-sm text-muted-foreground mb-1">Order Number</p>
-              <p className="text-xl font-bold text-foreground">{orderId}</p>
+              <p className="text-xl font-bold text-foreground break-all">
+                {orderId}
+              </p>
             </div>
             <div>
               <p className="text-sm text-muted-foreground mb-1">Order Date</p>
