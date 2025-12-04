@@ -85,9 +85,11 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="flex items-center gap-2">
         <span className="text-lg font-bold">
           HKD$
-          {product.skus.reduce((min, current) => {
-            return current.price < min.price ? current : min;
-          }).price / 100}
+          {
+            product.skus.reduce((min, current) => {
+              return current.price < min.price ? current : min;
+            }).price
+          }
         </span>
       </div>
     </div>

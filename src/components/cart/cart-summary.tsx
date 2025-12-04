@@ -22,7 +22,7 @@ export function CartSummary({ total, setIsPending }: CartSummaryProps) {
     trpc.order.createOrder.useMutation();
 
   const onCreateOrder = useCallback(async () => {
-    if (!data?.user?.defaultAddressId) {
+    if (!data?.user?.defaultAddress.id) {
       toast.error(
         'Please set a default address in your profile before proceeding to checkout.'
       );
@@ -54,7 +54,7 @@ export function CartSummary({ total, setIsPending }: CartSummaryProps) {
       <div className="flex justify-between items-center">
         <span className="font-semibold text-textPrimary">Total</span>
         <span className="text-2xl font-bold text-primary">
-          HKD${(total / 100).toLocaleString()}
+          HKD${total.toLocaleString()}
         </span>
       </div>
 

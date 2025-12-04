@@ -44,7 +44,7 @@ export function CartItem({
           {name}
         </h3>
         <p className="text-lg font-bold text-textPrimary">
-          HKD${(price / 100).toLocaleString()}
+          HKD${price.toLocaleString()}
         </p>
         {/* SKU */}
         <p className="text-sm text-textSecondary">color: {sku.color}</p>
@@ -71,7 +71,7 @@ export function CartItem({
       {/* Total */}
       <div className="text-right min-w-fit">
         <p className="text-lg font-bold text-textPrimary">
-          HKD${((price / 100) * quantity).toLocaleString()}
+          HKD${(price * quantity).toLocaleString()}
         </p>
         <p className="text-sm text-textSecondary">
           {quantity} item{quantity !== 1 ? 's' : ''}

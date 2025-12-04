@@ -28,13 +28,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
               },
               select: {
                 id: true,
+                fullName: true,
+                phone: true,
+                city: true,
+                country: true,
+                line1: true,
+                postal: true,
               },
             },
           },
         });
         if (dbUser) {
           session.user.id = dbUser.id;
-          session.user.defaultAddressId = dbUser.addresses[0]?.id || '';
+          session.user.defaultAddress = dbUser.addresses[0];
           session.user.wishlist = dbUser.wishlist.map((product) => ({
             id: product.id,
             name: product.name,

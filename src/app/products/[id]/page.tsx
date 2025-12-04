@@ -147,7 +147,7 @@ export default function ProductDetailPage({
             <div className="space-y-2">
               <div className="flex items-center gap-4">
                 <span className="text-4xl font-bold text-foreground">
-                  HKD${(price / 100).toLocaleString()}
+                  HKD${price.toLocaleString()}
                 </span>
               </div>
               {selectedColor !== '' || selectedSize !== '' ? (
@@ -306,10 +306,14 @@ export default function ProductDetailPage({
               <Button
                 variant={'outline'}
                 onClick={() => {
-                  if (isWishlisted) {
-                    handleRemoveWishItem(id);
+                  if (!session?.user) {
+                    toast.info('Please login first');
                   } else {
-                    handleAddWishItem(id);
+                    if (isWishlisted) {
+                      handleRemoveWishItem(id);
+                    } else {
+                      handleAddWishItem(id);
+                    }
                   }
                 }}
                 className={`w-14 h-14 border-2 flex items-center justify-center transition-smooth cursor-pointer hover:border-primary ${
