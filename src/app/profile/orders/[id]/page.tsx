@@ -245,7 +245,7 @@ export default function OrderDetailPage({
                   {orderDetail?.shippingAddress.phone}
                 </p>
                 <div className="bg-muted p-3 rounded-lg mt-3 text-foreground">
-                  <p>{`${orderDetail?.shippingAddress.line1} ${orderDetail?.shippingAddress.line2 ?? ''}`}</p>
+                  <p>{`${orderDetail?.shippingAddress.line1}`}</p>
                   <p className="mt-1">
                     {orderDetail?.shippingAddress.city}{' '}
                     {orderDetail?.shippingAddress.postal}

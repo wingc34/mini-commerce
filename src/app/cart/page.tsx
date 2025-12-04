@@ -204,7 +204,11 @@ export default function CartPage() {
                   <div>Add new address</div>
                 </div>
               )}
-              <CartSummary total={totalPrice} setIsPending={setIsPending} />
+              <CartSummary
+                total={totalPrice}
+                shippingAddressId={selectedAddress?.id || ''}
+                setIsPending={setIsPending}
+              />
             </div>
           </div>
           <SelectAddressModal

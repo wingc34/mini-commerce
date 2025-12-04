@@ -6,23 +6,24 @@ import { useCallback, useEffect } from 'react';
 import { useCart } from '@/store/cart-store';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
 interface CartSummaryProps {
   total: number;
+  shippingAddressId: string;
   setIsPending: (isPending: boolean) => void;
 }
 
-export function CartSummary({ total, setIsPending }: CartSummaryProps) {
+export function CartSummary({
+  total,
+  shippingAddressId,
+  setIsPending,
+}: CartSummaryProps) {
   const { items } = useCart();
   const { push } = useRouter();
-  const { data } = useSession();
-
   const { mutateAsync: createOrder, isPending } =
     trpc.order.createOrder.useMutation();
-
   const onCreateOrder = useCallback(async () => {
-    if (!data?.user?.defaultAddress.id) {
+    if (!shippingAddressId) {
       toast.error(
         'Please set a default address in your profile before proceeding to checkout.'
       );
@@ -30,6 +31,7 @@ export function CartSummary({ total, setIsPending }: CartSummaryProps) {
     }
     const { success, id } = await createOrder({
       total: total,
+      shippingAddressId: shippingAddressId,
       orderItem: items.map((item) => ({
         skuId: item.sku.id,
         quantity: item.quantity,
@@ -41,7 +43,7 @@ export function CartSummary({ total, setIsPending }: CartSummaryProps) {
     } else {
       toast.error('failed to create order');
     }
-  }, [total, createOrder, items, push, data]);
+  }, [total, createOrder, items, push, shippingAddressId]);
 
   useEffect(() => {
     setIsPending(isPending);
