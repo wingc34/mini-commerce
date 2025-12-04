@@ -11,6 +11,7 @@ export const getUserAddresses = procedure
       const addresses = await prisma.address.findMany({
         where: {
           userId: userId,
+          deletedAt: null,
         },
         omit: {
           userId: true,
