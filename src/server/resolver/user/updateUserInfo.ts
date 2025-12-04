@@ -2,8 +2,10 @@ import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
 import { updateUserInfoZObject } from '@/server/types/user';
 import { UserContext } from '@/server/types/user';
+import { authMiddleware } from '@/server/middleware/authMiddleware';
 
 export const updateUserInfo = procedure
+  .use(authMiddleware)
   .input(updateUserInfoZObject)
   .mutation(async ({ input, ctx }) => {
     try {

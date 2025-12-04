@@ -3,8 +3,10 @@ import prisma from '@/lib/prisma';
 import { getUserOrderZObject } from '@/server/types/order';
 import { UserContext } from '@/server/types/user';
 import { userOrderPageItemSize } from '@/constant';
+import { authMiddleware } from '@/server/middleware/authMiddleware';
 
 export const getUserOrder = procedure
+  .use(authMiddleware)
   .input(getUserOrderZObject)
   .query(async ({ input, ctx }) => {
     try {

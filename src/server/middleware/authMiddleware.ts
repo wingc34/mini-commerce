@@ -1,28 +1,22 @@
 import { TRPCError } from '@trpc/server';
 import prisma from '@/lib/prisma';
 import { middleware } from '@/server/trpc';
-import { Session } from 'next-auth';
+import { UserContext } from '@/server/types/user';
 
 export const authMiddleware = middleware(async ({ next, ctx }) => {
-  const session = ctx as Session;
+  const context = ctx as UserContext;
   try {
-    if (!session || !session.user) {
+    if (!context.session || !context.session.user) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
-
     const userExists = await prisma.user.findUnique({
-      where: { id: session.user.id },
+      where: { id: context.session.user.id },
     });
     if (!userExists) {
       throw new TRPCError({ code: 'UNAUTHORIZED' });
     }
 
-    return next({
-      ctx: {
-        // infers the `session` as non-nullable
-        session: { ...session, userId: session?.user.id as string },
-      },
-    });
+    return next();
   } catch (error) {
     console.error('error', error);
     throw new TRPCError({ code: 'UNAUTHORIZED' });

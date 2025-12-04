@@ -1,8 +1,10 @@
 import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
 import { addWishItemZObject, UserContext } from '@/server/types/user';
+import { authMiddleware } from '@/server/middleware/authMiddleware';
 
 export const addWishItem = procedure
+  .use(authMiddleware)
   .input(addWishItemZObject)
   .mutation(async ({ input, ctx }) => {
     try {

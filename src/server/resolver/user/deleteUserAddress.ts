@@ -2,8 +2,10 @@ import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
 import { deleteUserAddressZObject } from '@/server/types/user';
 import { UserContext } from '@/server/types/user';
+import { authMiddleware } from '@/server/middleware/authMiddleware';
 
 export const deleteUserAddress = procedure
+  .use(authMiddleware)
   .input(deleteUserAddressZObject)
   .mutation(async ({ input, ctx }) => {
     try {
