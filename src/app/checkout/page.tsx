@@ -20,6 +20,7 @@ export default function CheckoutPage({
 }) {
   const orderId = use(searchParams).orderId;
   const { items } = useCart();
+  console.log('orderId', orderId);
 
   if (items.length <= 0) {
     redirect('/');

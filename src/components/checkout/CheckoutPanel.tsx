@@ -21,6 +21,7 @@ const CheckoutPanel = ({
   const [errorMessage, setErrorMessage] = useState<string>();
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(false);
+  console.log('orderId in checkout panel', orderId);
 
   useEffect(() => {
     fetch('/api/create-payment-intent', {
