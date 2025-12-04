@@ -93,7 +93,7 @@ async function main() {
         data: {
           productId: product.id,
           skuCode: faker.string.alphanumeric(10).toUpperCase(),
-          price: faker.number.int({ min: 500, max: 50000 }),
+          price: faker.number.int({ min: 10, max: 100 }),
           stock: faker.number.int({ min: 0, max: 200 }),
           attributes: {
             size: faker.helpers.arrayElement(['S', 'M', 'L', 'XL']),

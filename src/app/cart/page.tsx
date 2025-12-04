@@ -1,9 +1,10 @@
 'use client';
 
+import { Address } from './type';
 import { CartItem } from '@/components/cart/cart-item';
 import { CartSummary } from '@/components/cart/cart-summary';
 import { useCart } from '@/store/cart-store';
-import { Edit2, MapPin, MousePointer, ShoppingCart, Plus } from 'lucide-react';
+import { Edit2, MapPin, ShoppingCart, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { useState } from 'react';
@@ -14,23 +15,7 @@ import {
   AddressModal,
   type AddressFormData,
 } from '@/components/profile/addressModal';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
-
-interface Address {
-  id: string;
-  phone: string;
-  city: string;
-  country: string;
-  fullName: string;
-  line1: string;
-  postal: string;
-  isDefault: boolean;
-}
+import { SelectAddressModal } from '@/components/cart/selectAddressModal';
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined');
@@ -127,7 +112,10 @@ export default function CartPage() {
         </div>
       ) : (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-          <LoadingOverlay isLoading={isPending} className="w-full h-full" />
+          <LoadingOverlay
+            isLoading={isPending || isAddressesFetching || updateAddressPending}
+            className="w-full h-full"
+          />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2">
@@ -219,111 +207,15 @@ export default function CartPage() {
               <CartSummary total={totalPrice} setIsPending={setIsPending} />
             </div>
           </div>
-          <Dialog
-            open={isAddressModalOpen}
-            onOpenChange={setIsAddressModalOpen}
-          >
-            <DialogContent className="sm:max-w-[60%]">
-              <DialogHeader>
-                <DialogTitle>Address</DialogTitle>
-              </DialogHeader>
-              <div className="grid grid-cols-2 gap-4">
-                {isAddressesFetching ? (
-                  <LoadingOverlay isLoading={isAddressesFetching} />
-                ) : (
-                  addresses &&
-                  (addresses.length > 0 ? (
-                    <>
-                      {addresses
-                        .sort((a) => (a.isDefault ? -1 : 1))
-                        .map((address) => (
-                          <div
-                            key={address.id}
-                            className="rounded-lg border border-border p-6 mb-4 cursor-pointer hover:border-primary transition-smooth"
-                            onClick={async () => {
-                              await handleSaveAddress({
-                                ...address,
-                                isDefault: true,
-                              });
-                              setIsAddressModalOpen(false);
-                            }}
-                          >
-                            <div className="flex justify-between">
-                              <div className="space-y-2 mb-4">
-                                <div className="flex items-start gap-3">
-                                  <MapPin className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                                  <div>
-                                    <p className="font-semibold text-foreground">
-                                      {address.fullName}
-                                    </p>
-                                    <p className="text-sm text-textSecondary">
-                                      {address.phone}
-                                    </p>
-                                  </div>
-                                </div>
-                                <p className="text-sm text-textSecondary ml-8">
-                                  {`${address.line1}, ${address.postal}`}
-                                </p>
-                                <p className="text-sm text-textSecondary ml-8">
-                                  {`${address.city} ${address.country}`}
-                                </p>
-                              </div>
-
-                              {address.isDefault && (
-                                <div className="mb-4">
-                                  <span className="inline-block bg-secondary text-gray-900 px-3 py-1 rounded-full text-xs font-semibold">
-                                    Default Address
-                                  </span>
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex gap-2">
-                              <Button
-                                variant={'outline'}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleEditAddress(address.id);
-                                }}
-                                className="flex-1 transition-smooth font-medium cursor-pointer"
-                              >
-                                <Edit2 className="w-4 h-4 mr-2" />
-                                Edit
-                              </Button>
-                              <Button
-                                variant={'outline'}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  handleSelectedAddress(address.id);
-                                }}
-                                className="flex-1 transition-smooth font-medium cursor-pointer"
-                              >
-                                <MousePointer className="w-4 h-4 mr-2" />
-                                Select
-                              </Button>
-                            </div>
-                          </div>
-                        ))}
-                      <div
-                        onClick={() => handleAddAddress()}
-                        className="space-y-2 flex flex-col justify-center items-center rounded-lg border border-border p-6 mb-4 cursor-pointer hover:border-primary transition-smooth"
-                      >
-                        <Plus className="w-8 h-8" />
-                        <div>Add new address</div>
-                      </div>
-                    </>
-                  ) : (
-                    <div
-                      onClick={() => handleAddAddress()}
-                      className="space-y-2 flex flex-col justify-center items-center rounded-lg border border-border p-6 mb-4 cursor-pointer hover:border-primary transition-smooth"
-                    >
-                      <Plus className="w-8 h-8" />
-                      <div>Add new address</div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </DialogContent>
-          </Dialog>
+          <SelectAddressModal
+            isAddressModalOpen={isAddressModalOpen}
+            setIsAddressModalOpen={setIsAddressModalOpen}
+            addresses={addresses}
+            handleAddAddress={handleAddAddress}
+            handleEditAddress={handleEditAddress}
+            handleSaveAddress={handleSaveAddress}
+            handleSelectedAddress={handleSelectedAddress}
+          />
           <AddressModal
             isOpen={isEditModalOpen}
             onClose={() => setIsEditModalOpen(false)}

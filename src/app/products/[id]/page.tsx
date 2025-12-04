@@ -147,7 +147,7 @@ export default function ProductDetailPage({
             <div className="space-y-2">
               <div className="flex items-center gap-4">
                 <span className="text-4xl font-bold text-foreground">
-                  HKD${(price / 100).toLocaleString()}
+                  HKD${price.toLocaleString()}
                 </span>
               </div>
               {selectedColor !== '' || selectedSize !== '' ? (

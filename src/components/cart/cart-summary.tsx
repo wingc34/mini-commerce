@@ -54,7 +54,7 @@ export function CartSummary({ total, setIsPending }: CartSummaryProps) {
       <div className="flex justify-between items-center">
         <span className="font-semibold text-textPrimary">Total</span>
         <span className="text-2xl font-bold text-primary">
-          HKD${(total / 100).toLocaleString()}
+          HKD${total.toLocaleString()}
         </span>
       </div>
 
