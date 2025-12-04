@@ -1,8 +1,10 @@
 import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
 import { getOrderZObject } from '@/server/types/order';
+import { authMiddleware } from '@/server/middleware/authMiddleware';
 
 export const getOrderDetail = procedure
+  .use(authMiddleware)
   .input(getOrderZObject)
   .query(async ({ input }) => {
     try {

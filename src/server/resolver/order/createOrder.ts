@@ -3,8 +3,10 @@ import prisma from '@/lib/prisma';
 import { createOrderZObject } from '@/server/types/order';
 import { OrderStatus } from '@prisma/client';
 import { UserContext } from '@/server/types/user';
+import { authMiddleware } from '@/server/middleware/authMiddleware';
 
 export const createOrder = procedure
+  .use(authMiddleware)
   .input(createOrderZObject)
   .mutation(async ({ input, ctx }) => {
     const context = ctx as UserContext;
