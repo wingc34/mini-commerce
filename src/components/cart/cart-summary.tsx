@@ -20,16 +20,16 @@ export function CartSummary({
 }: CartSummaryProps) {
   const { items } = useCart();
   const { push } = useRouter();
-  const { mutateAsync: createOrder, isPending } =
-    trpc.order.createOrder.useMutation();
-  const onCreateOrder = useCallback(async () => {
+  const { mutateAsync: createDraftOrder, isPending } =
+    trpc.order.createDraftOrder.useMutation();
+  const onCreateDraftOrder = useCallback(async () => {
     if (!shippingAddressId) {
       toast.error(
         'Please set a default address in your profile before proceeding to checkout.'
       );
       return;
     }
-    const { success, id } = await createOrder({
+    const { success, id } = await createDraftOrder({
       total: total,
       shippingAddressId: shippingAddressId,
       orderItem: items.map((item) => ({
@@ -43,7 +43,7 @@ export function CartSummary({
     } else {
       toast.error('failed to create order');
     }
-  }, [total, createOrder, items, push, shippingAddressId]);
+  }, [total, createDraftOrder, items, push, shippingAddressId]);
 
   useEffect(() => {
     setIsPending(isPending);
@@ -63,7 +63,7 @@ export function CartSummary({
       <div className="space-y-2">
         <Button
           className="w-full text-center cursor-pointer"
-          onClick={onCreateOrder}
+          onClick={onCreateDraftOrder}
         >
           Proceed to Checkout
         </Button>

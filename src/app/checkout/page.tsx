@@ -44,7 +44,7 @@ export default function CheckoutPage() {
             stripe={stripePromise}
             options={{
               mode: 'payment',
-              amount: totalPrice,
+              amount: Math.round(totalPrice * 100),
               currency: 'hkd',
               appearance: {
                 variables: {
