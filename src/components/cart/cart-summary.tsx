@@ -39,7 +39,7 @@ export function CartSummary({
       })),
     });
     if (success) {
-      push(`/checkout?orderId=${id}`);
+      push(`/checkout?draftOrderId=${id}`);
     } else {
       toast.error('failed to create order');
     }

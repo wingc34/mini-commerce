@@ -6,14 +6,14 @@ const stripe = new Stripe(env.STRIPE_SECRET_KEY!);
 
 export async function POST(request: NextRequest) {
   try {
-    const { amount, orderId } = await request.json();
+    const { amount, draftOrderId } = await request.json();
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount,
+      amount: Math.round(amount * 100),
       currency: 'hkd',
       automatic_payment_methods: { enabled: true },
       metadata: {
-        orderId: orderId,
+        draftOrderId: draftOrderId,
       },
     });
 
