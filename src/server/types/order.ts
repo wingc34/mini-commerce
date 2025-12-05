@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const createOrderZObject = z.object({
+export const createDraftOrderZObject = z.object({
   total: z.number(),
   shippingAddressId: z.string(),
   orderItem: z.array(
@@ -12,8 +12,9 @@ export const createOrderZObject = z.object({
   ),
 });
 
-export const getOrderZObject = z.object({
+export const getOrderDetailZObject = z.object({
   id: z.string(),
+  isDraft: z.boolean().default(false),
 });
 export const getUserOrderZObject = z.object({
   page: z.number().min(1).default(1),

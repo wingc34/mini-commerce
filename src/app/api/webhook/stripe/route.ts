@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 import { env } from '@/lib/env';
+import { DraftStatus, OrderStatus } from '@prisma/client';
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY!);
 
@@ -38,16 +39,48 @@ export async function POST(req: NextRequest) {
     }
 
     // update postgres db
-    const order = await prisma.order.update({
+    const draftOrder = await prisma.draftOrder.findUnique({
       where: { id: orderId },
+      include: { items: true },
+    });
+
+    if (!draftOrder) {
+      console.error(`⚠️ No draft order found for ${orderId}`);
+      return NextResponse.json({ received: true });
+    }
+
+    const order = await prisma.order.create({
       data: {
-        status: 'PAID',
+        userId: draftOrder.userId,
+        total: draftOrder.total,
+        shippingAddressId: draftOrder.shippingAddressId,
+        status: OrderStatus.PAID,
         paymentIntentId: paymentIntent as string,
         stripeSessionId: session.id,
       },
     });
 
-    console.log(`✅ Order ${orderId} marked as PAID`);
+    await prisma.orderItem.createMany({
+      data: draftOrder.items.map((item) => {
+        return {
+          orderId: order.id,
+          skuId: item.skuId,
+          quantity: item.quantity,
+          price: item.price,
+        };
+      }),
+    });
+
+    console.log(`✅ Order ${order.id} marked as PAID`);
+
+    await prisma.draftOrder.update({
+      where: { id: draftOrder.id },
+      data: {
+        status: DraftStatus.COMPLETED,
+      },
+    });
+
+    console.log(`✅ Draft order ${orderId} completed`);
   } else {
     console.log(`Unhandled event type: ${event.type}`);
   }

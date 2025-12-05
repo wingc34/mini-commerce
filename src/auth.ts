@@ -4,6 +4,10 @@ import prisma from './lib/prisma';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [Google],
+  session: {
+    maxAge: 2 * 24 * 60 * 60, // 2 days
+    updateAge: 2 * 60 * 60, // 2 hours
+  },
   callbacks: {
     async session({ session }) {
       if (session.user) {

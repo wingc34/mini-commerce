@@ -50,8 +50,10 @@ export default function CheckoutSuccessPage() {
   const orderId = searchParams.get('orderId');
   const { clearCart } = useCart();
 
+  //get draft order
   const { data: orderData, isFetching } = trpc.order.getOrderDetail.useQuery({
     id: orderId || '',
+    isDraft: true,
   });
 
   const orderDetail = orderData?.data as OrderDetail;

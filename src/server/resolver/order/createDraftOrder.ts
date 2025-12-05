@@ -1,30 +1,30 @@
 import { procedure } from '@/server/trpc';
 import prisma from '@/lib/prisma';
-import { createOrderZObject } from '@/server/types/order';
-import { OrderStatus } from '@prisma/client';
+import { createDraftOrderZObject } from '@/server/types/order';
+import { DraftStatus } from '@prisma/client';
 import { UserContext } from '@/server/types/user';
 import { authMiddleware } from '@/server/middleware/authMiddleware';
 
-export const createOrder = procedure
+export const createDraftOrder = procedure
   .use(authMiddleware)
-  .input(createOrderZObject)
+  .input(createDraftOrderZObject)
   .mutation(async ({ input, ctx }) => {
     const context = ctx as UserContext;
 
     try {
-      const order = await prisma.order.create({
+      const order = await prisma.draftOrder.create({
         data: {
           userId: context.session.user.id,
           total: input.total,
-          status: OrderStatus.PENDING,
+          status: DraftStatus.PENDING_PAYMENT,
           shippingAddressId: input.shippingAddressId,
         },
       });
 
-      await prisma.orderItem.createMany({
+      await prisma.draftOrderItem.createMany({
         data: input.orderItem.map((item) => {
           return {
-            orderId: order.id,
+            draftOrderId: order.id,
             skuId: item.skuId,
             quantity: item.quantity,
             price: item.price,
@@ -34,14 +34,14 @@ export const createOrder = procedure
 
       return {
         success: true,
-        message: 'order created successfully',
+        message: 'draft order created successfully',
         id: order.id,
       };
     } catch (error) {
       console.error('error', error);
       return {
         success: false,
-        message: 'order creation failed',
+        message: 'draft order creation failed',
         id: '',
       };
     }
