@@ -14,7 +14,7 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
-  const orderId = searchParams.get('orderId');
+  const draftOrderId = searchParams.get('draftOrderId');
   const { items } = useCart();
 
   if (items.length <= 0) {
@@ -54,7 +54,10 @@ export default function CheckoutPage() {
               },
             }}
           >
-            <CheckoutPanel amount={totalPrice} orderId={orderId || ''} />
+            <CheckoutPanel
+              amount={totalPrice}
+              draftOrderId={draftOrderId || ''}
+            />
           </Elements>
         </div>
       }

@@ -3,7 +3,7 @@
 import { useCart } from '@/store/cart-store';
 import { CheckCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, use } from 'react';
+import { useEffect } from 'react';
 import { trpc } from '@/trpc/client-api';
 import dayjs from 'dayjs';
 import { Button } from '@/components/ui/button';
@@ -47,12 +47,12 @@ interface OrderDetail {
 export default function CheckoutSuccessPage() {
   const searchParams = useSearchParams();
   const amount = searchParams.get('amount');
-  const orderId = searchParams.get('orderId');
+  const draftOrderId = searchParams.get('draftOrderId');
   const { clearCart } = useCart();
 
   //get draft order
   const { data: orderData, isFetching } = trpc.order.getOrderDetail.useQuery({
-    id: orderId || '',
+    id: draftOrderId || '',
     isDraft: true,
   });
 
@@ -96,7 +96,7 @@ export default function CheckoutSuccessPage() {
             <div>
               <p className="text-sm text-muted-foreground mb-1">Order Number</p>
               <p className="text-xl font-bold text-foreground break-all">
-                {orderId}
+                {orderDetail?.id}
               </p>
             </div>
             <div>
@@ -172,7 +172,7 @@ export default function CheckoutSuccessPage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button>
             <Link
-              href={`/profile/orders${orderId ? `/${orderId}` : ''}`}
+              href={`/profile/orders${orderDetail ? `/${orderDetail.id}` : ''}`}
               className="flex items-center justify-center gap-2"
             >
               <Clock className="w-5 h-5" />

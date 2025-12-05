@@ -11,10 +11,10 @@ import { env } from '@/lib/env';
 
 const CheckoutPanel = ({
   amount,
-  orderId,
+  draftOrderId,
 }: {
   amount: number;
-  orderId: string;
+  draftOrderId: string;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
@@ -28,7 +28,7 @@ const CheckoutPanel = ({
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ amount: amount, orderId: orderId }),
+      body: JSON.stringify({ amount: amount, draftOrderId: draftOrderId }),
     })
       .then((res) => res.json())
       .then((data) => setClientSecret(data.clientSecret));
@@ -54,7 +54,7 @@ const CheckoutPanel = ({
       elements,
       clientSecret,
       confirmParams: {
-        return_url: `${env.NEXT_PUBLIC_BASE_URL}/payment-success?amount=${amount}&orderId=${orderId}`,
+        return_url: `${env.NEXT_PUBLIC_BASE_URL}/payment-success?amount=${amount}&draftOrderId=${draftOrderId}`,
       },
     });
 

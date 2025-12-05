@@ -30,22 +30,22 @@ export async function POST(req: NextRequest) {
   if (event.type === 'payment_intent.succeeded') {
     const session = event.data.object as Stripe.PaymentIntent;
 
-    const orderId = session.metadata?.orderId;
+    const draftOrderId = session.metadata?.draftOrderId;
     const paymentIntent = session.id;
 
-    if (!orderId) {
+    if (!draftOrderId) {
       console.error('⚠️ No orderId metadata found');
       return NextResponse.json({ received: true });
     }
 
     // update postgres db
     const draftOrder = await prisma.draftOrder.findUnique({
-      where: { id: orderId },
+      where: { id: draftOrderId },
       include: { items: true },
     });
 
     if (!draftOrder) {
-      console.error(`⚠️ No draft order found for ${orderId}`);
+      console.error(`⚠️ No draft order found for ${draftOrderId}`);
       return NextResponse.json({ received: true });
     }
 
@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
         status: OrderStatus.PAID,
         paymentIntentId: paymentIntent as string,
         stripeSessionId: session.id,
+        draftOrderId: draftOrderId,
       },
     });
 
@@ -80,7 +81,7 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    console.log(`✅ Draft order ${orderId} completed`);
+    console.log(`✅ Draft order ${draftOrderId} completed`);
   } else {
     console.log(`Unhandled event type: ${event.type}`);
   }
