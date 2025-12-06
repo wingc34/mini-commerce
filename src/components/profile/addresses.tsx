@@ -26,6 +26,11 @@ export function Addresses() {
     refetch,
     isFetching: isAddressesFetching,
   } = trpc.user.getUserAddresses.useQuery();
+
+  if (!data?.success && !isAddressesFetching) {
+    toast.error('Failed to get addresses');
+  }
+
   const { mutateAsync: updateAddress, isPending: updateAddressPending } =
     trpc.user.updateUserAddress.useMutation();
   const { mutateAsync: deleteAddress, isPending: deleteAddressPending } =

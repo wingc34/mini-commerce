@@ -12,6 +12,7 @@ import _ from 'lodash';
 import { z, type ZodError } from 'zod';
 import { Label } from '../ui/label';
 import { LoadingOverlay } from '../ui/LoadingOverlay';
+import { toast } from 'sonner';
 
 interface UserInfo {
   id: string;
@@ -32,6 +33,10 @@ export function ProfileOverview({
 }) {
   const { data: user, isFetching: userInfoFetching } =
     trpc.user.getUserInfo.useQuery();
+
+  if (!user?.success && !userInfoFetching) {
+    toast.error('Failed to fetch user info');
+  }
   const userInfo = user?.data as UserInfo;
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(userInfo?.name);

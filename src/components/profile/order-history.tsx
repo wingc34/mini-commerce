@@ -8,6 +8,7 @@ import { PaginationComponent } from '@/components/ui/PaginationComponent';
 import { useState } from 'react';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { userOrderPageItemSize } from '@/constant';
+import { toast } from 'sonner';
 interface Order {
   id: string;
   createdAt: string;
@@ -48,6 +49,11 @@ function getStatusInfo(status: string) {
 export function OrderHistory() {
   const [page, setPage] = useState(1);
   const { data, isFetching } = trpc.order.getUserOrder.useQuery({ page: page });
+
+  if (!data?.success && !isFetching) {
+    toast.error('Failed to get user order');
+  }
+
   const order = data?.order as Order[] | undefined;
   const totalPages = Math.ceil((data?.orderCount || 0) / userOrderPageItemSize);
 

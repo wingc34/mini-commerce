@@ -41,6 +41,11 @@ export default function ProductDetailPage({
   const { data, isFetching } = trpc.product.getProductDetail.useQuery({
     id: id,
   });
+
+  if (!data?.success && !isFetching) {
+    throw new Error('Failed to fetch product detail');
+  }
+
   const { mutateAsync: addWishItem, isPending: addWishItemPending } =
     trpc.user.addWishItem.useMutation();
   const { mutateAsync: removeWishItem, isPending: removeWishItemPending } =

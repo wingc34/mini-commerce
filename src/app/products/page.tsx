@@ -17,6 +17,10 @@ export default function ProductsPage() {
   });
   const totalPages = Math.ceil((products?.total || 0) / productPageItemSize);
 
+  if (!products?.success && !isFetching) {
+    throw new Error('Failed to fetch products');
+  }
+
   return (
     <>
       {/* Page Header */}
