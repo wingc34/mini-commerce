@@ -1,8 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import { useQueryErrorResetBoundary } from '@tanstack/react-query';
 import { AlertTriangle, Home, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useEffect } from 'react';
 
 export default function Error({
   error,
@@ -11,6 +13,17 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
+  const { reset: resetQueryError } = useQueryErrorResetBoundary();
+
+  useEffect(() => {
+    console.error('Page Error:', error);
+  }, [error]);
+
+  const handleReset = () => {
+    resetQueryError();
+    reset();
+  };
+
   return (
     <div className="min-h-screen bg-linear-to-b from-background to-muted flex items-center justify-center px-4 py-16">
       <div className="max-w-2xl w-full text-center">
@@ -69,17 +82,19 @@ export default function Error({
             </div>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
-              onClick={reset}
+              onClick={handleReset}
               className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary-dark transition-colors cursor-pointer"
             >
               Try Again
             </Button>
-            <Button variant={'secondary'} className="cursor-pointer">
-              <Home className="w-5 h-5" />
-              Back to Home
+
+            <Button variant={'secondary'} asChild className="cursor-pointer">
+              <Link href="/">
+                <Home className="w-5 h-5 mr-2" />
+                Back to Home
+              </Link>
             </Button>
           </div>
         </div>
@@ -105,7 +120,7 @@ export default function Error({
             If you continue to experience issues, our support team is here to
             help.
           </p>
-          <Button className="cursor-pointer">
+          <Button asChild className="cursor-pointer">
             <Link
               href="/contact"
               className="inline-flex items-center justify-center gap-2 px-6 py-2 bg-primary text-primary-foreground rounded-lg font-semibold hover:bg-primary-dark transition-colors"

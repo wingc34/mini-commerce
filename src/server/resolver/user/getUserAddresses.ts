@@ -28,7 +28,7 @@ export const getUserAddresses = procedure
       console.error('error', error);
       return {
         success: false,
-        data: {},
+        data: [],
       };
     }
   });

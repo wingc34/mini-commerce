@@ -91,6 +91,11 @@ export default function OrderDetailPage({
 }) {
   const { id } = use(params);
   const { data, isFetching } = trpc.order.getOrderDetail.useQuery({ id });
+
+  if (!data?.success && !isFetching) {
+    throw new Error('Failed to get order detail');
+  }
+
   const orderDetail = data?.data as OrderDetail | undefined;
 
   if (!orderDetail && !isFetching) {

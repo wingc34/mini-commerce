@@ -56,6 +56,10 @@ export default function CheckoutSuccessPage() {
     isDraft: true,
   });
 
+  if (!orderData?.success && !isFetching) {
+    throw new Error('Failed to get order detail');
+  }
+
   const orderDetail = orderData?.data as OrderDetail;
 
   const shippingaddress =

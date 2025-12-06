@@ -32,6 +32,11 @@ export default function CartPage() {
     refetch,
     isFetching: isAddressesFetching,
   } = trpc.user.getUserAddresses.useQuery();
+
+  if (!data?.success && !isAddressesFetching) {
+    toast.error('Failed to get addresses');
+  }
+
   const { mutateAsync: updateAddress, isPending: updateAddressPending } =
     trpc.user.updateUserAddress.useMutation();
   const addresses = data?.data as Address[];
