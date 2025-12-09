@@ -10,7 +10,13 @@ import { redirect, useSearchParams } from 'next/navigation';
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined');
 }
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY, {
+  developerTools: {
+    assistant: {
+      enabled: false,
+    }, // enable when testing
+  },
+});
 
 export default function CheckoutPage() {
   const searchParams = useSearchParams();
