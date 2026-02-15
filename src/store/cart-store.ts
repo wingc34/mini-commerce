@@ -20,11 +20,11 @@ interface CartStore {
   addToCart: (item: CartItem) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
-  updateQuantity: (id: string, quantity: number) => void;
+  updateQuantity: (id: string, skuCode: string, quantity: number) => void;
 }
 
 export const useCart = create<CartStore>()(
-  persist(
+  persist<CartStore>(
     (set) => ({
       items: [],
       addToCart: (item) =>
@@ -51,12 +51,16 @@ export const useCart = create<CartStore>()(
             items: state.items.filter((item) => item.sku.skuCode !== skuCode),
           };
         }),
-      updateQuantity: (id, quantity) =>
+      updateQuantity: (id, skuCode, quantity) =>
         set((state) => {
           return {
-            items: state.items.map((item) =>
-              item.id === id ? { ...item, quantity } : item
-            ),
+            items: state.items
+              .map((item) =>
+                item.id === id && item.sku.skuCode === skuCode
+                  ? { ...item, quantity }
+                  : item
+              )
+              .filter((item) => item.quantity > 0),
           };
         }),
       clearCart: () => set(() => ({ items: [] })),

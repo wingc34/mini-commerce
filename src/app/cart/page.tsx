@@ -140,7 +140,7 @@ export default function CartPage() {
                         size: attributes['size'] ?? '',
                       }}
                       onQuantityChange={(quantity) =>
-                        updateQuantity(item.id, quantity)
+                        updateQuantity(item.id, item.sku.skuCode, quantity)
                       }
                       onRemove={() => removeItem(item.sku.skuCode)}
                     />
