@@ -284,9 +284,7 @@ export default function ProductDetailPage({
               <Button
                 className="flex-1 bg-primary hover:bg-primary-dark text-white font-semibold py-4 rounded-lg flex items-center justify-center gap-2 transition-smooth cursor-pointer"
                 onClick={() => {
-                  if (!session?.user) {
-                    toast.info('Please login first');
-                  } else if (!sku) {
+                  if (!sku) {
                     toast.info('Please select the size and color first');
                   } else {
                     addToCart({

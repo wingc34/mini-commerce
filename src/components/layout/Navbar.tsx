@@ -64,14 +64,14 @@ export default function Navbar() {
             {isDark ? <Sun /> : <Moon />}
           </Button>
         )}
+        <Button variant="ghost" size="icon" className="text-textPrimary">
+          <Link href="/cart">
+            <ShoppingCart className="w-6 h-6" />
+          </Link>
+        </Button>
         {status !== 'loading' ? (
           session ? (
             <div className="flex space-x-4 items-center">
-              <Button variant="ghost" size="icon" className="text-textPrimary">
-                <Link href="/cart">
-                  <ShoppingCart className="w-6 h-6" />
-                </Link>
-              </Button>
               <Button variant="ghost" size="icon" className="text-textPrimary">
                 <Link href="/profile?tab=overview">
                   <User />
@@ -88,11 +88,11 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       <div className="md:hidden flex items-center">
+        <Button variant="ghost" size="icon" className="text-textPrimary">
+          <ShoppingCart />
+        </Button>
         {session && status === 'authenticated' ? (
           <>
-            <Button variant="ghost" size="icon" className="text-textPrimary">
-              <ShoppingCart />
-            </Button>
             <Button variant="ghost" size="icon" className="text-textPrimary">
               <Link href="/login">
                 <User />

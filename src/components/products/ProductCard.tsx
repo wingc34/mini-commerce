@@ -55,18 +55,14 @@ export function ProductCard({ product }: { product: Product }) {
               className="bg-primary hover:bg-primary-dark text-white font-semibold px-6 py-3 rounded-lg flex items-center gap-2 transition-smooth cursor-pointer"
               onClick={(event) => {
                 event.stopPropagation();
-                if (!session?.user) {
-                  toast.info('Please login first');
-                } else {
-                  addToCart({
-                    id: product.id,
-                    name: product.name,
-                    quantity: 1,
-                    image: product.images[0] || null,
-                    sku: product.skus[0],
-                  });
-                  toast.success(`${product.name} added to cart`);
-                }
+                addToCart({
+                  id: product.id,
+                  name: product.name,
+                  quantity: 1,
+                  image: product.images[0] || null,
+                  sku: product.skus[0],
+                });
+                toast.success(`${product.name} added to cart`);
               }}
             >
               <ShoppingCart className="w-5 h-5" />
