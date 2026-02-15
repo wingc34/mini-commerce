@@ -60,6 +60,12 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 │   │   ├── useCart.ts
 │   │   └── ...
 
+│   ├── test                       # test files
+│   │   └── setup-vitest.ts
+│   │   ├── store
+│   │   │   └── cart-store.test.ts
+│   │   └── ...
+
 │   ├── store                       # Zustand Store
 │   │   ├── cart-store.ts
 │   │   └── ...
@@ -117,9 +123,15 @@ To learn more about this project, take a look at the following resources:
 
 - [zod](https://zod.dev/) - TypeScript-first schema validation with static type inference
 
+- [shadcn/ui](https://ui.shadcn.com/) - UI library code
+  
 - [stripe](https://docs.stripe.com/) - online payment services
+  
+- [NextAuth](https://next-auth.js.org/) - Authentication for Next.js
 
 - [prisma](https://www.prisma.io/docs) - TypeScript database ORM
+  
+- [Vitest](https://vitest.dev/) - Testing Library
 
 ## Live Demo
 
