@@ -77,7 +77,6 @@ export function ProfileSidebar({
         <div className="border-t border-border mt-6 pt-6">
           <Button
             onClick={() => {
-              clearCart();
               signOut({ callbackUrl: '/' });
             }}
             variant={'ghost'}

@@ -16,12 +16,14 @@ import {
   type AddressFormData,
 } from '@/components/profile/addressModal';
 import { SelectAddressModal } from '@/components/cart/selectAddressModal';
+import { useSession } from 'next-auth/react';
 
 if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined');
 }
 
 export default function CartPage() {
+  const { status } = useSession();
   const { items, removeItem, updateQuantity } = useCart();
   const [isPending, setIsPending] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
@@ -31,9 +33,11 @@ export default function CartPage() {
     data,
     refetch,
     isFetching: isAddressesFetching,
-  } = trpc.user.getUserAddresses.useQuery();
+  } = trpc.user.getUserAddresses.useQuery(undefined, {
+    enabled: status === 'authenticated',
+  });
 
-  if (!data?.success && !isAddressesFetching) {
+  if (!data?.success && !isAddressesFetching && status === 'authenticated') {
     toast.error('Failed to get addresses');
   }
 
@@ -151,64 +155,65 @@ export default function CartPage() {
 
             {/* Summary */}
             <div className="lg:col-span-1 space-y-4">
-              {selectedAddress ? (
-                <div className="rounded-lg border border-border p-6">
-                  <div className="flex justify-between">
-                    <div className="space-y-2 mb-4">
-                      <div className="flex items-start gap-3">
-                        <MapPin className="w-5 h-5 text-primary mt-0.5 shrink-0" />
-                        <div>
-                          <p className="font-semibold text-foreground">
-                            {selectedAddress.fullName}
-                          </p>
-                          <p className="text-sm text-textSecondary">
-                            {selectedAddress.phone}
-                          </p>
+              {status === 'authenticated' &&
+                (selectedAddress ? (
+                  <div className="rounded-lg border border-border p-6">
+                    <div className="flex justify-between">
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-start gap-3">
+                          <MapPin className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                          <div>
+                            <p className="font-semibold text-foreground">
+                              {selectedAddress.fullName}
+                            </p>
+                            <p className="text-sm text-textSecondary">
+                              {selectedAddress.phone}
+                            </p>
+                          </div>
                         </div>
+                        <p className="text-sm text-textSecondary ml-8">
+                          {`${selectedAddress.line1}, ${selectedAddress.postal}`}
+                        </p>
+                        <p className="text-sm text-textSecondary ml-8">
+                          {`${selectedAddress.city} ${selectedAddress.country}`}
+                        </p>
                       </div>
-                      <p className="text-sm text-textSecondary ml-8">
-                        {`${selectedAddress.line1}, ${selectedAddress.postal}`}
-                      </p>
-                      <p className="text-sm text-textSecondary ml-8">
-                        {`${selectedAddress.city} ${selectedAddress.country}`}
-                      </p>
+                      {selectedAddress.isDefault && (
+                        <div className="mb-4">
+                          <span className="inline-block bg-secondary text-gray-900 px-3 py-1 rounded-full text-xs font-semibold text-center">
+                            Default Address
+                          </span>
+                        </div>
+                      )}
                     </div>
-                    {selectedAddress.isDefault && (
-                      <div className="mb-4">
-                        <span className="inline-block bg-secondary text-gray-900 px-3 py-1 rounded-full text-xs font-semibold text-center">
-                          Default Address
-                        </span>
-                      </div>
-                    )}
+                    <div className="flex gap-2 pt-4">
+                      <Button
+                        variant={'outline'}
+                        onClick={() => handleEditAddress(selectedAddress.id)}
+                        className="flex-1 border-border transition-smooth font-medium cursor-pointer"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                        Edit
+                      </Button>
+                      <Button
+                        variant={'outline'}
+                        onClick={() => setIsAddressModalOpen(true)}
+                        className="flex-1 border-border transition-smooth font-medium cursor-pointer"
+                      >
+                        <Edit2 className="w-4 h-4" />
+                        Use Other Address
+                      </Button>
+                    </div>
                   </div>
-                  <div className="flex gap-2 pt-4">
-                    <Button
-                      variant={'outline'}
-                      onClick={() => handleEditAddress(selectedAddress.id)}
-                      className="flex-1 border-border transition-smooth font-medium cursor-pointer"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                      Edit
-                    </Button>
-                    <Button
-                      variant={'outline'}
-                      onClick={() => setIsAddressModalOpen(true)}
-                      className="flex-1 border-border transition-smooth font-medium cursor-pointer"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                      Use Other Address
-                    </Button>
+                ) : (
+                  <div
+                    onClick={() => handleAddAddress()}
+                    className="space-y-2 flex flex-col justify-center items-center rounded-lg border border-border p-6 mb-4 cursor-pointer hover:border-primary transition-smooth"
+                  >
+                    <Plus className="w-8 h-8" />
+                    <div>Add new address</div>
                   </div>
-                </div>
-              ) : (
-                <div
-                  onClick={() => handleAddAddress()}
-                  className="space-y-2 flex flex-col justify-center items-center rounded-lg border border-border p-6 mb-4 cursor-pointer hover:border-primary transition-smooth"
-                >
-                  <Plus className="w-8 h-8" />
-                  <div>Add new address</div>
-                </div>
-              )}
+                ))}
               <CartSummary
                 total={totalPrice}
                 shippingAddressId={selectedAddress?.id || ''}
@@ -216,22 +221,26 @@ export default function CartPage() {
               />
             </div>
           </div>
-          <SelectAddressModal
-            isAddressModalOpen={isAddressModalOpen}
-            setIsAddressModalOpen={setIsAddressModalOpen}
-            addresses={addresses}
-            handleAddAddress={handleAddAddress}
-            handleEditAddress={handleEditAddress}
-            handleSaveAddress={handleSaveAddress}
-            handleSelectedAddress={handleSelectedAddress}
-          />
-          <AddressModal
-            isOpen={isEditModalOpen}
-            onClose={() => setIsEditModalOpen(false)}
-            onSave={handleSaveAddress}
-            initialData={editingAddress}
-            isEditing={!!editingId}
-          />
+          {status === 'authenticated' && (
+            <>
+              <SelectAddressModal
+                isAddressModalOpen={isAddressModalOpen}
+                setIsAddressModalOpen={setIsAddressModalOpen}
+                addresses={addresses}
+                handleAddAddress={handleAddAddress}
+                handleEditAddress={handleEditAddress}
+                handleSaveAddress={handleSaveAddress}
+                handleSelectedAddress={handleSelectedAddress}
+              />
+              <AddressModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onSave={handleSaveAddress}
+                initialData={editingAddress}
+                isEditing={!!editingId}
+              />
+            </>
+          )}
         </div>
       )}
     </>

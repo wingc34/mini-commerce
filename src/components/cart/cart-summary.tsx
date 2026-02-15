@@ -6,6 +6,7 @@ import { useCallback, useEffect } from 'react';
 import { useCart } from '@/store/cart-store';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 interface CartSummaryProps {
   total: number;
@@ -18,12 +19,17 @@ export function CartSummary({
   shippingAddressId,
   setIsPending,
 }: CartSummaryProps) {
+  const { data: session } = useSession();
+
   const { items } = useCart();
   const { push } = useRouter();
   const { mutateAsync: createDraftOrder, isPending } =
     trpc.order.createDraftOrder.useMutation();
   const onCreateDraftOrder = useCallback(async () => {
-    if (!shippingAddressId) {
+    if (!session) {
+      toast.error('Please login to proceed to checkout');
+      return;
+    } else if (!shippingAddressId) {
       toast.error(
         'Please set a default address in your profile before proceeding to checkout.'
       );
@@ -43,7 +49,7 @@ export function CartSummary({
     } else {
       toast.error('failed to create order');
     }
-  }, [total, createDraftOrder, items, push, shippingAddressId]);
+  }, [total, createDraftOrder, items, push, shippingAddressId, session]);
 
   useEffect(() => {
     setIsPending(isPending);
