@@ -61,4 +61,63 @@ describe('cart-store', () => {
     expect(useCart.getState().items).toHaveLength(1);
     expect(useCart.getState().items[0].sku.skuCode).toBe('2C09FPTQVK'); // remaining sku_2
   });
+
+  it('updateQuantity with correct id and skuCode', () => {
+    act(() => useCart.getState().addToCart(getTestingProduct(1, sku_1)));
+    act(() => useCart.getState().addToCart(getTestingProduct(2, sku_2)));
+    act(() =>
+      useCart
+        .getState()
+        .updateQuantity('cmirbl6zg002vrv3ro97j7sth', 'F5LYGMNKDZ', 3)
+    );
+    act(() =>
+      useCart
+        .getState()
+        .updateQuantity('cmirbl6zg002vrv3ro97j7sth', '2C09FPTQVK', 3)
+    );
+    expect(
+      useCart
+        .getState()
+        .items.find(
+          (item) =>
+            item.id === 'cmirbl6zg002vrv3ro97j7sth' &&
+            item.sku.skuCode === 'F5LYGMNKDZ'
+        )?.quantity
+    ).toEqual(3);
+    expect(
+      useCart
+        .getState()
+        .items.find(
+          (item) =>
+            item.id === 'cmirbl6zg002vrv3ro97j7sth' &&
+            item.sku.skuCode === 'F5LYGMNKDZ'
+        )?.quantity
+    ).toEqual(3);
+  });
+
+  it('updateQuantity with correct id and skuCode but quantity 0 or negative removes the item (by rule)', () => {
+    act(() => useCart.getState().addToCart(getTestingProduct(1, sku_1)));
+    act(() => useCart.getState().addToCart(getTestingProduct(2, sku_2)));
+    act(() =>
+      useCart
+        .getState()
+        .updateQuantity('cmirbl6zg002vrv3ro97j7sth', 'F5LYGMNKDZ', 0)
+    );
+    expect(
+      useCart
+        .getState()
+        .items.find(
+          (item) =>
+            item.id === 'cmirbl6zg002vrv3ro97j7sth' &&
+            item.sku.skuCode === 'F5LYGMNKDZ'
+        )
+    ).toBeUndefined();
+    expect(useCart.getState().items).toHaveLength(1);
+  });
+
+  it('clear resets to initial state', () => {
+    act(() => useCart.getState().addToCart(getTestingProduct(2, sku_2)));
+    act(() => useCart.getState().clearCart());
+    expect(useCart.getState().items).toEqual([]);
+  });
 });
