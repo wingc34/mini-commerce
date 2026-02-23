@@ -17,8 +17,9 @@ import {
 } from '@/components/profile/addressModal';
 import { SelectAddressModal } from '@/components/cart/selectAddressModal';
 import { useSession } from 'next-auth/react';
+import { env } from '@/lib/env';
 
-if (process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
+if (env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined');
 }
 
