@@ -21,7 +21,22 @@ To handle "State Sync." I want to make sure that even if a user’s internet dro
 - **No Half-Finished Data:** Using Prisma Transactions. This means "reducing stock" and "creating an order" happen together. If one fails, both fail. This keeps the data clean.
 - **Clean Code:** I use ESLint and Prettier to keep the code easy to read for the whole team.
 
-## 4. Quick Start
+## 4. Data Flow
+
+```mermaid
+graph LR
+    User((User)) -- Clicks --> UI[Frontend / Zustand]
+    UI -- API Call --> Server[Next.js Server / tRPC]
+    Server -- Save/Read --> DB[(PostgreSQL / Prisma)]
+
+    subgraph Payment_Safety
+        Server -- Create Pay Link --> Stripe[Stripe API]
+        Stripe -- Send Success Signal --> Hook[Webhook Handler]
+        Hook -- Finalize Order --> DB
+    end
+```
+
+## 5. Quick Start
 
 To get the Mini-Commerce project up and running locally, follow these three simple steps:
 
@@ -40,4 +55,4 @@ To get the Mini-Commerce project up and running locally, follow these three simp
 3.  **Run Development Server:**
     - Start the Next.js development server: `yarn dev` (or `npm run dev`)
 
-The application will now be accessible at `http://localhost:3000` (or the port specified in your `.env` configuration).
+The application will now be accessible at `http://localhost:3000`.
