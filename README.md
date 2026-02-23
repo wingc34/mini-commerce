@@ -44,7 +44,7 @@ To get the Mini-Commerce project up and running locally, follow these three simp
 
 1.  **Environment Setup:**
     - Copy the example environment file: `cp .env.sample .env`
-    - Edit `.env` and configure the necessary environment variables, including `DATABASE_URL`, `NEXTAUTH_SECRET`, `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `NEXT_PUBLIC_STRIPE_PUBLIC_KEY`.
+    - Edit `.env` and configure the necessary environment variables, including `DATABASE_URL`, `DIRECT_URL`, `NEXTAUTH_SECRET`, `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `NEXT_PUBLIC_STRIPE_PUBLIC_KEY`.
 2.  **Database & Dependencies:**
     - Install project dependencies: `yarn install` (or `npm install`)
     - Apply Prisma database migrations and seed the database:
