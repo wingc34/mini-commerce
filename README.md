@@ -40,13 +40,18 @@ graph LR
 
 To get the Mini-Commerce project up and running locally, follow these three simple steps:
 
-**Prerequisites:** Ensure you have Node.js (v20+), and Yarn (or npm) installed on your system.
+**Prerequisites:** Ensure you have Node.js (v20+), Yarn (or npm) and Docker installed on your system.
 
 1.  **Environment Setup:**
     - Copy the example environment file: `cp .env.sample .env`
     - Edit `.env` and configure the necessary environment variables, including `DATABASE_URL`, `DIRECT_URL`, `NEXTAUTH_SECRET`, `AUTH_SECRET`, `AUTH_GOOGLE_ID`, `AUTH_GOOGLE_SECRET`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` and `NEXT_PUBLIC_STRIPE_PUBLIC_KEY`.
 2.  **Database & Dependencies:**
     - Install project dependencies: `yarn install` (or `npm install`)
+    - this project can use neon database / postgreSQL docker container as database. you can change `DATABASE_ENV` to `docker` or `neon` for changing database environment.
+    - when using docker, please use this command for starting docker service:
+      ```bash
+      docker compose up
+      ```
     - Apply Prisma database migrations and seed the database:
       ```bash
       yarn prisma migrate dev
