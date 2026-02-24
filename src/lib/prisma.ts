@@ -12,9 +12,16 @@ neonConfig.webSocketConstructor = ws;
 const globalForPrisma = global as unknown as {
   prisma: PrismaClient;
 };
+let client: PrismaClient | PrismaNeon;
 
-const adapter = new PrismaNeon({ connectionString: env.DATABASE_URL });
-const prisma = globalForPrisma.prisma || new PrismaClient({ adapter });
+if (env.DATABASE_ENV === 'neon') {
+  const adapter = new PrismaNeon({ connectionString: env.DATABASE_URL });
+  client = new PrismaClient({ adapter });
+} else {
+  // connect to postgresdocker
+  client = new PrismaClient();
+}
+const prisma = globalForPrisma.prisma || client;
 
 if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
