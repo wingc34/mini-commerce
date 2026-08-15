@@ -26,6 +26,7 @@ export const env = createEnv({
   client: {
     NEXT_PUBLIC_BASE_URL: z.string().min(1),
     NEXT_PUBLIC_STRIPE_PUBLIC_KEY: z.string().min(1),
+    NEXT_PUBLIC_API_URL: z.string().min(1),
     // NEXT_PUBLIC_DOMAIN: z.string().min(1),
     // NEXT_PUBLIC_APP_ENV: z.enum([
     //   "localhost",
@@ -51,6 +52,7 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     NEXT_PUBLIC_STRIPE_PUBLIC_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY,
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.
