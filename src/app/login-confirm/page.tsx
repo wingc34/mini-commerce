@@ -1,27 +1,21 @@
 'use client';
 
-import { trpc } from '@/trpc/client-api';
-import { redirect } from 'next/navigation';
-import { useCallback, useEffect } from 'react';
-import { toast } from 'sonner';
+import { useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { setToken } from '@/lib/auth';
 
 export default function LoginConfirmPage() {
-  const { mutateAsync, error: createUserError } =
-    trpc.auth.createUser.useMutation();
-
-  const createUser = useCallback(async () => {
-    const { success, message } = await mutateAsync();
-    if (success) {
-      toast.success(message);
-    } else {
-      toast.error(message);
-      return;
-    }
-    redirect('/');
-  }, [mutateAsync, toast]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
-    createUser();
+    const token = searchParams.get('token');
+    if (token) {
+      setToken(token);
+      router.push('/');
+    } else {
+      router.push('/login');
+    }
   }, []);
 
   return (

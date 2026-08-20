@@ -5,6 +5,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { ThemeProvider } from '@/lib/theme-provider';
 import { SessionProvider } from 'next-auth/react';
+import { AuthProvider } from '@/context/auth-context';
 import Provider from '@/trpc/Provider';
 import { Toaster } from '@/components/ui/sonner';
 
@@ -36,14 +37,16 @@ export default function RootLayout({
       >
         <Provider>
           <ThemeProvider>
-            <SessionProvider>
-              <Navbar />
-              <div className="flex min-h-screen items-center justify-center font-san">
-                <main className="min-h-screen w-full">{children}</main>
-              </div>
-              <Toaster richColors expand={true} />
-              <Footer />
-            </SessionProvider>
+            <AuthProvider>
+              <SessionProvider>
+                <Navbar />
+                <div className="flex min-h-screen items-center justify-center font-san">
+                  <main className="min-h-screen w-full">{children}</main>
+                </div>
+                <Toaster richColors expand={true} />
+                <Footer />
+              </SessionProvider>
+            </AuthProvider>
           </ThemeProvider>
         </Provider>
       </body>
