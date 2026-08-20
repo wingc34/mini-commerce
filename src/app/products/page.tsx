@@ -5,19 +5,17 @@ import { ProductFilters } from '@/components/products/product-filters';
 import { Filter } from 'lucide-react';
 import { PaginationComponent } from '@/components/ui/PaginationComponent';
 import { useState } from 'react';
-import { trpc } from '@/trpc/client-api';
+import { useProducts } from '@/hooks/useProducts';
 import { productPageItemSize } from '@/constant';
 import { Product } from '@/components/products/ProductCard';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 export default function ProductsPage() {
   const [page, setPage] = useState(1);
-  const { data: products, isFetching } = trpc.product.getProducts.useQuery({
-    page: page,
-  });
+  const { data: products, isFetching, isSuccess } = useProducts(page);
   const totalPages = Math.ceil((products?.total || 0) / productPageItemSize);
 
-  if (!products?.success && !isFetching) {
+  if (!isSuccess && !isFetching) {
     throw new Error('Failed to fetch products');
   }
 

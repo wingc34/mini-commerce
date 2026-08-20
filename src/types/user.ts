@@ -4,8 +4,14 @@ export interface User {
   name: string | null;
   image: string | null;
   phoneNumber: string | null;
+  wishlist: WishlistItem[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface WishlistItem {
+  id: string;
+  productId: string;
 }
 
 export interface Address {

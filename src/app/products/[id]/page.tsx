@@ -5,14 +5,15 @@ import Carousel from '@/components/products/detail/Carousel';
 import { useCart } from '@/store/cart-store';
 import { Button } from '@/components/ui/button';
 import { useState, use, useMemo } from 'react';
-import { trpc } from '@/trpc/client-api';
-import { type SKU } from '@prisma/client';
 import { toast } from 'sonner';
 import copy from 'copy-to-clipboard';
 import { usePathname } from 'next/navigation';
 import { env } from '@/lib/env';
-import { useSession } from 'next-auth/react';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+import { useProductDetail, useCheckStock } from '@/hooks/useProducts';
+import { useWishlist } from '@/hooks/useWishlist';
+import { useAuth } from '@/context/auth-context';
+import type { SKU } from '@/types/product';
 
 export interface ProductDetail {
   id: string;
@@ -34,22 +35,10 @@ export default function ProductDetailPage({
 }) {
   const { id } = use(params);
   const { addToCart } = useCart();
-  const { data: session, update, status } = useSession();
+  const { user, status } = useAuth();
   const pathname = usePathname();
 
-  // trpc
-  const { data, isFetching } = trpc.product.getProductDetail.useQuery({
-    id: id,
-  });
-
-  if (!data?.success && !isFetching) {
-    throw new Error('Failed to fetch product detail');
-  }
-
-  const { mutateAsync: addWishItem, isPending: addWishItemPending } =
-    trpc.user.addWishItem.useMutation();
-  const { mutateAsync: removeWishItem, isPending: removeWishItemPending } =
-    trpc.user.removeWishItem.useMutation();
+  const { data, isFetching } = useProductDetail(id);
 
   const product = data?.data as ProductDetail;
 
@@ -75,19 +64,18 @@ export default function ProductDetailPage({
   const colors = useMemo(() => {
     return Array.from(attributeMap['color'] || []);
   }, [attributeMap]);
-
-  const [quantity, setQuantity] = useState(1);
   const [selectedColor, setSelectedColor] = useState(colors[0] || '');
   const [selectedSize, setSelectedSize] = useState(sizes[0] || '');
 
-  const attr = product?.skus.map((item) => item.attributes);
+  const { addWishItem, removeWishItem } = useWishlist();
+  const { data: stockData } = useCheckStock(id, {
+    size: selectedSize,
+    color: selectedColor,
+  });
 
-  const { data: stockData, isFetching: isFetchingStock } =
-    trpc.product.checkStock.useQuery({
-      productId: id,
-      size: selectedSize,
-      color: selectedColor,
-    });
+  const [quantity, setQuantity] = useState(1);
+
+  const attr = product?.skus.map((item) => item.attributes);
 
   const [stockAvailable, setStockAvailable] = useState<{
     size: string[];
@@ -117,17 +105,14 @@ export default function ProductDetailPage({
 
   // wishlist related handlers
   const handleAddWishItem = async (productId: string) => {
-    await addWishItem({ productId: productId });
-    update();
-  };
-  const handleRemoveWishItem = async (productId: string) => {
-    await removeWishItem({ productId: productId });
-    update();
+    await addWishItem.mutateAsync(productId);
   };
 
-  const isWishlisted = session?.user?.wishlist?.some(
-    (product) => product.id === id
-  );
+  const handleRemoveWishItem = async (productId: string) => {
+    await removeWishItem.mutateAsync(productId);
+  };
+
+  const isWishlisted = user?.wishlist?.some((product) => product.id === id);
 
   return (
     <>
@@ -309,7 +294,7 @@ export default function ProductDetailPage({
               <Button
                 variant={'outline'}
                 onClick={() => {
-                  if (!session?.user) {
+                  if (!user) {
                     toast.info('Please login first');
                   } else {
                     if (isWishlisted) {
@@ -367,9 +352,8 @@ export default function ProductDetailPage({
         <LoadingOverlay
           isLoading={
             isFetching ||
-            isFetchingStock ||
-            addWishItemPending ||
-            removeWishItemPending ||
+            addWishItem.isPending ||
+            removeWishItem.isPending ||
             status === 'loading'
           }
           className="w-full h-full"
