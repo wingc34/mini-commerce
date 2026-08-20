@@ -14,7 +14,7 @@ import {
 import { useTheme } from '@/lib/theme-provider';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '@/context/auth-context';
 
 const pageDetails = [
   { name: 'Products', href: '/products' },
@@ -23,11 +23,11 @@ const pageDetails = [
 ];
 
 export default function Navbar() {
-  const { data: session, status } = useSession();
+  const { user, status } = useAuth();
   const { isDark, toggleTheme, mounted } = useTheme();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  // console.log('Session in Navbar:', session);
+  // console.log('user in Navbar:', user);
   return (
     <nav className="border-b bg-background shadow-sm sticky top-0 z-50 flex justify-between items-center px-6 py-4 transition-all duration-300 grid-cols-3">
       <Link
@@ -70,7 +70,7 @@ export default function Navbar() {
           </Link>
         </Button>
         {status !== 'loading' ? (
-          session ? (
+          user ? (
             <div className="flex space-x-4 items-center">
               <Button variant="ghost" size="icon" className="text-textPrimary">
                 <Link href="/profile?tab=overview">
@@ -91,7 +91,7 @@ export default function Navbar() {
         <Button variant="ghost" size="icon" className="text-textPrimary">
           <ShoppingCart />
         </Button>
-        {session && status === 'authenticated' ? (
+        {user && status === 'authenticated' ? (
           <>
             <Button variant="ghost" size="icon" className="text-textPrimary">
               <Link href="/login">
