@@ -1,7 +1,6 @@
 'use client';
-
 import Link from 'next/link';
-import { trpc } from '@/trpc/client-api';
+import { useRecommendedProducts } from '@/hooks/useProducts';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { Product, ProductCard } from '@/components/products/ProductCard';
@@ -10,8 +9,7 @@ import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 
 export function FeaturedProducts() {
   const router = useRouter();
-  const { data: products, isFetching } =
-    trpc.product.getRecommendProducts.useQuery();
+  const { data, isFetching } = useRecommendedProducts();
 
   return (
     <section className="px-4 sm:px-6 lg:px-8 py-20">
@@ -28,7 +26,7 @@ export function FeaturedProducts() {
         {isFetching ? (
           <LoadingOverlay isLoading className="w-full h-full" />
         ) : (
-          (products?.data as unknown as Product[])?.map((product) => (
+          (data?.data ?? []).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))
         )}

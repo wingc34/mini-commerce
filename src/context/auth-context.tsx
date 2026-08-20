@@ -10,13 +10,7 @@ import {
 import { removeToken, isAuthenticated } from '@/lib/auth';
 import { api } from '@/lib/api-client';
 import { ApiResponse } from '@/types/api';
-
-interface User {
-  id: string;
-  email: string;
-  name: string | null;
-  image: string | null;
-}
+import { User } from '@/types/user';
 
 interface AuthContextType {
   user: User | null;

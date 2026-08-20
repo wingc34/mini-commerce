@@ -4,9 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/store/cart-store';
-import { type SKU } from '@prisma/client';
+import { type SKU } from '@/types/product';
 import { toast } from 'sonner';
-import { useSession } from 'next-auth/react';
 
 export interface Product {
   id: string;
@@ -28,7 +27,6 @@ export function ProductCard({ product }: { product: Product }) {
   const [isHovered, setIsHovered] = useState(false);
   const router = useRouter();
   const { addToCart } = useCart();
-  const { data: session } = useSession();
 
   return (
     <div className="group">
