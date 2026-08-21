@@ -1,4 +1,3 @@
-import { trpc } from '@/trpc/client-api';
 import { MapPin, Edit2, Trash2, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -8,6 +7,7 @@ import {
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+import { useAddress } from '@/hooks/useAddress';
 
 export interface Address {
   id: string;
@@ -21,26 +21,19 @@ export interface Address {
 }
 
 export function Addresses() {
-  const {
-    data,
-    refetch,
-    isFetching: isAddressesFetching,
-  } = trpc.user.getUserAddresses.useQuery();
+  const { getAddresses, createAddress, updateAddress, deleteAddress } =
+    useAddress();
 
-  if (!data?.success && !isAddressesFetching) {
+  const addresses = getAddresses.data?.data as unknown as Address[];
+  if (!getAddresses.isSuccess && !getAddresses.isFetching) {
     toast.error('Failed to get addresses');
   }
 
-  const { mutateAsync: updateAddress, isPending: updateAddressPending } =
-    trpc.user.updateUserAddress.useMutation();
-  const { mutateAsync: deleteAddress, isPending: deleteAddressPending } =
-    trpc.user.deleteUserAddress.useMutation();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const addresses = data?.data as Address[];
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const editingAddress = editingId
-    ? addresses.find((a) => a.id === editingId)
+    ? addresses?.find((a) => a.id === editingId)
     : undefined;
 
   const handleAddAddress = () => {
@@ -54,23 +47,27 @@ export function Addresses() {
   };
 
   const handleDeleteddress = async (id: string) => {
-    const { success } = await deleteAddress({ id });
-    if (success) {
+    try {
+      await deleteAddress.mutateAsync(id);
       toast.success('Address deleted successfully');
-      refetch();
-    } else {
+      getAddresses.refetch();
+    } catch {
       toast.error('Failed to delete address');
     }
   };
 
   const handleSaveAddress = async (data: AddressFormData) => {
-    const { success } = await updateAddress(data);
-    if (success) {
+    try {
+      if (editingId) {
+        await updateAddress.mutateAsync({ ...data, id: editingId });
+      } else {
+        await createAddress.mutateAsync(data);
+      }
       toast.success('Address saved successfully');
-      refetch();
-    } else {
+      getAddresses.refetch();
+      setIsModalOpen(false);
+    } catch {
       toast.error('Failed to save address');
-      setIsModalOpen(true);
     }
   };
 
@@ -78,7 +75,9 @@ export function Addresses() {
     <>
       <LoadingOverlay
         isLoading={
-          isAddressesFetching || updateAddressPending || deleteAddressPending
+          getAddresses.isFetching ||
+          updateAddress.isPending ||
+          deleteAddress.isPending
         }
         className="w-full h-full"
       />

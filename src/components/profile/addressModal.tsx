@@ -18,6 +18,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Address } from '@/types/user';
 
 export const AddressSchema = z.object({
   id: z.string().optional(),
@@ -81,7 +82,7 @@ export function AddressModal({
   }, [initialData, reset, isOpen]);
 
   const onSubmit: SubmitHandler<AddressFormData> = (data) => {
-    onSave(data);
+    onSave(data as Address);
     reset(defaultValues);
     onClose();
   };

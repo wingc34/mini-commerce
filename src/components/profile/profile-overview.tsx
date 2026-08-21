@@ -1,7 +1,7 @@
 'use client';
 
 import { Mail, Phone, MapPin, Calendar, Edit2 } from 'lucide-react';
-import { trpc } from '@/trpc/client-api';
+import { UpdateUserInput, useUser } from '@/hooks/useUser';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import dayjs from 'dayjs';
 import { Address } from '@prisma/client';
@@ -13,6 +13,10 @@ import { z, type ZodError } from 'zod';
 import { Label } from '../ui/label';
 import { LoadingOverlay } from '../ui/LoadingOverlay';
 import { toast } from 'sonner';
+import { useAuth } from '@/context/auth-context';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '@/lib/api-client';
+import { trpc } from '@/trpc/client-api';
 
 interface UserInfo {
   id: string;
@@ -31,21 +35,24 @@ export function ProfileOverview({
 }: {
   setActiveTab: (tab: string) => void;
 }) {
-  const { data: user, isFetching: userInfoFetching } =
+  const { data: olduser, isFetching: userInfoFetching } =
     trpc.user.getUserInfo.useQuery();
+  const { user, status, refetch } = useAuth();
+  const { updateMe } = useUser();
 
-  if (!user?.success && !userInfoFetching) {
+  if (!olduser?.success && !userInfoFetching) {
     toast.error('Failed to fetch user info');
   }
-  const userInfo = user?.data as UserInfo;
+  const userInfo = olduser?.data as UserInfo;
+
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState(userInfo?.name);
+  const [name, setName] = useState(user?.name);
   const [nameError, setNameError] = useState('');
   const nameSchema = z
     .string()
     .max(64, 'please do not exceed 64 characters')
     .min(1, 'cannot be empty');
-  const [phoneNumber, setPhoneNumber] = useState(userInfo?.phone_number);
+  const [phoneNumber, setPhoneNumber] = useState(user?.phoneNumber);
   const [phoneError, setPhoneError] = useState('');
   const phoneNumberSchema = z
     .string()
@@ -73,17 +80,21 @@ export function ProfileOverview({
     }
   });
 
-  const {
-    mutate: updateUserInfo,
-    isSuccess,
-    isPending: updateUserInfoPending,
-  } = trpc.user.updateUserInfo.useMutation();
+  const { isSuccess, isPending: updateUserInfoPending } = useMutation({
+    mutationFn: (productId: string) =>
+      api.patch('/api/v1/users/me', { productId }),
+  });
   const [updated, setUpdated] = useState(false);
 
+  async function handleSubmit(data: UpdateUserInput) {
+    await updateMe.mutateAsync(data);
+    refetch(); // 更新 AuthContext 裡的 user 資料
+  }
+
   useEffect(() => {
-    setName(userInfo?.name ?? '');
-    setPhoneNumber(userInfo?.phone_number ?? '');
-  }, [userInfo]);
+    setName(user?.name ?? '');
+    setPhoneNumber(user?.phoneNumber ?? '');
+  }, [user]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -94,7 +105,7 @@ export function ProfileOverview({
   return (
     <>
       <LoadingOverlay
-        isLoading={userInfoFetching || updateUserInfoPending}
+        isLoading={status === 'loading' || updateUserInfoPending}
         className="w-full h-full"
       />
       {/* Header */}
@@ -109,9 +120,9 @@ export function ProfileOverview({
               if (nameError || phoneError) return;
               setIsEditing(false);
               setUpdated(true);
-              updateUserInfo({
+              handleSubmit({
                 name,
-                phone_number: phoneNumber,
+                phoneNumber,
               });
             }}
           >
@@ -133,9 +144,9 @@ export function ProfileOverview({
       <div className="rounded-lg border border-border p-8 relative">
         <LoadingOverlay isLoading={updated && !isSuccess} />
         <div className="flex items-center gap-6 mb-8">
-          {userInfo?.image && (
+          {user?.image && (
             <Avatar>
-              <AvatarImage src={userInfo.image} alt="avatar" />
+              <AvatarImage src={user.image} alt="avatar" />
               <AvatarFallback>
                 {name ? name.substring(0, 2) : ''}
               </AvatarFallback>
@@ -143,7 +154,7 @@ export function ProfileOverview({
           )}
           {isEditing ? (
             <div className="flex flex-col w-full">
-              <Input defaultValue={name} onInput={onNameInput} />
+              <Input defaultValue={name ?? ''} onInput={onNameInput} />
               <Label className="text-red-500 mt-2">{nameError}</Label>
             </div>
           ) : (
@@ -157,12 +168,12 @@ export function ProfileOverview({
 
         {/* Info Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {userInfo?.email && (
+          {user?.email && (
             <div className="flex items-start gap-4">
               <Mail className="w-5 h-5 text-primary mt-1 shrink-0" />
               <div>
                 <p className="text-sm text-textSecondary mb-1">Email</p>
-                <p className="font-medium text-foreground">{userInfo.email}</p>
+                <p className="font-medium text-foreground">{user.email}</p>
               </div>
             </div>
           )}
@@ -191,7 +202,7 @@ export function ProfileOverview({
             <MapPin className="w-5 h-5 text-primary mt-1 shrink-0" />
             <div>
               <p className="text-sm text-textSecondary mb-1">Default Address</p>
-              {userInfo && userInfo?.addresses.length > 0 ? (
+              {user && userInfo?.addresses.length > 0 ? (
                 <>
                   <p className="font-semibold text-textPrimary">
                     {userInfo.addresses[0].fullName}

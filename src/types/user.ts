@@ -1,3 +1,5 @@
+import { Product } from './product';
+
 export interface User {
   id: string;
   email: string;
@@ -10,8 +12,8 @@ export interface User {
 }
 
 export interface WishlistItem {
-  id: string;
   productId: string;
+  product: Product;
 }
 
 export interface Address {
@@ -20,9 +22,9 @@ export interface Address {
   fullName: string;
   phone: string;
   line1: string;
-  line2: string | null;
+  line2?: string | null;
   city: string;
-  state: string | null;
+  state?: string | null;
   postal: string;
   country: string;
   isDefault: boolean;
