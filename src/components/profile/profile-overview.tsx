@@ -4,7 +4,6 @@ import { Mail, Phone, MapPin, Calendar, Edit2 } from 'lucide-react';
 import { UpdateUserInput, useUser } from '@/hooks/useUser';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import dayjs from 'dayjs';
-import { Address } from '@prisma/client';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
@@ -12,22 +11,7 @@ import _ from 'lodash';
 import { z, type ZodError } from 'zod';
 import { Label } from '../ui/label';
 import { LoadingOverlay } from '../ui/LoadingOverlay';
-import { toast } from 'sonner';
 import { useAuth } from '@/context/auth-context';
-import { useMutation } from '@tanstack/react-query';
-import { api } from '@/lib/api-client';
-
-interface UserInfo {
-  id: string;
-  name: string;
-  email: string;
-  image: string;
-  phone_number: string;
-  addresses: Address[];
-  createdAt: string;
-  orderCount: number;
-  orderAmount: number;
-}
 
 export function ProfileOverview({
   setActiveTab,
@@ -72,10 +56,6 @@ export function ProfileOverview({
     }
   });
 
-  const { isSuccess, isPending: updateUserInfoPending } = useMutation({
-    mutationFn: (productId: string) =>
-      api.patch('/api/v1/users/me', { productId }),
-  });
   const [updated, setUpdated] = useState(false);
 
   async function handleSubmit(data: UpdateUserInput) {
@@ -89,15 +69,15 @@ export function ProfileOverview({
   }, [user]);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (updateMe.isSuccess) {
       setUpdated(false);
     }
-  }, [isSuccess]);
+  }, [updateMe.isSuccess]);
 
   return (
     <>
       <LoadingOverlay
-        isLoading={status === 'loading' || updateUserInfoPending}
+        isLoading={status === 'loading' || updateMe.isPending}
         className="w-full h-full"
       />
       {/* Header */}
@@ -134,7 +114,7 @@ export function ProfileOverview({
 
       {/* Profile Card */}
       <div className="rounded-lg border border-border p-8 relative">
-        <LoadingOverlay isLoading={updated && !isSuccess} />
+        <LoadingOverlay isLoading={updated && !updateMe.isSuccess} />
         <div className="flex items-center gap-6 mb-8">
           {user?.image && (
             <Avatar>
