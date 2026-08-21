@@ -112,7 +112,9 @@ export default function ProductDetailPage({
     await removeWishItem.mutateAsync(productId);
   };
 
-  const isWishlisted = user?.wishlist?.some((product) => product.id === id);
+  const isWishlisted = user?.wishlist?.some(
+    (product) => product.productId === id
+  );
 
   return (
     <>

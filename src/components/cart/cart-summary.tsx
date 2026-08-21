@@ -1,12 +1,13 @@
 'use client';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { trpc } from '@/trpc/client-api';
 import { useCallback, useEffect } from 'react';
 import { useCart } from '@/store/cart-store';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
+import { useAuth } from '@/context/auth-context';
+import { useMutation } from '@tanstack/react-query';
+import { api } from '@/lib/api-client';
 
 interface CartSummaryProps {
   total: number;
@@ -19,14 +20,20 @@ export function CartSummary({
   shippingAddressId,
   setIsPending,
 }: CartSummaryProps) {
-  const { data: session } = useSession();
-
+  const { user } = useAuth();
   const { items } = useCart();
   const { push } = useRouter();
-  const { mutateAsync: createDraftOrder, isPending } =
-    trpc.order.createDraftOrder.useMutation();
+  const { mutateAsync: createDraftOrder, isPending } = useMutation({
+    mutationFn: (data: {
+      total: number;
+      shippingAddressId: string;
+      orderItem: { skuId: string; quantity: number; price: number }[];
+    }) =>
+      api.post<{ success: boolean; id: string }>('/api/v1/orders/draft', data),
+  });
+
   const onCreateDraftOrder = useCallback(async () => {
-    if (!session) {
+    if (!user) {
       toast.error('Please login to proceed to checkout');
       return;
     } else if (!shippingAddressId) {
@@ -35,21 +42,22 @@ export function CartSummary({
       );
       return;
     }
-    const { success, id } = await createDraftOrder({
-      total: total,
-      shippingAddressId: shippingAddressId,
+    const res = await createDraftOrder({
+      total,
+      shippingAddressId,
       orderItem: items.map((item) => ({
         skuId: item.sku.id,
         quantity: item.quantity,
         price: item.sku.price,
       })),
     });
-    if (success) {
-      push(`/checkout?draftOrderId=${id}`);
+
+    if (res.success) {
+      push(`/checkout?draftOrderId=${res.id}`);
     } else {
-      toast.error('failed to create order');
+      toast.error('Failed to create order');
     }
-  }, [total, createDraftOrder, items, push, shippingAddressId, session]);
+  }, [total, createDraftOrder, items, push, shippingAddressId, user]);
 
   useEffect(() => {
     setIsPending(isPending);
