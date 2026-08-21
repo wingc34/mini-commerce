@@ -7,6 +7,9 @@ export interface User {
   image: string | null;
   phoneNumber: string | null;
   wishlist: WishlistItem[];
+  defaultAddress: Address | null;
+  totalOrders: number;
+  totalSpent: number;
   createdAt: string;
   updatedAt: string;
 }

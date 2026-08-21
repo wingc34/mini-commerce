@@ -16,7 +16,6 @@ import { toast } from 'sonner';
 import { useAuth } from '@/context/auth-context';
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
-import { trpc } from '@/trpc/client-api';
 
 interface UserInfo {
   id: string;
@@ -35,15 +34,8 @@ export function ProfileOverview({
 }: {
   setActiveTab: (tab: string) => void;
 }) {
-  const { data: olduser, isFetching: userInfoFetching } =
-    trpc.user.getUserInfo.useQuery();
   const { user, status, refetch } = useAuth();
   const { updateMe } = useUser();
-
-  if (!olduser?.success && !userInfoFetching) {
-    toast.error('Failed to fetch user info');
-  }
-  const userInfo = olduser?.data as UserInfo;
 
   const [isEditing, setIsEditing] = useState(false);
   const [name, setName] = useState(user?.name);
@@ -88,7 +80,7 @@ export function ProfileOverview({
 
   async function handleSubmit(data: UpdateUserInput) {
     await updateMe.mutateAsync(data);
-    refetch(); // 更新 AuthContext 裡的 user 資料
+    refetch();
   }
 
   useEffect(() => {
@@ -202,19 +194,19 @@ export function ProfileOverview({
             <MapPin className="w-5 h-5 text-primary mt-1 shrink-0" />
             <div>
               <p className="text-sm text-textSecondary mb-1">Default Address</p>
-              {user && userInfo?.addresses.length > 0 ? (
+              {user?.defaultAddress ? (
                 <>
                   <p className="font-semibold text-textPrimary">
-                    {userInfo.addresses[0].fullName}
+                    {user.defaultAddress.fullName}
                   </p>
                   <p className="text-sm text-textPrimary">
-                    {userInfo.addresses[0].phone}
+                    {user.defaultAddress.phone}
                   </p>
                   <p className="text-sm text-textPrimary">
-                    {`${userInfo.addresses[0].line1}, ${userInfo.addresses[0].postal}`}
+                    {`${user.defaultAddress.line1}, ${user.defaultAddress.postal}`}
                   </p>
                   <p className="text-sm text-textPrimary">
-                    {`${userInfo.addresses[0].city} ${userInfo.addresses[0].country}`}
+                    {`${user.defaultAddress.city} ${user.defaultAddress.country}`}
                   </p>
                 </>
               ) : (
@@ -228,13 +220,13 @@ export function ProfileOverview({
             </div>
           </div>
 
-          {userInfo?.createdAt && (
+          {user?.createdAt && (
             <div className="flex items-start gap-4">
               <Calendar className="w-5 h-5 text-primary mt-1 shrink-0" />
               <div>
                 <p className="text-sm text-textSecondary mb-1">Join Date</p>
                 <p className="font-medium text-foreground">
-                  {dayjs(userInfo.createdAt).format('YYYY-MM-DD')}
+                  {dayjs(user.createdAt).format('YYYY-MM-DD')}
                 </p>
               </div>
             </div>
@@ -247,13 +239,13 @@ export function ProfileOverview({
         <div className="bg-blue-200 rounded-lg p-6 border border-blue-200 dark:bg-blue-500">
           <p className="text-sm text-textPrimary mb-2">Total Orders</p>
           <p className="text-3xl font-bold text-textPrimary">
-            {userInfo?.orderCount}
+            {user?.totalOrders}
           </p>
         </div>
         <div className="bg-green-200 rounded-lg p-6 border border-green-200 dark:bg-green-500">
           <p className="text-sm text-textPrimary mb-2">Total Spent</p>
           <p className="text-3xl font-bold text-textPrimary">
-            HKD${userInfo?.orderAmount}
+            HKD${user?.totalSpent}
           </p>
         </div>
       </div>

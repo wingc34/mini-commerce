@@ -1,14 +1,13 @@
 import { ChevronRight, Package, DollarSign, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Item, ItemActions, ItemContent } from '@/components/ui/item';
-import { trpc } from '@/trpc/client-api';
 import dayjs from 'dayjs';
 import { OrderStatus } from '@prisma/client';
 import { PaginationComponent } from '@/components/ui/PaginationComponent';
 import { useState } from 'react';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { userOrderPageItemSize } from '@/constant';
-import { toast } from 'sonner';
+import { useOrders } from '@/hooks/useOrders';
 interface Order {
   id: string;
   createdAt: string;
@@ -48,14 +47,11 @@ function getStatusInfo(status: string) {
 
 export function OrderHistory() {
   const [page, setPage] = useState(1);
-  const { data, isFetching } = trpc.order.getUserOrder.useQuery({ page: page });
 
-  if (!data?.success && !isFetching) {
-    toast.error('Failed to get user order');
-  }
+  const { data, isFetching, isError } = useOrders(page);
 
-  const order = data?.order as Order[] | undefined;
-  const totalPages = Math.ceil((data?.orderCount || 0) / userOrderPageItemSize);
+  const orders = data?.orders as Order[] | undefined;
+  const totalPages = Math.ceil((data?.total || 0) / userOrderPageItemSize);
 
   return (
     <>
@@ -63,9 +59,9 @@ export function OrderHistory() {
       <h2 className="text-2xl font-bold text-foreground">Order History</h2>
 
       <div className="space-y-4">
-        {order &&
-          order?.length > 0 &&
-          order.map((order) => {
+        {orders &&
+          orders?.length > 0 &&
+          orders.map((order) => {
             const statusInfo = getStatusInfo(order.status);
             const StatusIcon = statusInfo.icon;
 
@@ -133,7 +129,7 @@ export function OrderHistory() {
             );
           })}
       </div>
-      {order && order.length > 0 && (
+      {orders && orders.length > 0 && (
         <PaginationComponent
           page={page}
           setPage={setPage}
