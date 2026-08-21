@@ -4,12 +4,13 @@ import { useCart } from '@/store/cart-store';
 import { CheckCircle, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect } from 'react';
-import { trpc } from '@/trpc/client-api';
 import dayjs from 'dayjs';
 import { Button } from '@/components/ui/button';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { OrderStatus } from '@prisma/client';
 import { useSearchParams } from 'next/navigation';
+import { useOrderDetail } from '@/hooks/useOrders';
+import { DraftOrder, Order } from '@/types/order';
 
 interface attribute {
   color: string;
@@ -50,21 +51,17 @@ export default function CheckoutSuccessPage() {
   const draftOrderId = searchParams.get('draftOrderId');
   const { clearCart } = useCart();
 
-  //get draft order
-  const { data: orderData, isFetching } = trpc.order.getOrderDetail.useQuery({
-    id: draftOrderId || '',
-    isDraft: true,
-  });
+  const {
+    data: orderDetail,
+    isFetching,
+    isError,
+  } = useOrderDetail(draftOrderId || '');
 
-  if (!orderData?.success && !isFetching) {
+  if (isError) {
     throw new Error('Failed to get order detail');
   }
 
-  const orderDetail = orderData?.data as OrderDetail;
-
-  const shippingaddress =
-    orderDetail?.shippingAddress as OrderDetail['shippingAddress'];
-  const orderItem = orderDetail?.items as OrderDetail['items'];
+  const order = orderDetail as Order | DraftOrder | undefined;
 
   useEffect(() => {
     clearCart();
@@ -119,18 +116,18 @@ export default function CheckoutSuccessPage() {
           <div className="space-y-4">
             <h3 className="font-semibold text-foreground">Order Items</h3>
             <div className="space-y-3">
-              {orderItem &&
-                orderItem?.length > 0 &&
-                orderItem.map((item, idx) => {
+              {order?.orderItems &&
+                order.orderItems?.length > 0 &&
+                order.orderItems.map((item, idx) => {
                   return (
                     item.sku && (
                       <div
                         className="flex items-center justify-between p-4 bg-muted rounded-lg"
-                        key={`${item.sku.name}-${idx}`}
+                        key={`${item.sku.product?.name}-${idx}`}
                       >
                         <div>
                           <p className="font-medium text-foreground">
-                            {item.sku.name}
+                            {item.sku.product?.name}
                           </p>
                           <p className="text-sm text-muted-foreground">
                             quantity: {item.quantity}
@@ -162,12 +159,12 @@ export default function CheckoutSuccessPage() {
             </h3>
             <div className="space-y-2 text-muted-foreground">
               <p className="font-medium text-foreground">
-                {shippingaddress?.fullName}
+                {order?.shippingAddress?.fullName}
               </p>
-              <p>{shippingaddress?.line1}</p>
-              <p>{`${shippingaddress?.city} ${shippingaddress?.postal}`}</p>
-              <p>{shippingaddress?.country}</p>
-              <p>{shippingaddress?.phone}</p>
+              <p>{order?.shippingAddress?.line1}</p>
+              <p>{`${order?.shippingAddress?.city} ${order?.shippingAddress?.postal}`}</p>
+              <p>{order?.shippingAddress?.country}</p>
+              <p>{order?.shippingAddress?.phone}</p>
             </div>
           </div>
         </div>

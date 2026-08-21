@@ -8,6 +8,7 @@ import {
 } from '@stripe/react-stripe-js';
 import { Button } from '@/components/ui/button';
 import { env } from '@/lib/env';
+import { api } from '@/lib/api-client';
 
 const CheckoutPanel = ({
   amount,
@@ -23,14 +24,11 @@ const CheckoutPanel = ({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    fetch('/api/create-payment-intent', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ amount: amount, draftOrderId: draftOrderId }),
-    })
-      .then((res) => res.json())
+    api
+      .post<{ clientSecret: string }>('/api/v1/payments/intent', {
+        amount: Math.round(amount * 100),
+        draftOrderId: draftOrderId,
+      })
       .then((data) => setClientSecret(data.clientSecret));
   }, []);
 

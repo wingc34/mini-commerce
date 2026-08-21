@@ -7,44 +7,37 @@ import { useCart } from '@/store/cart-store';
 import { Edit2, MapPin, ShoppingCart, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { trpc } from '@/trpc/client-api';
 import { toast } from 'sonner';
 import {
   AddressModal,
   type AddressFormData,
 } from '@/components/profile/addressModal';
 import { SelectAddressModal } from '@/components/cart/selectAddressModal';
-import { useSession } from 'next-auth/react';
 import { env } from '@/lib/env';
+import { useAddress } from '@/hooks/useAddress';
+import { useAuth } from '@/context/auth-context';
 
 if (env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY === undefined) {
   throw new Error('NEXT_PUBLIC_STRIPE_PUBLIC_KEY is not defined');
 }
 
 export default function CartPage() {
-  const { status } = useSession();
+  const { status } = useAuth();
   const { items, removeItem, updateQuantity } = useCart();
   const [isPending, setIsPending] = useState(false);
   const [isAddressModalOpen, setIsAddressModalOpen] = useState(false);
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
 
-  const {
-    data,
-    refetch,
-    isFetching: isAddressesFetching,
-  } = trpc.user.getUserAddresses.useQuery(undefined, {
-    enabled: status === 'authenticated',
-  });
+  const { getAddresses, createAddress, updateAddress } = useAddress();
+  const addresses = (getAddresses.data ?? []) as Address[];
 
-  if (!data?.success && !isAddressesFetching && status === 'authenticated') {
-    toast.error('Failed to get addresses');
-  }
-
-  const { mutateAsync: updateAddress, isPending: updateAddressPending } =
-    trpc.user.updateUserAddress.useMutation();
-  const addresses = data?.data as Address[];
+  useEffect(() => {
+    if (getAddresses.isError) {
+      toast.error('Failed to get addresses');
+    }
+  }, [getAddresses.isError]);
 
   const selectedAddress =
     addresses?.find((item) => item.id === selectedAddressId) ??
@@ -79,13 +72,17 @@ export default function CartPage() {
   };
 
   const handleSaveAddress = async (data: AddressFormData) => {
-    const { success } = await updateAddress(data);
-    if (success) {
+    try {
+      if (editingId) {
+        await updateAddress.mutateAsync({ ...data, id: editingId });
+      } else {
+        await createAddress.mutateAsync(data);
+      }
       toast.success('Address saved successfully');
-      refetch();
-    } else {
+      getAddresses.refetch();
+      setIsEditModalOpen(false);
+    } catch {
       toast.error('Failed to save address');
-      setIsEditModalOpen(true);
     }
   };
 
@@ -123,7 +120,12 @@ export default function CartPage() {
       ) : (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
           <LoadingOverlay
-            isLoading={isPending || isAddressesFetching || updateAddressPending}
+            isLoading={
+              isPending ||
+              getAddresses.isFetching ||
+              updateAddress.isPending ||
+              createAddress.isPending
+            }
             className="w-full h-full"
           />
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

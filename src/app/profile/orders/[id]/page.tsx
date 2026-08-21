@@ -1,6 +1,5 @@
 'use client';
 
-import { trpc } from '@/trpc/client-api';
 import { OrderStatus, Address } from '@prisma/client';
 import dayjs from 'dayjs';
 import {
@@ -15,6 +14,7 @@ import {
 import Link from 'next/link';
 import { use } from 'react';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
+import { useOrderDetail } from '@/hooks/useOrders';
 
 interface OrderItem {
   id: string;
@@ -90,13 +90,13 @@ export default function OrderDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { data, isFetching } = trpc.order.getOrderDetail.useQuery({ id });
+  const { data, isFetching, isSuccess } = useOrderDetail(id);
 
-  if (!data?.success && !isFetching) {
+  if (!isSuccess && !isFetching) {
     throw new Error('Failed to get order detail');
   }
 
-  const orderDetail = data?.data as OrderDetail | undefined;
+  const orderDetail = data as OrderDetail | undefined;
 
   if (!orderDetail && !isFetching) {
     return (
