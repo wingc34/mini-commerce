@@ -2,7 +2,7 @@ import { act } from '@testing-library/react';
 import { describe, it, expect, beforeEach } from 'vitest';
 
 import { useCart } from '@/store/cart-store';
-import { type SKU } from '@prisma/client';
+import { type SKU } from '@/types/product';
 
 const sku_1 = {
   id: 'cmirbl751002xrv3rke52rw3n',
