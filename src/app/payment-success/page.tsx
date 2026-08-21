@@ -7,10 +7,9 @@ import { useEffect } from 'react';
 import dayjs from 'dayjs';
 import { Button } from '@/components/ui/button';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
-import { OrderStatus } from '@prisma/client';
 import { useSearchParams } from 'next/navigation';
 import { useOrderDetail } from '@/hooks/useOrders';
-import { DraftOrder, Order } from '@/types/order';
+import { DraftOrder, Order, OrderStatus } from '@/types/order';
 
 interface attribute {
   color: string;

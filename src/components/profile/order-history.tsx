@@ -2,7 +2,7 @@ import { ChevronRight, Package, DollarSign, CheckCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Item, ItemActions, ItemContent } from '@/components/ui/item';
 import dayjs from 'dayjs';
-import { OrderStatus } from '@prisma/client';
+import { OrderStatus } from '@/types/order';
 import { PaginationComponent } from '@/components/ui/PaginationComponent';
 import { useState } from 'react';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
@@ -18,19 +18,19 @@ interface Order {
 
 function getStatusInfo(status: string) {
   switch (status) {
-    case OrderStatus.PENDING:
+    case 'PENDING':
       return {
         label: 'Pending',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
         icon: Package,
       };
-    case OrderStatus.PAID:
+    case 'PAID':
       return {
         label: 'Paid',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
         icon: DollarSign,
       };
-    case OrderStatus.SHIPPED:
+    case 'SHIPPED':
       return {
         label: 'Shipped',
         color: 'bg-green-50 text-green-700 border-green-200',
