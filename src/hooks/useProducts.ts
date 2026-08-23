@@ -14,7 +14,7 @@ export function useProducts(page: number) {
 export function useRecommendedProducts() {
   return useQuery({
     queryKey: ['products', 'recommended'],
-    queryFn: () => api.get<{ data: Product[] }>('/api/v1/products/recommended'),
+    queryFn: () => api.get<Product[]>('/api/v1/products/recommended'),
   });
 }
 
