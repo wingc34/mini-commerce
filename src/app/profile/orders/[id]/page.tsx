@@ -1,6 +1,7 @@
 'use client';
 
-import { OrderStatus, Address } from '@prisma/client';
+import type { Address } from '@/types/user';
+import type { OrderItem, OrderStatus } from '@/types/order';
 import dayjs from 'dayjs';
 import {
   ChevronLeft,
@@ -16,23 +17,6 @@ import { use } from 'react';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { useOrderDetail } from '@/hooks/useOrders';
 
-interface OrderItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  sku: {
-    skuCode: string;
-    name: string;
-    price: number;
-    image: string;
-    attributes: {
-      size: string;
-      color: string;
-    };
-  };
-}
-
 interface OrderDetail {
   id: string;
   total: number;
@@ -44,14 +28,14 @@ interface OrderDetail {
 
 function getStatusInfo(status: string) {
   switch (status) {
-    case OrderStatus.PENDING:
+    case 'PENDING':
       return {
         label: 'Pending',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
         icon: Package,
         description: "Your order is being processed. We'll update you soon.",
       };
-    case OrderStatus.PAID:
+    case 'PAID':
       return {
         label: 'paid',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
@@ -59,14 +43,14 @@ function getStatusInfo(status: string) {
         description:
           "Your payment has been received. We're processing your order.",
       };
-    case OrderStatus.SHIPPED:
+    case 'SHIPPED':
       return {
         label: 'shipped',
         color: 'bg-blue-50 text-blue-700 border-blue-200',
         icon: Truck,
         description: 'Your order has been shipped and is on its way.',
       };
-    case OrderStatus.COMPLETED:
+    case 'COMPLETED':
       return {
         label: 'Delivered',
         color: 'bg-green-50 text-green-700 border-green-200',
@@ -96,7 +80,7 @@ export default function OrderDetailPage({
     throw new Error('Failed to get order detail');
   }
 
-  const orderDetail = data as OrderDetail | undefined;
+  const orderDetail = data;
 
   if (!orderDetail && !isFetching) {
     return (
@@ -170,7 +154,7 @@ export default function OrderDetailPage({
 
               <div className="divide-y divide-border">
                 {orderDetail &&
-                  orderDetail?.items.map((item) => {
+                  orderDetail?.orderItems.map((item) => {
                     const attr = item.sku.attributes as {
                       size: string;
                       color: string;
@@ -178,13 +162,13 @@ export default function OrderDetailPage({
                     return (
                       <div key={item.id} className="p-6 flex gap-4">
                         <img
-                          src={item.sku.image || '/placeholder.svg'}
-                          alt={item.sku.name}
+                          src={item.sku.product.images[0] || '/placeholder.svg'}
+                          alt={item.sku.product.name}
                           className="w-20 h-20 rounded-lg bg-muted object-cover"
                         />
                         <div className="flex-1 space-y-1">
                           <h4 className="font-semibold text-foreground">
-                            {item.sku.name}
+                            {item.sku.product.name}
                           </h4>
                           <p className="text-sm text-textSecondary">
                             Quantity: {item.quantity}

@@ -18,11 +18,11 @@ export interface DraftOrder {
   total: number;
   status: DraftStatus;
   shippingAddressId: string;
-  shippingAddress?: Address;
+  shippingAddress: Address;
   paymentIntentId: string | null;
   createdAt: string;
   expiresAt: string | null;
-  orderItems?: OrderItem[];
+  orderItems: OrderItem[];
 }
 
 export interface Order {
@@ -31,12 +31,12 @@ export interface Order {
   total: number;
   status: OrderStatus;
   shippingAddressId: string;
-  shippingAddress?: Address;
+  shippingAddress: Address;
   paymentIntentId: string | null;
   stripeSessionId: string | null;
   createdAt: string;
   draftOrderId: string;
-  orderItems?: OrderItem[];
+  orderItems: OrderItem[];
 }
 
 export interface OrderItem {
@@ -45,12 +45,12 @@ export interface OrderItem {
   skuId: string;
   quantity: number;
   price: number;
-  sku?: {
+  sku: {
     id: string;
     skuCode: string;
     price: number;
     attributes: Record<string, string>;
-    product?: {
+    product: {
       name: string;
       images: string[];
     };

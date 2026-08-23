@@ -26,8 +26,6 @@ export interface ProductDetail {
   skus: SKU[];
 }
 
-const defaultSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-
 export default function ProductDetailPage({
   params,
 }: {
@@ -40,7 +38,7 @@ export default function ProductDetailPage({
 
   const { data, isFetching } = useProductDetail(id);
 
-  const product = data?.data as ProductDetail;
+  const product = data as unknown as ProductDetail;
 
   // derive available attributes
   const attributeMap = useMemo(() => {
@@ -58,7 +56,7 @@ export default function ProductDetailPage({
   }, [product?.skus]);
 
   const sizes = useMemo(() => {
-    return defaultSizes.filter((size) => attributeMap['size']?.has(size));
+    return Array.from(attributeMap['size'] || []);
   }, [attributeMap]);
 
   const colors = useMemo(() => {

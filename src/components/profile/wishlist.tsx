@@ -44,6 +44,7 @@ export function Wishlist() {
                       className="w-full h-full object-cover hover:scale-110 transition-smooth duration-500"
                       width={500}
                       height={500}
+                      unoptimized
                     />
                     <Button
                       onClick={async (event) => {
