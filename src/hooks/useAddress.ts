@@ -1,12 +1,15 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
 import type { Address } from '@/types/user';
-import { ApiResponse } from '@/types/api';
+import { useAuth } from '@/context/auth-context';
 
 export function useAddress() {
+  const { status } = useAuth();
+
   const getAddresses = useQuery({
     queryKey: ['addresses'],
-    queryFn: () => api.get<ApiResponse<Address>>('/api/v1/users/me/addresses'),
+    queryFn: () => api.get<Address[]>('/api/v1/users/me/addresses'),
+    enabled: status === 'authenticated',
   });
   const createAddress = useMutation({
     mutationFn: (data: Omit<Address, 'id' | 'userId' | 'createdAt'>) =>

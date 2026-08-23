@@ -24,7 +24,7 @@ export function Addresses() {
   const { getAddresses, createAddress, updateAddress, deleteAddress } =
     useAddress();
 
-  const addresses = getAddresses.data?.data as unknown as Address[];
+  const addresses = getAddresses.data as unknown as Address[];
   if (!getAddresses.isSuccess && !getAddresses.isFetching) {
     toast.error('Failed to get addresses');
   }

@@ -13,24 +13,16 @@ import { api } from '@/lib/api-client';
 const CheckoutPanel = ({
   amount,
   draftOrderId,
+  clientSecret,
 }: {
   amount: number;
   draftOrderId: string;
+  clientSecret: string;
 }) => {
   const stripe = useStripe();
   const elements = useElements();
   const [errorMessage, setErrorMessage] = useState<string>();
-  const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    api
-      .post<{ clientSecret: string }>('/api/v1/payments/intent', {
-        amount: Math.round(amount * 100),
-        draftOrderId: draftOrderId,
-      })
-      .then((data) => setClientSecret(data.clientSecret));
-  }, []);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

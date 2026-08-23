@@ -79,7 +79,7 @@ export default function ProductsPage() {
               ) : (
                 <>
                   <ProductGrid
-                    products={(products?.data as unknown[] as Product[]) ?? []}
+                    products={(products as unknown as Product[]) ?? []}
                   />
                   <PaginationComponent
                     page={page}

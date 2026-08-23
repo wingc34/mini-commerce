@@ -9,7 +9,6 @@ import {
 } from 'react';
 import { removeToken, isAuthenticated } from '@/lib/auth';
 import { api } from '@/lib/api-client';
-import { ApiResponse } from '@/types/api';
 import { User } from '@/types/user';
 
 interface AuthContextType {
@@ -34,8 +33,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
-      const res = await api.get<ApiResponse<User>>('/api/v1/users/me');
-      setUser(res.data);
+      const res = await api.get<User>('/api/v1/users/me');
+      setUser(res);
       setStatus('authenticated');
     } catch {
       removeToken();

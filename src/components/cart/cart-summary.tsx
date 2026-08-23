@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/auth-context';
 import { useMutation } from '@tanstack/react-query';
 import { api } from '@/lib/api-client';
+import { DraftOrder } from '@/types/order';
 
 interface CartSummaryProps {
   total: number;
@@ -28,8 +29,7 @@ export function CartSummary({
       total: number;
       shippingAddressId: string;
       orderItem: { skuId: string; quantity: number; price: number }[];
-    }) =>
-      api.post<{ success: boolean; id: string }>('/api/v1/orders/draft', data),
+    }) => api.post<DraftOrder>('/api/v1/orders/draft', data),
   });
 
   const onCreateDraftOrder = useCallback(async () => {
@@ -52,7 +52,7 @@ export function CartSummary({
       })),
     });
 
-    if (res.success) {
+    if (res.id) {
       push(`/checkout?draftOrderId=${res.id}`);
     } else {
       toast.error('Failed to create order');

@@ -19,7 +19,6 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
 
   if (res.status === 401) {
     localStorage.removeItem('token');
-    window.location.href = '/';
     throw new Error('Unauthorized');
   }
 
@@ -28,7 +27,8 @@ async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
     throw new Error(error.error || 'Something went wrong');
   }
 
-  return res.json();
+  const json = await res.json();
+  return (json.data ?? json) as T;
 }
 
 export const api = {

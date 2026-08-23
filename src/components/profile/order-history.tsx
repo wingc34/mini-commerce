@@ -50,7 +50,7 @@ export function OrderHistory() {
 
   const { data, isFetching, isError } = useOrders(page);
 
-  const orders = data?.orders as Order[] | undefined;
+  const orders = data?.orders as unknown as Order[];
   const totalPages = Math.ceil((data?.total || 0) / userOrderPageItemSize);
 
   return (

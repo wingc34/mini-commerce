@@ -41,6 +41,7 @@ export function ProductCard({ product }: { product: Product }) {
           src={product.images[0] || 'https://placehold.co/600x400'}
           alt={product.name}
           loading="eager"
+          unoptimized
           width={500}
           height={500}
           className="w-full h-full object-cover group-hover:scale-110 transition-smooth duration-500"

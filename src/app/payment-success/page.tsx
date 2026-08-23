@@ -60,7 +60,7 @@ export default function CheckoutSuccessPage() {
     throw new Error('Failed to get order detail');
   }
 
-  const order = orderDetail as Order | DraftOrder | undefined;
+  const order = orderDetail as Order | DraftOrder;
 
   useEffect(() => {
     clearCart();
