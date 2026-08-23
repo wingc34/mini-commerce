@@ -26,7 +26,7 @@ export function FeaturedProducts() {
         {isFetching ? (
           <LoadingOverlay isLoading className="w-full h-full" />
         ) : (
-          (data?.data ?? []).map((product) => (
+          (data ?? []).map((product) => (
             <ProductCard key={product.id} product={product} />
           ))
         )}
