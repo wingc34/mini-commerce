@@ -17,18 +17,9 @@ import { use } from 'react';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { useOrderDetail } from '@/hooks/useOrders';
 
-interface OrderDetail {
-  id: string;
-  total: number;
-  status: OrderStatus;
-  createdAt: string;
-  items: OrderItem[];
-  shippingAddress: Address;
-}
-
 function getStatusInfo(status: string) {
   switch (status) {
-    case 'PENDING':
+    case 'PENDING_PAYMENT':
       return {
         label: 'Pending',
         color: 'bg-yellow-50 text-yellow-700 border-yellow-200',
