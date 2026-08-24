@@ -9,13 +9,6 @@ export const env = createEnv({
   server: {
     DOMAIN: z.string().min(1),
     APP_ENV: z.enum(['development', 'test', 'production']),
-    DATABASE_ENV: z.enum(['docker', 'neon']),
-    DATABASE_URL: z.string().min(1),
-    AUTH_SECRET: z.string().min(1),
-    AUTH_GOOGLE_ID: z.string().min(1),
-    AUTH_GOOGLE_SECRET: z.string().min(1),
-    STRIPE_SECRET_KEY: z.string().min(1),
-    STRIPE_WEBHOOK_SECRET: z.string().min(1),
   },
 
   /**
@@ -43,13 +36,6 @@ export const env = createEnv({
   runtimeEnv: {
     DOMAIN: process.env.DOMAIN,
     APP_ENV: process.env.APP_ENV,
-    DATABASE_ENV: process.env.DATABASE_ENV,
-    DATABASE_URL: process.env.DATABASE_URL,
-    AUTH_SECRET: process.env.AUTH_SECRET,
-    AUTH_GOOGLE_ID: process.env.AUTH_GOOGLE_ID,
-    AUTH_GOOGLE_SECRET: process.env.AUTH_GOOGLE_SECRET,
-    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
-    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
     NEXT_PUBLIC_STRIPE_PUBLIC_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY,
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
